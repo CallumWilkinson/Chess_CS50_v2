@@ -13,8 +13,7 @@
 //   }
 // };
 
-//import board class
-const Board = require("../src/board.js");
+import Board from "../src/board.js";
 
 window.onload = () => {
   //get canvas

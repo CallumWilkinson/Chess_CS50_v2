@@ -1,5 +1,5 @@
 //board class represents a chess board
-class Board {
+export default class Board {
   constructor() {
     //create a grid PROPERTY for the class
     //grid is a dictionary
@@ -17,5 +17,3 @@ class Board {
     }
   }
 }
-
-module.exports = Board;

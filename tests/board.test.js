@@ -1,5 +1,5 @@
-//import board class
-const Board = require("../src/board.js");
+// //import board class
+import Board from "../src/board.js";
 
 //describe is a jest function to group related tests together into a test suite called "chess board"
 describe("Chess Board", () => {
