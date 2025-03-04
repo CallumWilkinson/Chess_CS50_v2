@@ -5,23 +5,18 @@ const Board = require("../src/board.js");
 describe("Chess Board", () => {
   let board;
 
-  //beforeEach is jest function to make a new board before each test is run
+  //beforeeach is jest function that runs before each test
+  //instantiate a board object from the Board class
   beforeEach(() => {
-    board = newBoard();
+    board = new Board();
   });
 
-  //first test ensures board has 8 rows and 8 columns, board is an array
-  test("should initialise an 8x8 array as a board", () => {
-    expect(board.grid.length).toBe(8);
-    expect(board.grid[0].length).toBe(8);
+  test("should initialize an empty grid", () => {
+    expect(board.grid).toEqual({}); // Check if grid starts as an empty DICTIONARY object
   });
 
-  //   //second test checks that all black and white pieces are correctly placed
-  //   test("pieces are correctly placed", () => {
-  //     //check top left is white rook
-  //     expect(board.getPiece(0, 0).ToBe("R"));
-
-  //     //check bottom middle is black king
-  //     expect(board.getPiece(7, 4).ToBe("k"));
-  //   });
+  test("should contain exactly 64 squares in the grid", () => {
+    board.createEmptyBoard(); // Populate the board
+    expect(Object.keys(board.grid).length).toBe(64); // Ensure 64 keys exist
+  });
 });
