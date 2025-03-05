@@ -17,8 +17,11 @@ window.onload = () => {
   // Draw chessboard based on grid keys
   Object.keys(chessBoard.grid).forEach((square) => {
     //convert dict keys from letters to numbers
-    const row = parseInt(square[0], 10) - 1; // Convert "1a" -> row index (0-based)
-    const col = square.charCodeAt(1) - "a".charCodeAt(0); // Convert "a" -> 0, "b" -> 1, etc.
+    //square is a string
+    //convert the string number in "a1" to an int type
+    const row = parseInt(square[1], 10) - 1;
+    //get unicode value of the letter and subtract the unicode value of a so that numbers increment from 0 upwards
+    const col = square.charCodeAt(0) - "a".charCodeAt(0);
 
     // Set alternating colors
     ctx.fillStyle = (row + col) % 2 === 0 ? "#EEEED5" : "#7D945D";

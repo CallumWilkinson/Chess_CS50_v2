@@ -13,7 +13,8 @@ export default class Board {
     //row is the number, column is the letter
     for (let row = 1; row <= 8; row++) {
       for (let column of columnLabels) {
-        const square = row + column;
+        //square is a string
+        const square = column + row;
         //add keys eg a1, b1 ect and set values to null
         this.grid[square] = null;
       }
