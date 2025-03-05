@@ -19,4 +19,12 @@ describe("Chess Board", () => {
     board.createEmptyBoard(); // Populate the board
     expect(Object.keys(board.grid).length).toBe(64); // Ensure 64 keys exist
   });
+
+  test("setup peices on board", () => {
+    board.createEmptyBoard();
+    board.initialisePieces();
+    expect(board.grid).toHaveProperty("a1", "rook");
+    expect(board.grid).toHaveProperty("b1", "knight");
+    expect(board.grid).toHaveProperty("a2", "pawn");
+  });
 });
