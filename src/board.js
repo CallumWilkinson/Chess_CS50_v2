@@ -1,3 +1,5 @@
+import ChessPiece from "./ChessPiece.js";
+
 //board class represents a chess board
 export default class Board {
   constructor() {
@@ -21,7 +23,34 @@ export default class Board {
     }
   }
 
+  //CHANGE THIS TO ADD OBJECTS TO THE DICT INSTEAD OF STRINGS
   initialisePieces() {
+    //       // For example, place white pawns
+    //   // row 2 is typically the white pawns row, so squares a2, b2... h2
+    //   // But your setup might differ depending on how you’re indexing.
+    //   const columnLabels = "abcdefgh";
+    //   for (let column of columnLabels) {
+    //     const square = column + "2";
+    //     this.grid[square] = new Pawn("pawn", "white", square);
+    //   }
+
+    //   // Place black pawns on row 7
+    //   for (let column of columnLabels) {
+    //     const square = column + "7";
+    //     this.grid[square] = new Pawn("pawn", "black", square);
+    //   }
+
+    //   // Place rooks, knights, bishops, etc.
+    //   // Example for white rook on a1:
+    //   this.grid["a1"] = new ChessPiece("rook", "white", "a1");
+    //   this.grid["h1"] = new ChessPiece("rook", "white", "h1");
+    //   // ...and so on for knights, bishops, queen, king.
+
+    //   // Similarly for black pieces on the 8th rank.
+    //   this.grid["a8"] = new ChessPiece("rook", "black", "a8");
+    //   this.grid["h8"] = new ChessPiece("rook", "black", "a8");
+    //   // etc.
+    // }
     //add white pawns to the dictionary
     Object.keys(this.grid)
       .slice(8, 16)
