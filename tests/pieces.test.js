@@ -1,4 +1,4 @@
-import chessPiece from "../src/pieces.js";
+import ChessPiece from "../src/ChessPiece.js";
 
 describe("Chess Pieces", () => {
   let pawn;

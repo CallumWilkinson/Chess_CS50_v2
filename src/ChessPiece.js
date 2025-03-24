@@ -37,4 +37,37 @@ export default class ChessPiece {
     this.position = newPosition;
     this.hasMoved = true;
   }
+
+  /**
+   * Helper method to parse 'e4' into numeric indices or row/col
+   * so you can do calculations more easily (e.g., e->4, 4->3).
+   *
+   * @param {string} position - The chess coordinate (e.g. 'e4').
+   * @returns {{ fileIndex: number, rankIndex: number }}
+   *          Object with numeric indices
+   */
+  parsePosition(position) {
+    //get unicode value of the letter and subtract the unicode value of "a" so that numbers in columns increment from 0 upwards
+    const fileIndex = position.charCodeAt(0) - "a".charCodeAt(0); // a=0, b=1, ...
+
+    //convert the string number in "a1" to an int type and -1 to increment from 0
+    const rankIndex = parseInt(position[1], 10) - 1; // '1' -> 0, '8' -> 7
+    return { fileIndex, rankIndex };
+  }
+
+  /**
+   * Converts numeric indices back to standard chess notation.
+   *
+   * @param {number} fileIndex - 0..7
+   * @param {number} rankIndex - 0..7
+   * @returns {string} Chess notation square (e.g. "e4").
+   */
+  _toSquare(fileIndex, rankIndex) {
+    // Convert 0..7 back to 'a'..'h'
+    const fileChar = String.fromCharCode("a".charCodeAt(0) + fileIndex);
+    // Convert 0..7 back to '1'..'8'
+    const rankChar = (rankIndex + 1).toString();
+
+    return fileChar + rankChar;
+  }
 }
