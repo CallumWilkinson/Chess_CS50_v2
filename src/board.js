@@ -91,4 +91,27 @@ export default class Board {
 
     Object.assign(this.grid, whiteSetup, blackSetup);
   }
+
+  /**
+   * @param {string} square - 'a3', 'e4' ect.
+   */
+
+  squareExistsOnBoard(square) {
+    if (square in this.grid) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * @param {string} square - 'a3', 'e4' ect.
+   */
+  squareIsEmpty(square) {
+    if (this.grid[square] == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

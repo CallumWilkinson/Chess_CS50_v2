@@ -31,8 +31,19 @@ export default class Pawn extends ChessPiece {
     //convert indicies back to chess notation
     const oneSquareForward = this._toSquare(fileIndex, rankPlusOne);
 
+    //if the new square doesnt exist, return error
+    if (board.squareExistsOnBoard(oneSquareForward) == false) {
+      throw new Error(`Invalid move: ${oneSquareForward} is off the board.`);
+    }
+
     //add to validMoves array
-    validMoves.push(oneSquareForward);
+    if (board.squareIsEmpty(oneSquareForward)) {
+      validMoves.push(oneSquareForward);
+    } else {
+      throw new Error(
+        `Invalid move: ${oneSquareForward} is occupied by another piece.`
+      );
+    }
 
     return validMoves;
   }

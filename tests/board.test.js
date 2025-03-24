@@ -45,4 +45,17 @@ describe("Chess Board", () => {
     expect(board.grid).toHaveProperty("d8", "black_queen");
     expect(board.grid).toHaveProperty("e8", "black_king");
   });
+
+  test("square exists on board", () => {
+    board.createEmptyBoard();
+    board.initialisePieces();
+    expect(board.squareExistsOnBoard("a9")).toBe(false);
+    expect(board.squareExistsOnBoard("a4")).toBe(true);
+  });
+
+  test("square is empty", () => {
+    board.createEmptyBoard();
+    board.initialisePieces();
+    expect(board.squareIsEmpty("a6")).toBe(true);
+  });
 });

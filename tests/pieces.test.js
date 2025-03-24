@@ -10,9 +10,10 @@ describe("Chess Pieces", () => {
     board.initialisePieces();
   });
 
-  test("pawn can move 1 space forward on a regular turn", () => {
+  test("pawn moves from a2 to a3", () => {
     let whitePawn;
     whitePawn = new Pawn("white", "a2");
+
     let possibleMovesArray;
     possibleMovesArray = whitePawn.getPossibleMoves(board);
     if (possibleMovesArray.includes("a3")) {
