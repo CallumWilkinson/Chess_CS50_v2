@@ -11,6 +11,7 @@ export default class Pawn extends ChessPiece {
    * @returns {string[]} Array of valid square names (e.g., ['e4', 'f3']).
    */
   getPossibleMoves(board) {
+    //array of strings
     const validMoves = [];
 
     //white moves up the board, black moves down
@@ -20,6 +21,18 @@ export default class Pawn extends ChessPiece {
     } else {
       direction = -1;
     }
+
+    //convert current position to numbers so we can do math on it (eg e4 = 4,3)
+    const { fileIndex, rankIndex } = this.parsePosition(this.position);
+
+    //increment position up 1
+    const rankPlusOne = rankIndex + direction;
+
+    //convert indicies back to chess notation
+    const oneSquareForward = this._toSquare(fileIndex, rankPlusOne);
+
+    //add to validMoves array
+    validMoves.push(oneSquareForward);
 
     return validMoves;
   }
