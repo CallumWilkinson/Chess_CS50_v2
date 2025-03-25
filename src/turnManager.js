@@ -1,34 +1,37 @@
 export class TurnManager {
   /**
-   * @param {string} startingPlayer - startingPlayer colour "white" or "black"
+   * @param {string} currentPlayerColour - startingPlayer colour "white" or "black"
    */
-  constructor(startingPlayer) {
-    this.currentPlayer = startingPlayer;
+  constructor(currentPlayerColour) {
+    this.currentPlayerColour = currentPlayerColour;
   }
 
   getCurrentPlayer() {
-    return this.currentPlayer;
+    return this.currentPlayerColour;
   }
 
   isWhiteTurn() {
-    this.currentPlayer === "white";
-    return this.currentPlayer;
+    this.currentPlayerColour === "white";
+    return this.currentPlayerColour;
   }
 
   isBlackTurn() {
-    this.currentPlayer === "black";
-    return this.currentPlayer;
+    this.currentPlayerColour === "black";
+    return this.currentPlayerColour;
   }
 
   switchTurn() {
-    if (currentPlayer === "white") {
-      currentPlayer = "black";
+    if (this.currentPlayerColour === "white") {
+      this.currentPlayerColour = "black";
     } else {
-      currentPlayer = "white";
+      this.currentPlayerColour = "white";
     }
   }
 
-  resetGame(startingPlayer = "white") {
-    this.currentPlayer = startingPlayer;
+  /**
+   * @param {string} startingPlayer - startingPlayer colour "white" or "black"
+   */
+  resetTurn(startingPlayer) {
+    this.currentPlayerColour = startingPlayer;
   }
 }
