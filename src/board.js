@@ -6,6 +6,8 @@ export default class Board {
     //create a grid PROPERTY for the class
     //grid is a dictionary
     this.grid = {};
+
+    //files and ranks arrays are only used to create labels for the UI
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     this.ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
   }
