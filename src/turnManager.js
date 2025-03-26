@@ -26,6 +26,7 @@ export class TurnManager {
     } else {
       this.currentPlayerColour = "white";
     }
+    return this.currentPlayerColour;
   }
 
   /**

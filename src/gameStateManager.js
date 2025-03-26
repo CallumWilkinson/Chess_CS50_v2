@@ -1,7 +1,7 @@
 import { GameStatus } from "./constants";
 import { TurnManager } from "./turnManager";
 
-export default class gameStateManager {
+export default class GameStateManager {
   /**
    * @param {Board} board - An instance of Board class.
    * @param {string} currentPlayerColour - currentPlayer colour "white" or "black"
@@ -13,6 +13,8 @@ export default class gameStateManager {
     this.winner = null;
     this.turnManager = new TurnManager(currentPlayerColour);
     this.moveHistory = [];
+    this.whiteTurnCount = 0;
+    this.blackTurnCount = 0;
   }
 
   makeMove(fromSquare, toSquare) {
@@ -28,5 +30,14 @@ export default class gameStateManager {
     this.turnManager.resetTurn(startingPlayer);
     this.gameStatus = GameStatus.ONGOING;
     this.winner = null;
+  }
+
+  switchTurn() {
+    this.currentPlayerColour = this.turnManager.switchTurn();
+    if (this.currentPlayerColour == "black") {
+      this.whiteTurnCount++;
+    } else {
+      this.blackTurnCount++;
+    }
   }
 }
