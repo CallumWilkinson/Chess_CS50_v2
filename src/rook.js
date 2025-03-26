@@ -23,15 +23,13 @@ export default class Rook extends ChessPiece {
     //convert curretn posisition to square notation
     const startingPosition = this._toSquare(fileIndex, rankIndex);
 
-    //move up x ammount of squares untill space NOT empty
-    //how to dertermine if a space on the board is occupied?
-    let potentialRanks = [];
-    let potentialFiles = [];
-
     //check every position around to see if it is occupied
     //loop over dictionary
     for (const square in board.grid) {
-      if (board.squareIsEmpty(square)) {
+      if (
+        board.squareIsEmpty(square) &&
+        board.squareIsInLineOfSight(startingPosition, square)
+      ) {
         if (square[0] == startingPosition[0]) {
           const verticalPosition = square[0] + "" + square[1];
           validMoves.push(verticalPosition);

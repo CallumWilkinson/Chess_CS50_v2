@@ -116,4 +116,20 @@ export default class Board {
       return false;
     }
   }
+
+  squareIsInLineOfSight(startingSquare, targetSquare) {
+    let surroundingSquares = [];
+
+    for (const square in grid) {
+      if (square == targetSquare) {
+        surroundingSquares.push(square);
+      }
+    }
+    for (const square in grid) {
+      if (square in surroundingSquares) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
