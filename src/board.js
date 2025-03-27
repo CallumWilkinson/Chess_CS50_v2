@@ -117,33 +117,78 @@ export default class Board {
     }
   }
 
-    /**
+  /**
    * @param {string} startingSquare - 'a3', 'e4' ect.
    * @param {string} targetSquare - 'a3', 'e4' ect.
    * @param {ChessPiece} chessPiece - any chess peice object needs to be passed through so function can access parsePosition() function from the ChessPiece class
+   * @param {Board} currentBoard - board object passed through so i can access currentBoard.grid to find occupied spaces
+   * @returns {Boolean}
    */
 
-  squareIsInLineOfSight(startingSquare, targetSquare, chessPiece) {
-    let surroundingSquares = [];
-
+  squareIsInLineOfSight(
+    startingSquare,
+    targetSquare,
+    chessPiece,
+    currentBoard
+  ) {
     //convert squares (strings) into numbers and store as indicies/coordinate objects
-    const { startFileIndex , startRankIndex } = chessPiece.parsePosition(startingSquare);
-    const { targetFileIndex, targetRankIndex } = chessPiece.parsePosition(targetSquare);
+    const { startFileIndex, startRankIndex } =
+      chessPiece.parsePosition(startingSquare);
+    const { targetFileIndex, targetRankIndex } =
+      chessPiece.parsePosition(targetSquare);
 
     //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
-    const absoluteFileIndexDifferential = Math.abs(targetFileIndex - startFileIndex);
-    const absoluteRankIndexDifferential = Math.abs(targetRankIndex - startRankIndex);
-    
-    for (const square in grid) {
-      if (square == targetSquare) {
-        surroundingSquares.push(square);
-      } else if (square[0])
+    const fileIndexDifferential = targetFileIndex - startFileIndex;
+    const absFileIndexDifferential = Math.abs(fileIndexDifferential);
+
+    const rankIndexDifferential = targetRankIndex - startRankIndex;
+    const absRankIndexDifferential = Math.abs(rankIndexDifferential);
+
+    //check if target is visible in a straight or diagonal line
+    //is true when correct
+    const isSameFile = absFileIndexDifferential === 0;
+    const isSameRank = absRankIndexDifferential === 0;
+    const isDiagonal = absFileIndexDifferential === absRankIndexDifferential;
+
+    //not valid line of sight
+    if (!isSameFile && !isSameRank && !isDiagonal) {
+      return false;
     }
-    for (const square in grid) {
-      if (square in surroundingSquares) {
+
+    //determine file direction (positive or negative) positive is right, negative is left
+    let fileDirection = Math.sign(fileIndexDifferential);
+
+    //determine rank direction (positive or negative) positive is up, negative is down
+    let rankDirection = Math.sign(rankIndexDifferential);
+
+    //move one square at a time from startSquare towards targetSquare (currentFileIdex and currentRankIndex are INTS)
+    //stop when you are blocked by another peice
+    let currentFileIndex = startFileIndex + fileDirection;
+    let currentRankIndex = startRankIndex + rankDirection;
+
+    while (
+      currentFileIndex !== targetFileIndex ||
+      currentRankIndex !== targetRankIndex
+    ) {
+      //currentSquare is string ie "e4" to use as key in grid dictionary
+      const currentSquare = chessPiece._toSquare(
+        currentFileIndex,
+        currentRankIndex
+      );
+
+      //move one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)
+      if (
+        currentBoard.grid[currentSquare] != null &&
+        currentBoard.grid[currentSquare] != undefined
+      ) {
+        //target square is NOT in line of sign
         return false;
       }
+      currentFileIndex += fileDirection;
+      currentRankIndex += rankDirection;
     }
+
+    // If no occupied spaces found on path, target square IS in line of sight
     return true;
   }
 }
