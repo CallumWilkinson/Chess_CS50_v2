@@ -1,6 +1,5 @@
 import Board from "./board";
 import ChessPiece from "./ChessPiece";
-import GameStateManager from "./gameStateManager";
 
 export default class Rook extends ChessPiece {
   constructor(colour, position) {
@@ -9,11 +8,10 @@ export default class Rook extends ChessPiece {
 
   /**
    * @param {Board} board
-   * @param {GameStateManager} gameStateManager
    * @returns {string[]}
    */
 
-  getPossibleMoves(board, gameStateManager) {
+  getPossibleMoves(board) {
     //a rook can move any number of spaces up, down, left, right
     const validMoves = [];
 
@@ -28,6 +26,7 @@ export default class Rook extends ChessPiece {
     for (const square in board.grid) {
       if (
         board.squareIsEmpty(square) &&
+        //change how this is called for rook and for bishop
         board.squareIsInLineOfSight(startingPosition, square, this)
       ) {
         if (square[0] == startingPosition[0]) {

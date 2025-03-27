@@ -121,20 +121,14 @@ export default class Board {
    * @param {string} startingSquare - 'a3', 'e4' ect.
    * @param {string} targetSquare - 'a3', 'e4' ect.
    * @param {ChessPiece} chessPiece - any chess peice object needs to be passed through so function can access parsePosition() function from the ChessPiece class
-   * @param {Board} currentBoard - board object passed through so i can access currentBoard.grid to find occupied spaces
-   * @returns {Boolean}
+   * @returns {Bool}
    */
 
-  squareIsInLineOfSight(
-    startingSquare,
-    targetSquare,
-    chessPiece,
-    currentBoard
-  ) {
+  squareIsInLineOfSight(startingSquare, targetSquare, chessPiece) {
     //convert squares (strings) into numbers and store as indicies/coordinate objects
-    const { startFileIndex, startRankIndex } =
+    const { fileIndex: startFileIndex, rankIndex: startRankIndex } =
       chessPiece.parsePosition(startingSquare);
-    const { targetFileIndex, targetRankIndex } =
+    const { fileIndex: targetFileIndex, rankIndex: targetRankIndex } =
       chessPiece.parsePosition(targetSquare);
 
     //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
@@ -176,12 +170,12 @@ export default class Board {
         currentRankIndex
       );
 
-      //move one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)
+      //move cursor one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)
       if (
-        currentBoard.grid[currentSquare] != null &&
-        currentBoard.grid[currentSquare] != undefined
+        this.grid[currentSquare] != null &&
+        this.grid[currentSquare] != undefined
       ) {
-        //target square is NOT in line of sign
+        //target square is NOT in line of sight
         return false;
       }
       currentFileIndex += fileDirection;
