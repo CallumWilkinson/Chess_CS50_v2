@@ -35,44 +35,43 @@ describe("Rook tests", () => {
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
+    expect(possibleMovesArray).toHaveLength(correctMoves.length);
+  });
+
+  test("White rook cant move at start of game (cant jump over other pieces)", () => {
+    let whiteRookLeft;
+    whiteRookLeft = new Rook("white", "a1");
+
+    let possibleMovesArray;
+    possibleMovesArray = whiteRookLeft.getPossibleMoves(board);
+
+    expect(possibleMovesArray).toHaveLength(0);
+  });
+
+  test("Black Rook assesses moves from c3", () => {
+    let blackRook;
+    blackRook = new Rook("black", "c3");
+
+    let possibleMovesArray;
+    possibleMovesArray = blackRook.getPossibleMoves(board);
+
+    let correctMoves = [
+      "c3",
+      "c4",
+      "c5",
+      "c6",
+      "a3",
+      "b3",
+      "d3",
+      "e3",
+      "f3",
+      "g3",
+      "h3",
+    ];
+    correctMoves.forEach((move) => {
+      expect(possibleMovesArray).toContain(move);
+    });
+
+    expect(possibleMovesArray).toHaveLength(correctMoves.length);
   });
 });
-
-//   test("White rook cant move at start of game (cant jump over other pieces)", () => {
-//     let whiteRookLeft;
-//     whiteRookLeft = new Rook("white", "a1");
-
-//     let possibleMovesArray;
-//     possibleMovesArray = whiteRookLeft.getPossibleMoves(board);
-
-//     let correctMoves = ["a1"];
-//     correctMoves.forEach((move) => {
-//       expect(possibleMovesArray).toContain(move);
-//     });
-//   });
-
-//   test("Black Rook assesses moves from c3", () => {
-//     let blackRook;
-//     blackRook = new Rook("black", "c3");
-
-//     let possibleMovesArray;
-//     possibleMovesArray = blackRook.getPossibleMoves(board);
-
-//     let correctMoves = [
-//       "c3",
-//       "c4",
-//       "c5",
-//       "c6",
-//       "a3",
-//       "b3",
-//       "d3",
-//       "e3",
-//       "f3",
-//       "g3",
-//       "h3",
-//     ];
-//     correctMoves.forEach((move) => {
-//       expect(possibleMovesArray).toContain(move);
-//     });
-//   });
-// });
