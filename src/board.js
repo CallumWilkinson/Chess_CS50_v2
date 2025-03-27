@@ -117,13 +117,27 @@ export default class Board {
     }
   }
 
-  squareIsInLineOfSight(startingSquare, targetSquare) {
+    /**
+   * @param {string} startingSquare - 'a3', 'e4' ect.
+   * @param {string} targetSquare - 'a3', 'e4' ect.
+   * @param {ChessPiece} chessPiece - any chess peice object needs to be passed through so function can access parsePosition() function from the ChessPiece class
+   */
+
+  squareIsInLineOfSight(startingSquare, targetSquare, chessPiece) {
     let surroundingSquares = [];
 
+    //convert squares (strings) into numbers and store as indicies/coordinate objects
+    const { startFileIndex , startRankIndex } = chessPiece.parsePosition(startingSquare);
+    const { targetFileIndex, targetRankIndex } = chessPiece.parsePosition(targetSquare);
+
+    //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
+    const absoluteFileIndexDifferential = Math.abs(targetFileIndex - startFileIndex);
+    const absoluteRankIndexDifferential = Math.abs(targetRankIndex - startRankIndex);
+    
     for (const square in grid) {
       if (square == targetSquare) {
         surroundingSquares.push(square);
-      }
+      } else if (square[0])
     }
     for (const square in grid) {
       if (square in surroundingSquares) {

@@ -28,7 +28,7 @@ export default class Rook extends ChessPiece {
     for (const square in board.grid) {
       if (
         board.squareIsEmpty(square) &&
-        board.squareIsInLineOfSight(startingPosition, square)
+        board.squareIsInLineOfSight(startingPosition, square, this)
       ) {
         if (square[0] == startingPosition[0]) {
           const verticalPosition = square[0] + "" + square[1];
