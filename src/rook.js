@@ -16,14 +16,16 @@ export default class Rook extends ChessPiece {
     const validMoves = [];
 
     //convert current position to numbers so we can do math on it (eg e4 = 4,3)
+    //i dont think we need this line?
     const { fileIndex, rankIndex } = this.parsePosition(this.position);
 
     //convert curretn posisition to square notation
+    //i think we dont need this we can just use position as a string normally?
     const startingPosition = this._toSquare(fileIndex, rankIndex);
 
     //loop over dictionary grid
-    //check if squares that are emtpy and in LOS of the rook
-    //if so add square to validMoves array
+    //check if each square is empty and in LOS of the rook (checks diagonals also)
+    //AND if on same vertical axis OR horizonal axis add to valid moves array(a bishop would just be diagonals only, queen is all directions)
     for (const square in board.grid) {
       if (
         board.squareIsEmpty(square) &&
