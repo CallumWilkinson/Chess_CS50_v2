@@ -1,8 +1,8 @@
 import Board from "../src/board";
-import King from "../src/king";
+import Knight from "../src/knight";
 import GameStateManager from "../src/gameStateManager";
 
-describe("king tests", () => {
+describe("knight tests", () => {
   let gameStateManager;
   let currentPlayerColour = "white";
   let possibleMovesArray;
@@ -14,11 +14,11 @@ describe("king tests", () => {
     gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
-  test("king assesess moves from e5", () => {
-    let whiteKing = new King("white", "e5");
-    possibleMovesArray = whiteKing.getPossibleMoves(board);
+  test("knight assesess moves from e4", () => {
+    let whiteKnight = new Knight("white", "e4");
+    possibleMovesArray = whiteKnight.getPossibleMoves(board);
 
-    let correctMoves = ["e6", "e4", "f5", "d5", "d6", "d4", "f6", "f4"];
+    let correctMoves = ["d6", "f6", "c5", "g5", "c3", "g3"];
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
 
     correctMoves.forEach((move) => {
@@ -26,9 +26,9 @@ describe("king tests", () => {
     });
   });
 
-  test("king cant move at start", () => {
-    let whiteKing = new King("white", "d1");
-    possibleMovesArray = whiteKing.getPossibleMoves(board);
-    expect(possibleMovesArray).toHaveLength(0);
+  test("Knight can move at start to b3 or d3 from c1", () => {
+    let whiteKnight = new Knight("white", "c1");
+    possibleMovesArray = whiteKnight.getPossibleMoves(board);
+    expect(possibleMovesArray).toHaveLength(2);
   });
 });

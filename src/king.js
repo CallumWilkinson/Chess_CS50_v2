@@ -48,6 +48,7 @@ export default class King extends ChessPiece {
           surroundingSquares[square],
           this
         ) &&
+        board.squareExistsOnBoard(surroundingSquares[square]) &&
         surroundingSquares[square] != this.position
       ) {
         validMoves.push(surroundingSquares[square]);
