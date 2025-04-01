@@ -16,31 +16,17 @@ export default class King extends ChessPiece {
     const surroundingSquares = [];
 
     //convert to numbers for math
-    const { startingFileIndex, startingRankIndex } = this.parsePosition(
-      this.position
-    );
+    const { fileIndex, rankIndex } = this.parsePosition(this.position);
 
     //find all surrounding squares
-    const right = this._toSquare(startingFileIndex + 1, startingRankIndex);
-    const left = this._toSquare(startingFileIndex - 1, startingRankIndex);
-    const up = this._toSquare(startingFileIndex, startingRankIndex + 1);
-    const down = this._toSquare(startingFileIndex, startingRankIndex - 1);
-    const diagonalNE = this._toSquare(
-      startingFileIndex + 1,
-      startingRankIndex + 1
-    );
-    const diagonalSE = this._toSquare(
-      startingFileIndex + 1,
-      startingRankIndex - 1
-    );
-    const diagonalSW = this._toSquare(
-      startingFileIndex - 1,
-      startingRankIndex - 1
-    );
-    const diagonalNW = this._toSquare(
-      startingFileIndex - 1,
-      startingRankIndex + 1
-    );
+    const right = this._toSquare(fileIndex + 1, rankIndex);
+    const left = this._toSquare(fileIndex - 1, rankIndex);
+    const up = this._toSquare(fileIndex, rankIndex + 1);
+    const down = this._toSquare(fileIndex, rankIndex - 1);
+    const diagonalNE = this._toSquare(fileIndex + 1, rankIndex + 1);
+    const diagonalSE = this._toSquare(fileIndex + 1, rankIndex - 1);
+    const diagonalSW = this._toSquare(fileIndex - 1, rankIndex - 1);
+    const diagonalNW = this._toSquare(fileIndex - 1, rankIndex + 1);
 
     surroundingSquares.push(
       right,
@@ -56,11 +42,15 @@ export default class King extends ChessPiece {
     //check surrounding squares and empty and in LOS, add to valid moves
     for (const square in surroundingSquares) {
       if (
-        board.squareIsEmpty(square) &&
-        board.squareIsInLineOfSight(this.position, square, this) &&
-        square != this.position
+        board.squareIsEmpty(surroundingSquares[square]) &&
+        board.squareIsInLineOfSight(
+          this.position,
+          surroundingSquares[square],
+          this
+        ) &&
+        surroundingSquares[square] != this.position
       ) {
-        validMoves.push(square);
+        validMoves.push(surroundingSquares[square]);
       }
     }
     return validMoves;
