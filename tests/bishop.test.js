@@ -11,18 +11,27 @@ describe("Bishop tests", () => {
     board = new Board();
     board.createEmptyBoard();
     board.initialisePieces();
-    whiteBishop = new Bishop("white", "e5");
     gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
   test("white bishop assesses moves from e5", () => {
     let possibleMovesArray;
+    whiteBishop = new Bishop("white", "e5");
     possibleMovesArray = whiteBishop.getPossibleMoves(board);
 
     let correctMoves = ["d6", "f4", "g3", "f6", "d4", "c3"];
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
+    expect(possibleMovesArray).toHaveLength(correctMoves.length);
+  });
+
+  test("white bishop asseses moves from starting position c1", () => {
+    let possibleMovesArray;
+    whiteBishop = new Bishop("white", "c1");
+    possibleMovesArray = whiteBishop.getPossibleMoves(board);
+
+    let correctMoves = [];
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
   });
 });
