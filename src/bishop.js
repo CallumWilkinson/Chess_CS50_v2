@@ -14,42 +14,26 @@ export default class Bishop extends ChessPiece {
   getPossibleMoves(board) {
     const validMoves = [];
 
+    //a piece is diagonal if rank dif === file dif
     for (const square in board.grid) {
       if (
         board.squareIsEmpty(square) &&
-        board.squareIsInLineOfSight(position, square, this)
+        board.squareIsInLineOfSight(this.position, square, this) &&
+        square != this.position
       ) {
-        //only add if in same diagonal NE
-        if (
-          (square[0 + 1] == this.position[0]) &
-          (square[1 + 1] == this.position[1])
-        ) {
-          const diagonalPosition = square[0] + "" + square[1];
-          validMoves.push(diagonalPosition);
-        }
-        //only add if in same diagonal SW
-        else if (
-          (square[0 - 1] == this.position[0]) &
-          (square[1 - 1] == this.position[1])
-        ) {
-          const diagonalPosition = square[0] + "" + square[1];
-          validMoves.push(diagonalPosition);
-        }
-        //only add if in same diagonal NW
-        else if (
-          (square[0 - 1] == this.position[0]) &
-          (square[1 + 1] == this.position[1])
-        ) {
-          const diagonalPosition = square[0] + "" + square[1];
-          validMoves.push(diagonalPosition);
-        }
-        //only add if in same diagonal SE
-        else if (
-          (square[0 + 1] == this.position[0]) &
-          (square[1 - 1] == this.position[1])
-        ) {
-          const diagonalPosition = square[0] + "" + square[1];
-          validMoves.push(diagonalPosition);
+        //split string so we can calculate rank diff and file diff
+        const [fileStart, rankStart] = this.position.split("");
+        const [fileCurrent, rankCurrent] = square.split("");
+
+        //calc differences
+        const fileDiff = Math.abs(
+          fileStart.charCodeAt(0) - fileCurrent.charCodeAt(0)
+        );
+        const rankDiff = Math.abs(parseInt(rankStart) - parseInt(rankCurrent));
+
+        //check diagonal
+        if (fileDiff === rankDiff) {
+          validMoves.push(square);
         }
       }
     }
