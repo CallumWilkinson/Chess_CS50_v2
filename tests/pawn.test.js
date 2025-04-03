@@ -21,8 +21,7 @@ describe("Pawn movement tests", () => {
 
     let possibleMovesArray;
     possibleMovesArray = whitePawn.getPossibleMoves(board, gameStateManager);
-
-    whitePawn.move("a3", possibleMovesArray);
+    gameStateManager.makeMove(whitePawn, "a3", possibleMovesArray);
 
     expect(whitePawn.position).toBe("a3");
     expect(whitePawn.hasMoved).toBe(true);
