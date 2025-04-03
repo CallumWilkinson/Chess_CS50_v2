@@ -29,13 +29,22 @@ export default class ChessPiece {
    * internal state; it doesn’t handle captures or board updates.
    *
    * @param {string} newPosition - Square in standard notation (e.g., 'e4').
+   * @param {Board} board - need to pass a board to run get possible moves function insde move function
+   * @param {Array} possibleMovesArray - returned from the function getPossibleMoves()
    */
 
-  move(newPosition) {
+  move(newPosition, possibleMovesArray) {
     // Updates the piece's position in internal state
     //Game.makeMove() would remove the piece from the old square in board.grid, place it in the new square, handle captures, etc.
-    this.position = newPosition;
-    this.hasMoved = true;
+    let validMoves = [];
+    if (this.hasMoved === false) {
+      validMoves = possibleMovesArray;
+
+      if (validMoves.includes(newPosition)) {
+        this.position = newPosition;
+        this.hasMoved = true;
+      } else throw new Error("not a valid move");
+    } else throw new Error("You have already moved");
   }
 
   /**

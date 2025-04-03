@@ -3,7 +3,7 @@ import Pawn from "../src/pawn.js";
 import ChessPiece from "../src/ChessPiece.js";
 import GameStateManager from "../src/gameStateManager.js";
 
-describe("Chess Pieces", () => {
+describe("Pawn movement tests", () => {
   let board;
   beforeEach(() => {
     board = new Board();
@@ -22,9 +22,8 @@ describe("Chess Pieces", () => {
     let possibleMovesArray;
     possibleMovesArray = whitePawn.getPossibleMoves(board, gameStateManager);
 
-    if (possibleMovesArray.includes("a3")) {
-      whitePawn.move("a3");
-    }
+    whitePawn.move("a3", possibleMovesArray);
+
     expect(whitePawn.position).toBe("a3");
     expect(whitePawn.hasMoved).toBe(true);
   });

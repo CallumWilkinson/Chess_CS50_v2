@@ -38,12 +38,12 @@ export default class Pawn extends ChessPiece {
     const twoSquaresForward = this._toSquare(fileIndex, rankPlusTwo);
 
     //if the new square doesnt exist, return error (one forward)
-    if (board.squareExistsOnBoard(oneSquareForward) == false) {
+    if (board.squareExistsOnBoard(oneSquareForward) === false) {
       throw new Error(`Invalid move: ${oneSquareForward} is off the board.`);
     }
 
     //if the new square doesnt exist, return error (two forward)
-    if (board.squareExistsOnBoard(twoSquaresForward) == false) {
+    if (board.squareExistsOnBoard(twoSquaresForward) === false) {
       throw new Error(`Invalid move: ${twoSquaresForward} is off the board.`);
     }
 

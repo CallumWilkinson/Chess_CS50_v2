@@ -14,10 +14,11 @@ describe("queen tests", () => {
     gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
-  test("white queen assess moves from e5", () => {
+  test("white queen assess moves from e5 to g3", () => {
     let whiteQueen;
     whiteQueen = new Queen(currentPlayerColour, "e5");
     possibleMovesArray = whiteQueen.getPossibleMoves(board);
+    whiteQueen.move("g3", possibleMovesArray);
 
     let correctMoves = [
       "e6", // vertical up
@@ -41,5 +42,7 @@ describe("queen tests", () => {
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
+    expect(whiteQueen.position).toBe("g3");
+    expect(whiteQueen.hasMoved).toBe(true);
   });
 });
