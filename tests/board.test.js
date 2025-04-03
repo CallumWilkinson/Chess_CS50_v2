@@ -1,5 +1,11 @@
 // //import board class
+import Bishop from "../src/bishop.js";
 import Board from "../src/board.js";
+import King from "../src/king.js";
+import Knight from "../src/knight.js";
+import Pawn from "../src/pawn.js";
+import Queen from "../src/queen.js";
+import Rook from "../src/rook.js";
 
 //describe is a jest function to group related tests together into a test suite called "chess board"
 describe("Chess Board", () => {
@@ -23,27 +29,43 @@ describe("Chess Board", () => {
   test("setup white peices on board", () => {
     board.createEmptyBoard();
     board.initialisePieces();
-    expect(board.grid).toHaveProperty("a2", "white_pawn");
-    expect(board.grid).toHaveProperty("d2", "white_pawn");
-    expect(board.grid).toHaveProperty("h2", "white_pawn");
-    expect(board.grid).toHaveProperty("a1", "white_rook");
-    expect(board.grid).toHaveProperty("b1", "white_knight");
-    expect(board.grid).toHaveProperty("f1", "white_bishop");
-    expect(board.grid).toHaveProperty("d1", "white_queen");
-    expect(board.grid).toHaveProperty("e1", "white_king");
+    const expectedWhitePieces = {
+      a2: Pawn,
+      d2: Pawn,
+      h2: Pawn,
+      a1: Rook,
+      b1: Knight,
+      f1: Bishop,
+      d1: Queen,
+      e1: King,
+    };
+
+    for (let position in expectedWhitePieces) {
+      expect(board.grid[position]).toBeInstanceOf(
+        expectedWhitePieces[position]
+      );
+      expect(board.grid[position].colour).toBe("white");
+    }
   });
 
   test("setup black peices on board", () => {
     board.createEmptyBoard();
     board.initialisePieces();
-    expect(board.grid).toHaveProperty("a7", "black_pawn");
-    expect(board.grid).toHaveProperty("d7", "black_pawn");
-    expect(board.grid).toHaveProperty("h7", "black_pawn");
-    expect(board.grid).toHaveProperty("a8", "black_rook");
-    expect(board.grid).toHaveProperty("b8", "black_knight");
-    expect(board.grid).toHaveProperty("f8", "black_bishop");
-    expect(board.grid).toHaveProperty("d8", "black_queen");
-    expect(board.grid).toHaveProperty("e8", "black_king");
+    const expectedPieces = {
+      a7: Pawn,
+      d7: Pawn,
+      h7: Pawn,
+      a8: Rook,
+      b8: Knight,
+      f8: Bishop,
+      d8: Queen,
+      e8: King,
+    };
+
+    for (let position in expectedPieces) {
+      expect(board.grid[position]).toBeInstanceOf(expectedPieces[position]);
+      expect(board.grid[position].colour).toBe("black");
+    }
   });
 
   test("square exists on board", () => {

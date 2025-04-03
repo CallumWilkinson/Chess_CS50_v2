@@ -30,7 +30,7 @@ export default class ChessPiece {
    *
    * @param {string} newPosition - Square in standard notation (e.g., 'e4').
    * @param {Board} board - need to pass a board to run get possible moves function insde move function
-   * @param {Array} possibleMovesArray - returned from the function getPossibleMoves()
+   * @param {Array} possibleMovesArray - returned from the function getPossibleMoves(), each piece has its own implementation of the function
    */
 
   move(newPosition, possibleMovesArray) {

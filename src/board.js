@@ -1,4 +1,10 @@
 import ChessPiece from "./ChessPiece.js";
+import Pawn from "./pawn.js";
+import Rook from "./rook.js";
+import Knight from "./knight.js";
+import King from "./king.js";
+import Queen from "./queen.js";
+import Bishop from "./bishop.js";
 
 //board class represents a chess board
 export default class Board {
@@ -25,73 +31,78 @@ export default class Board {
     }
   }
 
-  //CHANGE THIS TO ADD OBJECTS TO THE DICT INSTEAD OF STRINGS
   initialisePieces() {
-    //       // For example, place white pawns
-    //   // row 2 is typically the white pawns row, so squares a2, b2... h2
-    //   // But your setup might differ depending on how you’re indexing.
-    //   const columnLabels = "abcdefgh";
-    //   for (let column of columnLabels) {
-    //     const square = column + "2";
-    //     this.grid[square] = new Pawn("pawn", "white", square);
-    //   }
+    let whiteRookLeft = new Rook("white", "a1");
+    let blackRookLeft = new Rook("black", "a8");
 
-    //   // Place black pawns on row 7
-    //   for (let column of columnLabels) {
-    //     const square = column + "7";
-    //     this.grid[square] = new Pawn("pawn", "black", square);
-    //   }
+    let whiteKnightLeft = new Knight("white", "b1");
+    let blackKnightLeft = new Knight("black", "b8");
 
-    //   // Place rooks, knights, bishops, etc.
-    //   // Example for white rook on a1:
-    //   this.grid["a1"] = new ChessPiece("rook", "white", "a1");
-    //   this.grid["h1"] = new ChessPiece("rook", "white", "h1");
-    //   // ...and so on for knights, bishops, queen, king.
+    let whiteBishopLeft = new Bishop("white", "c1");
+    let blackBishopLeft = new Bishop("black", "c8");
 
-    //   // Similarly for black pieces on the 8th rank.
-    //   this.grid["a8"] = new ChessPiece("rook", "black", "a8");
-    //   this.grid["h8"] = new ChessPiece("rook", "black", "a8");
-    //   // etc.
-    // }
-    //add white pawns to the dictionary
-    Object.keys(this.grid)
-      .slice(8, 16)
-      .forEach((key) => {
-        this.grid[key] = "white_pawn";
-      });
+    let whiteQueen = new Queen("white", "d1");
+    let blackQueen = new Queen("black", "d8");
 
-    //add black pawns to the dictionary
-    Object.keys(this.grid)
-      .slice(48, 56)
-      .forEach((key) => {
-        this.grid[key] = "black_pawn";
-      });
+    let whiteKing = new King("white", "e1");
+    let blackKing = new King("black", "e8");
 
-    // White pieces
-    const whiteSetup = {
-      a1: "white_rook",
-      b1: "white_knight",
-      c1: "white_bishop",
-      d1: "white_queen",
-      e1: "white_king",
-      f1: "white_bishop",
-      g1: "white_knight",
-      h1: "white_rook",
-    };
+    let whiteBishopRight = new Bishop("white", "f1");
+    let blackBishopRight = new Bishop("black", "f8");
 
-    // Black pieces
-    const blackSetup = {
-      a8: "black_rook",
-      b8: "black_knight",
-      c8: "black_bishop",
-      d8: "black_queen",
-      e8: "black_king",
-      f8: "black_bishop",
-      g8: "black_knight",
-      h8: "black_rook",
-    };
+    let whiteKnightRight = new Knight("white", "g1");
+    let blackKnightRight = new Knight("black", "g8");
 
-    Object.assign(this.grid, whiteSetup, blackSetup);
+    let whiteRookRight = new Rook("white", "h1");
+    let blackRookRight = new Rook("black", "h8");
+
+    let pieces = [
+      whiteRookLeft,
+      blackRookLeft,
+      whiteKnightLeft,
+      blackKnightLeft,
+      whiteBishopLeft,
+      blackBishopLeft,
+      whiteKing,
+      blackKing,
+      whiteQueen,
+      blackQueen,
+      whiteBishopRight,
+      blackBishopRight,
+      whiteKnightRight,
+      blackKnightRight,
+      whiteRookRight,
+      blackRookRight,
+    ];
+
+    //add pieces to grid
+    for (const piece in pieces) {
+      this.grid[pieces[piece].position] = pieces[piece];
+    }
+
+    let whitePawns = [];
+
+    //create 8 white pawns
+    for (let i = 0; i < 8; i++) {
+      whitePawns.push(new Pawn("white", String.fromCharCode(97 + i) + "2"));
+    }
+
+    //add whitePawns to grid
+    for (const pawn in whitePawns) {
+      this.grid[whitePawns[pawn].position] = whitePawns[pawn];
+    }
+
+    let blackPawns = [];
+
+    //create 8 black pawns
+    for (let i = 0; i < 8; i++) {
+      blackPawns.push(new Pawn("black", String.fromCharCode(97 + i) + "7"));
+    }
+
+    //add blackPawns to grid
+    for (const pawn in blackPawns) {
+      this.grid[blackPawns[pawn].position] = blackPawns[pawn];
+    }
   }
 
   /**
