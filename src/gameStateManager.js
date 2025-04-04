@@ -33,6 +33,9 @@ export default class GameStateManager {
 
       //update internal state of the peice
       chessPiece.move(targetSquare, possibleMovesArray);
+
+      //switch turns
+      this.switchTurn();
     }
   }
 
