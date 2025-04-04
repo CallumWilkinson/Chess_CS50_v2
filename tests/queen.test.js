@@ -1,6 +1,6 @@
 import Board from "../src/board";
 import Queen from "../src/queen";
-import GameStateManager from "../src/gameStateManager";
+import GameStateManager from "../src/GameStateManager";
 
 describe("queen tests", () => {
   let gameStateManager;

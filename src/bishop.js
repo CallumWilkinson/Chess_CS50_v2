@@ -1,5 +1,5 @@
-import Board from "./board";
-import ChessPiece from "./ChessPiece";
+import Board from "./board.js";
+import ChessPiece from "./ChessPiece.js";
 
 export default class Bishop extends ChessPiece {
   constructor(colour, position) {

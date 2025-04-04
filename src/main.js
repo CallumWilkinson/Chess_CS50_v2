@@ -1,4 +1,4 @@
-import Board from "../src/board.js";
+import Board from "./board.js";
 
 //create board object and run it's functions to setup the initial board state
 window.onload = () => {
@@ -10,9 +10,10 @@ window.onload = () => {
   const tileSize = 80;
   const boardSize = 8;
 
-  //create empty board
+  //create empty board and setup pieces
   const chessBoard = new Board();
   chessBoard.createEmptyBoard();
+  chessBoard.initialisePieces();
 
   // Draw chessboard based on grid keys
   Object.keys(chessBoard.grid).forEach((square) => {

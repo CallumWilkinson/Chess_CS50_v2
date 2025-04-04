@@ -1,4 +1,4 @@
-import GameStateManager from "../src/gameStateManager";
+import GameStateManager from "../src/GameStateManager";
 import Board from "../src/board";
 
 describe("Game State Manager class tests", () => {

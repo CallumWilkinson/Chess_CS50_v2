@@ -1,5 +1,5 @@
-import ChessPiece from "./ChessPiece";
-import Board from "./board";
+import ChessPiece from "./ChessPiece.js";
+import Board from "./board.js";
 
 export default class King extends ChessPiece {
   constructor(colour, position) {

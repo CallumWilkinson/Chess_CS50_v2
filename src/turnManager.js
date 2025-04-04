@@ -11,13 +11,17 @@ export class TurnManager {
   }
 
   isWhiteTurn() {
-    this.currentPlayerColour === "white";
-    return this.currentPlayerColour;
+    if (this.currentPlayerColour === "white") {
+      return true;
+    }
+    return false;
   }
 
   isBlackTurn() {
-    this.currentPlayerColour === "black";
-    return this.currentPlayerColour;
+    if (this.currentPlayerColour === "black") {
+      return true;
+    }
+    return false;
   }
 
   switchTurn() {

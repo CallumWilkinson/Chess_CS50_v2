@@ -1,6 +1,6 @@
 import Board from "../src/board";
 import Rook from "../src/rook";
-import GameStateManager from "../src/gameStateManager";
+import GameStateManager from "../src/GameStateManager";
 
 describe("Rook tests", () => {
   let board;

@@ -1,5 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
-import GameStateManager from "./gameStateManager.js";
+import GameStateManager from "./GameStateManager.js";
 
 export default class Pawn extends ChessPiece {
   constructor(colour, position) {

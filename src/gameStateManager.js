@@ -1,6 +1,6 @@
-import { GameStatus } from "./constants";
-import { TurnManager } from "./turnManager";
-import ChessPiece from "./ChessPiece";
+import { GameStatus } from "./constants.js";
+import { TurnManager } from "./turnManager.js";
+import ChessPiece from "./ChessPiece.js";
 
 export default class GameStateManager {
   /**

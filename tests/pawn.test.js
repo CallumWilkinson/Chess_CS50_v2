@@ -1,7 +1,7 @@
 import Board from "../src/board.js";
 import Pawn from "../src/pawn.js";
 import ChessPiece from "../src/ChessPiece.js";
-import GameStateManager from "../src/gameStateManager.js";
+import GameStateManager from "../src/GameStateManager.js";
 
 describe("Pawn movement tests", () => {
   let board;
