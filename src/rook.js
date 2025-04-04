@@ -4,6 +4,8 @@ import ChessPiece from "./ChessPiece.js";
 export default class Rook extends ChessPiece {
   constructor(colour, position) {
     super("rook", colour, position);
+    this.whiteUnicodeLogo = "\u2656";
+    this.blackUnicodeLogo = "\u265C";
   }
 
   /**

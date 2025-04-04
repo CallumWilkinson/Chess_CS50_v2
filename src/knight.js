@@ -4,6 +4,8 @@ import Board from "./board.js";
 export default class Knight extends ChessPiece {
   constructor(colour, position) {
     super("knight", colour, position);
+    this.whiteUnicodeLogo = "\u2658";
+    this.blackUnicodeLogo = "\u265E";
   }
 
   /**

@@ -4,6 +4,9 @@ import GameStateManager from "./GameStateManager.js";
 export default class Pawn extends ChessPiece {
   constructor(colour, position) {
     super("pawn", colour, position);
+
+    this.whiteUnicodeLogo = "\u2659";
+    this.blackUnicodeLogo = "\u265F";
   }
 
   /**

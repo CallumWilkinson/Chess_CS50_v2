@@ -4,6 +4,8 @@ import ChessPiece from "./ChessPiece.js";
 export default class Queen extends ChessPiece {
   constructor(colour, position) {
     super("queen", colour, position);
+    this.whiteUnicodeLogo = "\u2655";
+    this.blackUnicodeLogo = "\u265B";
   }
 
   /**
