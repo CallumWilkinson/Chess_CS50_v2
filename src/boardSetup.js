@@ -3,13 +3,12 @@ import GameStateManager from "./GameStateManager.js";
 import { UIConstants } from "./constants.js";
 
 //create the board with peices in their default positions, add labels to the sides and set colours of squares
-export function setupBoard(ctx) {
+export function setupBoard(ctx, chessBoard) {
   //get tilesize and board size consants
   const tileSize = UIConstants.TILESIZE;
   const boardSize = UIConstants.boardSize;
 
-  //create empty board and setup pieces
-  const chessBoard = new Board();
+  //setup empty board and setup pieces
   chessBoard.createEmptyBoard();
   chessBoard.initialisePieces();
 
