@@ -4,14 +4,16 @@ import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 import ChessPiece from "./ChessPiece.js";
+import { drawPieces } from "./boardSetup.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
  * @param {Board} chessBoard
+ * @param {htmlcontext} ctx
  */
 
-export function setupEventListeners(canvas, gameStateManager, chessBoard) {
+export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
   let firstClick = null;
   let selectedPiece;
   let possibleMovesArray;
@@ -71,6 +73,9 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard) {
 
       //reset click state
       firstClick = null;
+
+      //update UI to reflect new positions in the grid
+      drawPieces(ctx, chessBoard);
     }
   });
 }
