@@ -8,11 +8,13 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  //create board
+  //create board and assign to window
   const chessBoard = new Board();
+  window.board = chessBoard;
 
   //create gameStateManager with first player being white
   const gameStateManager = new GameStateManager(chessBoard, "white");
+  window.gameStateManager = gameStateManager;
 
   //create the board with peices in their default positions, add labels to the sides and set colours of squares
   setupBoard(ctx, chessBoard);
