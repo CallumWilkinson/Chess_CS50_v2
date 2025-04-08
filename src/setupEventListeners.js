@@ -3,6 +3,7 @@ import { squareToCanvasCoordinates } from "./utils/coordinates.js";
 import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
+import ChessPiece from "./ChessPiece.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
@@ -27,14 +28,14 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard) {
       //returns position and size of canvas relative to viewport
       canvasRect = canvas.getBoundingClientRect();
 
-      //get mouse position, minus the top left corner of canvas in pixels
+      //get mouse position, minus the bottom left corner of canvas in pixels
       //x and y now become the actual positions on the canvas where the user clicked
       const x = event.clientX - canvasRect.left;
-      const y = event.clientY - canvasRect.top;
+      const y = event.clientY - canvasRect.bottom;
 
       //get file and rank clicked
-      const file = Math.floor(x / UIConstants.TILESIZE);
-      const rank = Math.floor(y / UIConstants.TILESIZE);
+      const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
+      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
 
       //find chess peice in that square
       const firstClickedSquare = toSquareNotation(file, rank);
@@ -50,14 +51,14 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard) {
     } else {
       //second click
 
-      //get mouse position, minus the top left corner of canvas in pixels
+      //get mouse position, minus the bottom left corner of canvas in pixels
       //x and y now become the actual positions on the canvas where the user clicked
       const x = event.clientX - canvasRect.left;
-      const y = event.clientY - canvasRect.top;
+      const y = event.clientY - canvasRect.bottom;
 
       //get file and rank clicked
-      const file = Math.floor(x / UIConstants.TILESIZE);
-      const rank = Math.floor(y / UIConstants.TILESIZE);
+      const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
+      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
 
       //find chess peice in that square
       targetPosition = toSquareNotation(file, rank);

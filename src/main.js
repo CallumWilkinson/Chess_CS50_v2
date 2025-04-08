@@ -20,5 +20,5 @@ window.onload = () => {
   setupBoard(ctx, chessBoard);
 
   //setup eventlisteners
-  setupEventListeners(canvas, gameStateManager);
+  setupEventListeners(canvas, gameStateManager, chessBoard);
 };
