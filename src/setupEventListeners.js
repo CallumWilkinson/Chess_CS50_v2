@@ -1,11 +1,75 @@
 import GameStateManager from "./GameStateManager.js";
+import { squareToCanvasCoordinates } from "./utils/coordinates.js";
+import { UIConstants } from "./constants.js";
+import Board from "./board.js";
+import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
+ * @param {Board} chessBoard
  */
 
-export function setupEventListeners(canvas, gameStateManager) {
+export function setupEventListeners(canvas, gameStateManager, chessBoard) {
+  let firstClick = null;
+  let selectedPiece;
+  let possibleMovesArray;
+  let targetPosition;
+  let canvasRect;
+
   //after clicking on a chess piece, run gamestatemanager.makeMove()
-  canvas.addEventListener(`click`, (event) => {});
+  //add one event listner onto the whole canvas, then work with mouse coordinates
+  canvas.addEventListener(`click`, (event) => {
+    if (!firstClick) {
+      //first click
+      firstClick = event;
+
+      //returns position and size of canvas relative to viewport
+      canvasRect = canvas.getBoundingClientRect();
+
+      //get mouse position, minus the top left corner of canvas in pixels
+      //x and y now become the actual positions on the canvas where the user clicked
+      const x = event.clientX - canvasRect.left;
+      const y = event.clientY - canvasRect.top;
+
+      //get file and rank clicked
+      const file = Math.floor(x / UIConstants.TILESIZE);
+      const rank = Math.floor(y / UIConstants.TILESIZE);
+
+      //find chess peice in that square
+      const firstClickedSquare = toSquareNotation(file, rank);
+
+      //chess peice object
+      selectedPiece = chessBoard.grid[firstClickedSquare];
+
+      //getpossiblemoves for selected peice
+      possibleMovesArray = selectedPiece.getPossibleMoves(
+        chessBoard,
+        gameStateManager
+      );
+    } else {
+      //second click
+
+      //get mouse position, minus the top left corner of canvas in pixels
+      //x and y now become the actual positions on the canvas where the user clicked
+      const x = event.clientX - canvasRect.left;
+      const y = event.clientY - canvasRect.top;
+
+      //get file and rank clicked
+      const file = Math.floor(x / UIConstants.TILESIZE);
+      const rank = Math.floor(y / UIConstants.TILESIZE);
+
+      //find chess peice in that square
+      targetPosition = toSquareNotation(file, rank);
+
+      gameStateManager.makeMove(
+        selectedPiece,
+        targetPosition,
+        possibleMovesArray
+      );
+
+      //reset click state
+      firstClick = null;
+    }
+  });
 }
