@@ -2,6 +2,11 @@ import Board from "./board.js";
 import GameStateManager from "./GameStateManager.js";
 import { UIConstants } from "./constants.js";
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Board} chessBoard
+ */
+
 //create the board with peices in their default positions, add labels to the sides and set colours of squares
 export function setupBoard(ctx, chessBoard) {
   //get tilesize and board size consants
@@ -53,6 +58,11 @@ export function setupBoard(ctx, chessBoard) {
   drawPieces(ctx, chessBoard);
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Board} chessBoard
+ */
+
 export function drawPieces(ctx, board) {
   ctx.font = `${UIConstants.TILESIZE - 15}px serif`;
   ctx.textAlign = "center";
@@ -99,6 +109,25 @@ export function drawPieces(ctx, board) {
 
         //add to current square in loop
         ctx.fillText(blackUnicodeLogo, x, y);
+      } else if (board.grid[square] === null) {
+        const file = square.charCodeAt(0) - 97;
+        const rank = parseInt(square[1]);
+
+        // Flip the rank because canvas (0,0) is top-left, but chess rank 1 is bottom
+        const flippedRank = 8 - rank;
+
+        // Compute center of the tile
+        const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
+        const y = flippedRank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
+
+        //remove any chess peice images from squares that should be null
+        //the drawPeices() function is run after a peice moves, so this line ensures that the starting square becomes empty on the ui after a move
+        ctx.clearRect(
+          file * UIConstants.TILESIZE,
+          flippedRank * UIConstants.TILESIZE,
+          UIConstants.TILESIZE,
+          UIConstants.TILESIZE
+        );
       }
     }
   }

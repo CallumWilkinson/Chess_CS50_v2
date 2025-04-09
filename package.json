@@ -5,10 +5,14 @@
     "jest": "^29.7.0"
   },
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:playwright": "playwright test"
   },
   "type": "module",
   "jest": {
-    "transform": {}
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/e2e/"
+    ]
   }
 }

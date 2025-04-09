@@ -10,7 +10,7 @@ import { drawPieces } from "./boardSetup.js";
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
  * @param {Board} chessBoard
- * @param {htmlcontext} ctx
+ * @param {CanvasRenderingContext2D} ctx
  */
 
 export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
