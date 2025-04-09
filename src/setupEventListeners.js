@@ -76,6 +76,7 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
 
       //update UI to reflect new positions in the grid
       updateUI(ctx, chessBoard);
+      console.log(window.board);
     }
   });
 }

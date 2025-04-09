@@ -2,6 +2,7 @@ import { setupBoard } from "./boardSetup.js";
 import Board from "./board.js";
 import GameStateManager from "./GameStateManager.js";
 import { setupEventListeners } from "./setupEventListeners.js";
+import { setupUIElements } from "./setupUIElements.js";
 
 window.onload = () => {
   //get canvas' context
@@ -11,6 +12,7 @@ window.onload = () => {
   //create board and assign to window
   const chessBoard = new Board();
   window.board = chessBoard;
+  console.log(window.board);
 
   //create gameStateManager with first player being white
   const gameStateManager = new GameStateManager(chessBoard, "white");
@@ -21,4 +23,7 @@ window.onload = () => {
 
   //setup eventlisteners
   setupEventListeners(canvas, gameStateManager, chessBoard, ctx);
+
+  //add UI Elements
+  setupUIElements();
 };

@@ -6,16 +6,26 @@ test("white pawn moves from e2 to e4 on its first turn", async ({ page }) => {
   await page.goto("http://127.0.0.1:5500"); //live server url, need to manually click live server to start test
 
   const canvas = await page.locator("#chessBoard");
+
+  // get canvas position on screen
+  const box = await canvas.boundingBox();
+
   await expect(canvas).toBeVisible();
 
   const startSquareCoordinates = squareToCanvasCoordinates("e2");
   const targetSquareCoordinates = squareToCanvasCoordinates("e4");
 
   //click e2
-  await page.mouse.click(startSquareCoordinates.x, startSquareCoordinates.y);
+  await page.mouse.click(
+    box.x + startSquareCoordinates.x,
+    box.y + startSquareCoordinates.y
+  );
 
   //click e4
-  await page.mouse.click(targetSquareCoordinates.x, targetSquareCoordinates.y);
+  await page.mouse.click(
+    box.x + targetSquareCoordinates.x,
+    box.y + targetSquareCoordinates.y
+  );
 
   //wait for board to update, 200ms just to be safe
   await page.waitForTimeout(200);
