@@ -15,9 +15,7 @@ export function setupBoard(ctx, chessBoard) {
 
   //draw peices on the board using unicode values
   //also colours in the tiles
-
-  //rename to update UI
-  drawPieces(ctx, chessBoard);
+  updateUI(ctx, chessBoard);
 }
 
 /**
@@ -25,10 +23,15 @@ export function setupBoard(ctx, chessBoard) {
  * @param {Board} chessBoard
  */
 
-export function drawPieces(ctx, chessBoard) {
+export function updateUI(ctx, chessBoard) {
   //reset board to blank first
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   // then redraw everything
+
+  //set font size for numbers
+  ctx.font = `${UIConstants.TILESIZE - 65}px serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
 
   // Draw chessboard based on grid keys
   Object.keys(chessBoard.grid).forEach((square) => {
@@ -47,7 +50,7 @@ export function drawPieces(ctx, chessBoard) {
     // Set alternating colors
     ctx.fillStyle = (row + col) % 2 === 0 ? "#EEEED5" : "#7D945D";
 
-    // Draw tile
+    // Draw tile from top left first
     ctx.fillRect(
       col * UIConstants.TILESIZE,
       row * UIConstants.TILESIZE,
@@ -59,6 +62,7 @@ export function drawPieces(ctx, chessBoard) {
     if (col === 0) {
       ctx.fillStyle = "black";
       ctx.fillText(
+        //starting with number 8 on top left
         chessBoard.ranks[row],
         x + 5,
         y + UIConstants.TILESIZE * 0.7

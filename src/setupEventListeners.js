@@ -4,7 +4,7 @@ import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 import ChessPiece from "./ChessPiece.js";
-import { drawPieces } from "./boardSetup.js";
+import { updateUI } from "./boardSetup.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
@@ -75,7 +75,7 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
       firstClick = null;
 
       //update UI to reflect new positions in the grid
-      drawPieces(ctx, chessBoard);
+      updateUI(ctx, chessBoard);
     }
   });
 }
