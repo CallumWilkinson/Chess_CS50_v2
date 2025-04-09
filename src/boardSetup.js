@@ -9,13 +9,26 @@ import { UIConstants } from "./constants.js";
 
 //create the board with peices in their default positions, add labels to the sides and set colours of squares
 export function setupBoard(ctx, chessBoard) {
-  //get tilesize and board size consants
-  const tileSize = UIConstants.TILESIZE;
-  const boardSize = UIConstants.boardSize;
-
   //setup empty board and setup pieces
   chessBoard.createEmptyBoard();
   chessBoard.initialisePieces();
+
+  //draw peices on the board using unicode values
+  //also colours in the tiles
+
+  //rename to update UI
+  drawPieces(ctx, chessBoard);
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Board} chessBoard
+ */
+
+export function drawPieces(ctx, chessBoard) {
+  //reset board to blank first
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  // then redraw everything
 
   // Draw chessboard based on grid keys
   Object.keys(chessBoard.grid).forEach((square) => {
@@ -28,19 +41,28 @@ export function setupBoard(ctx, chessBoard) {
     //the grid object now functions like an array
     const col = square.charCodeAt(0) - "a".charCodeAt(0);
 
-    let x = col * tileSize;
-    let y = row * tileSize;
+    let x = col * UIConstants.TILESIZE;
+    let y = row * UIConstants.TILESIZE;
 
     // Set alternating colors
     ctx.fillStyle = (row + col) % 2 === 0 ? "#EEEED5" : "#7D945D";
 
     // Draw tile
-    ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+    ctx.fillRect(
+      col * UIConstants.TILESIZE,
+      row * UIConstants.TILESIZE,
+      UIConstants.TILESIZE,
+      UIConstants.TILESIZE
+    );
 
     // add text to left side of the grid
     if (col === 0) {
       ctx.fillStyle = "black";
-      ctx.fillText(chessBoard.ranks[row], x + 5, y + tileSize * 0.7);
+      ctx.fillText(
+        chessBoard.ranks[row],
+        x + 5,
+        y + UIConstants.TILESIZE * 0.7
+      );
     }
 
     //add text to bottom of grid
@@ -48,30 +70,21 @@ export function setupBoard(ctx, chessBoard) {
       ctx.fillStyle = "black";
       ctx.fillText(
         chessBoard.files[col],
-        x + tileSize * 0.75,
-        y + tileSize - 5
+        x + UIConstants.TILESIZE * 0.75,
+        y + UIConstants.TILESIZE - 5
       );
     }
   });
 
-  //draw peices on the board using unicode values
-  drawPieces(ctx, chessBoard);
-}
-
-/**
- * @param {CanvasRenderingContext2D} ctx
- * @param {Board} chessBoard
- */
-
-export function drawPieces(ctx, board) {
+  //draw actual peices on the board to reflect the current state of the dictionary
   ctx.font = `${UIConstants.TILESIZE - 15}px serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  for (const square in board.grid) {
+  for (const square in chessBoard.grid) {
     //if there is a peice on current square
-    if (board.grid[square] != null) {
-      let currentPiece = board.grid[square];
+    if (chessBoard.grid[square] != null) {
+      let currentPiece = chessBoard.grid[square];
 
       //if a white peice
       if (currentPiece.colour === "white") {
@@ -109,25 +122,6 @@ export function drawPieces(ctx, board) {
 
         //add to current square in loop
         ctx.fillText(blackUnicodeLogo, x, y);
-      } else if (board.grid[square] === null) {
-        const file = square.charCodeAt(0) - 97;
-        const rank = parseInt(square[1]);
-
-        // Flip the rank because canvas (0,0) is top-left, but chess rank 1 is bottom
-        const flippedRank = 8 - rank;
-
-        // Compute center of the tile
-        const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
-        const y = flippedRank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
-
-        //remove any chess peice images from squares that should be null
-        //the drawPeices() function is run after a peice moves, so this line ensures that the starting square becomes empty on the ui after a move
-        ctx.clearRect(
-          file * UIConstants.TILESIZE,
-          flippedRank * UIConstants.TILESIZE,
-          UIConstants.TILESIZE,
-          UIConstants.TILESIZE
-        );
       }
     }
   }

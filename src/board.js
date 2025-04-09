@@ -30,7 +30,7 @@ export default class Board {
       }
     }
   }
-
+  //fills dictionary with peices
   initialisePieces() {
     let whiteRookLeft = new Rook("white", "a1");
     let blackRookLeft = new Rook("black", "a8");
