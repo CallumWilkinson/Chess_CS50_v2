@@ -45,11 +45,17 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
       //chess peice object
       selectedPiece = chessBoard.grid[firstClickedSquare];
 
-      //getpossiblemoves for selected peice
-      possibleMovesArray = selectedPiece.getPossibleMoves(
-        chessBoard,
-        gameStateManager
-      );
+      if (selectedPiece != null) {
+        //getpossiblemoves for selected peice
+        possibleMovesArray = selectedPiece.getPossibleMoves(
+          chessBoard,
+          gameStateManager
+        );
+      } else {
+        console.warn("Selected square is empty.");
+        firstClick = null;
+        return;
+      }
     } else {
       //second click
 
@@ -76,7 +82,6 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
 
       //update UI to reflect new positions in the grid
       updateUI(ctx, chessBoard);
-      console.log(window.board);
     }
   });
 }
