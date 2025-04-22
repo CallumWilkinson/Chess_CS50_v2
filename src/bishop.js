@@ -20,7 +20,7 @@ export default class Bishop extends ChessPiece {
     for (const square in board.grid) {
       if (
         board.squareIsEmpty(square) &&
-        board.squareIsInLineOfSight(this.position, square, this) &&
+        board.squareIsInLineOfSight(this.position, square) &&
         square != this.position
       ) {
         //split string so we can calculate rank diff and file diff

@@ -80,6 +80,4 @@ describe("Chess Board", () => {
     board.initialisePieces();
     expect(board.squareIsEmpty("a6")).toBe(true);
   });
-
-  //add test for line of site function it is tested in rook but i still want to make an independant test
 });

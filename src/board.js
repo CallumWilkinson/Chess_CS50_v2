@@ -5,6 +5,7 @@ import Knight from "./knight.js";
 import King from "./king.js";
 import Queen from "./queen.js";
 import Bishop from "./bishop.js";
+import Position from "./position.js";
 
 //board class represents a chess board
 export default class Board {
@@ -15,46 +16,44 @@ export default class Board {
 
     //files and ranks arrays are only used to create labels for the UI
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    this.ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
+    this.ranks = ["1", "2", "3", "4", "5", "6", "7", "8"];
   }
 
   createEmptyBoard() {
-    const columnLabels = "abcdefgh";
-    //row is the number, column is the letter
-    for (let row = 1; row <= 8; row++) {
-      for (let column of columnLabels) {
-        //square is a string
-        const square = column + row;
+    this.ranks.forEach((rank) => {
+      for (let file of this.files) {
+        //position
+        const position = new Position(file + rank);
         //add keys eg a1, b1 ect and set values to null
-        this.grid[square] = null;
+        this.grid[position.name] = null;
       }
-    }
+    });
   }
   //fills dictionary with peices
   initialisePieces() {
-    let whiteRookLeft = new Rook("white", "a1");
-    let blackRookLeft = new Rook("black", "a8");
+    let whiteRookLeft = new Rook("white", new Position("a1"));
+    let blackRookLeft = new Rook("black", new Position("a8"));
 
-    let whiteKnightLeft = new Knight("white", "b1");
-    let blackKnightLeft = new Knight("black", "b8");
+    let whiteKnightLeft = new Knight("white", new Position("b1"));
+    let blackKnightLeft = new Knight("black", new Position("b8"));
 
-    let whiteBishopLeft = new Bishop("white", "c1");
-    let blackBishopLeft = new Bishop("black", "c8");
+    let whiteBishopLeft = new Bishop("white", new Position("c1"));
+    let blackBishopLeft = new Bishop("black", new Position("c8"));
 
-    let whiteQueen = new Queen("white", "d1");
-    let blackQueen = new Queen("black", "d8");
+    let whiteQueen = new Queen("white", new Position("d1"));
+    let blackQueen = new Queen("black", new Position("d8"));
 
-    let whiteKing = new King("white", "e1");
-    let blackKing = new King("black", "e8");
+    let whiteKing = new King("white", new Position("e1"));
+    let blackKing = new King("black", new Position("e8"));
 
-    let whiteBishopRight = new Bishop("white", "f1");
-    let blackBishopRight = new Bishop("black", "f8");
+    let whiteBishopRight = new Bishop("white", new Position("f1"));
+    let blackBishopRight = new Bishop("black", new Position("f8"));
 
-    let whiteKnightRight = new Knight("white", "g1");
-    let blackKnightRight = new Knight("black", "g8");
+    let whiteKnightRight = new Knight("white", new Position("g1"));
+    let blackKnightRight = new Knight("black", new Position("g8"));
 
-    let whiteRookRight = new Rook("white", "h1");
-    let blackRookRight = new Rook("black", "h8");
+    let whiteRookRight = new Rook("white", new Position("h1"));
+    let blackRookRight = new Rook("black", new Position("h8"));
 
     let pieces = [
       whiteRookLeft,
@@ -120,6 +119,8 @@ export default class Board {
   /**
    * @param {string} square - 'a3', 'e4' ect.
    */
+
+  //check there is no value in the selected key
   squareIsEmpty(square) {
     if (this.grid[square] == null) {
       return true;
@@ -129,24 +130,20 @@ export default class Board {
   }
 
   /**
-   * @param {string} startingSquare - 'a3', 'e4' ect.
-   * @param {string} targetSquare - 'a3', 'e4' ect.
-   * @param {ChessPiece} chessPiece - any chess peice object needs to be passed through so function can access parsePosition() function from the ChessPiece class
+   * @param {position} startingSquare - 'a3', 'e4' ect.
+   * @param {position} targetSquare - 'a3', 'e4' ect.
    * @returns {Bool}
    */
 
-  squareIsInLineOfSight(startingSquare, targetSquare, chessPiece) {
-    //convert squares (strings) into numbers and store as indicies/coordinate objects
-    const { fileIndex: startFileIndex, rankIndex: startRankIndex } =
-      chessPiece.parsePosition(startingSquare);
-    const { fileIndex: targetFileIndex, rankIndex: targetRankIndex } =
-      chessPiece.parsePosition(targetSquare);
-
+  squareIsInLineOfSight(startingSquare, targetSquare) {
     //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
-    const fileIndexDifferential = targetFileIndex - startFileIndex;
+
+    const fileIndexDifferential =
+      targetSquare.fileIndex - startingSquare.fileIndex;
     const absFileIndexDifferential = Math.abs(fileIndexDifferential);
 
-    const rankIndexDifferential = targetRankIndex - startRankIndex;
+    const rankIndexDifferential =
+      targetSquare.rankIndex - startingSquare.rankIndex;
     const absRankIndexDifferential = Math.abs(rankIndexDifferential);
 
     //check if target is visible in a straight or diagonal line
@@ -168,17 +165,16 @@ export default class Board {
 
     //move one square at a time from startSquare towards targetSquare (currentFileIdex and currentRankIndex are INTS)
     //stop when you are blocked by another peice
-    let currentFileIndex = startFileIndex + fileDirection;
-    let currentRankIndex = startRankIndex + rankDirection;
+    let currentFileIndex = startingSquare.fileIndex + fileDirection;
+    let currentRankIndex = startingSquare.rankIndex + rankDirection;
 
     while (
-      currentFileIndex !== targetFileIndex ||
-      currentRankIndex !== targetRankIndex
+      currentFileIndex !== targetSquare.fileIndex ||
+      currentRankIndex !== targetSquare.rankIndex
     ) {
       //currentSquare is string ie "e4" to use as key in grid dictionary
-      const currentSquare = chessPiece._toSquare(
-        currentFileIndex,
-        currentRankIndex
+      let currentSquare = new Position(
+        toString(currentFileIndex, currentRankIndex)
       );
 
       //move cursor one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)

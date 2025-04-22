@@ -1,6 +1,11 @@
 import Board from "./board.js";
 import ChessPiece from "./ChessPiece.js";
 
+/**
+ * @param {Position} position
+ * @param {string} colour
+ */
+
 export default class Rook extends ChessPiece {
   constructor(colour, position) {
     super("rook", colour, position);
@@ -25,7 +30,7 @@ export default class Rook extends ChessPiece {
     //i think we dont need this we can just use position as a string normally?
     const startingPosition = this._toSquare(fileIndex, rankIndex);
 
-    //loop over dictionary grid
+    //loop over each key in dictionary
     //check if each square is empty and in LOS of the rook (checks diagonals also)
     //AND if on same vertical axis OR horizonal axis add to valid moves array(a bishop would just be diagonals only, queen is all directions)
     for (const square in board.grid) {
@@ -33,7 +38,7 @@ export default class Rook extends ChessPiece {
         board.squareIsEmpty(square) &&
         //does LOS also include diagonal?
         //do diagonals pass as true?
-        board.squareIsInLineOfSight(startingPosition, square, this)
+        board.squareIsInLineOfSight(this.position, square)
       ) {
         //only add if also on same vertical axis
         if (square[0] == startingPosition[0]) {
