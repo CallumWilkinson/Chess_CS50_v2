@@ -1,5 +1,6 @@
 import Board from "./board.js";
 import ChessPiece from "./ChessPiece.js";
+import Position from "./position.js";
 
 export default class Bishop extends ChessPiece {
   constructor(colour, position) {
@@ -10,18 +11,21 @@ export default class Bishop extends ChessPiece {
 
   /**
    * @param {Board} board
-   * @returns {string[]}
+   * @returns {Position[]} - array of positions
    */
 
   getPossibleMoves(board) {
     const validMoves = [];
 
     //a piece is diagonal if rank dif === file dif
+    //square is a string
     for (const square in board.grid) {
+      let targetPosition = new Position(square);
       if (
         board.squareIsEmpty(square) &&
-        board.squareIsInLineOfSight(this.position, square) &&
-        square != this.position
+        //currently iterated key (string) is used to make a new position object aka - the target position
+        board.squareIsInLineOfSight(this.position, targetPosition) &&
+        square != this.position.name
       ) {
         //split string so we can calculate rank diff and file diff
         const [fileStart, rankStart] = this.position.split("");
@@ -29,13 +33,15 @@ export default class Bishop extends ChessPiece {
 
         //calc differences
         const fileDiff = Math.abs(
-          fileStart.charCodeAt(0) - fileCurrent.charCodeAt(0)
+          this.position.fileIndex - targetPosition.fileIndex
         );
-        const rankDiff = Math.abs(parseInt(rankStart) - parseInt(rankCurrent));
+        const rankDiff = Math.abs(
+          this.position.rankIndex - targetPosition.rankIndex
+        );
 
         //check diagonal
+        validMoves.push(targetPosition);
         if (fileDiff === rankDiff) {
-          validMoves.push(square);
         }
       }
     }

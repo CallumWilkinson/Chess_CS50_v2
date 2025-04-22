@@ -19,8 +19,8 @@ export default class GameStateManager {
   }
   /**
    * @param {chessPiece} chessPiece - selected piece to be moved
-   * @param {string} targetSquare - square to move to as a string
-   * @param {Array} possibleMovesArray - return value of chessPiece.possibleMovesArray(), each child class has its own implementation of this function
+   * @param {Position} targetSquare - position to move to
+   * @param {Array} possibleMovesArray - ARRAY OF POSITION objects, return value of chessPiece.possibleMovesArray(), each child class has its own implementation of this function,
    */
 
   makeMove(chessPiece, targetSquare, possibleMovesArray) {
@@ -28,8 +28,9 @@ export default class GameStateManager {
 
     if (possibleMovesArray.includes(targetSquare)) {
       //move the piece in the grid
-      this.board.grid[startSquare] = null;
-      this.board.grid[targetSquare] = chessPiece;
+      //the position's name {string} is the key in dictionary
+      this.board.grid[startSquare.name] = null;
+      this.board.grid[targetSquare.name] = chessPiece;
 
       //update internal state of the peice
       chessPiece.move(targetSquare, possibleMovesArray);
