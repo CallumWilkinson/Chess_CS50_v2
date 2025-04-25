@@ -14,11 +14,12 @@ export default class King extends ChessPiece {
    */
 
   getPossibleMoves(board) {
+    //array of position objects
     const validMoves = [];
     const surroundingSquares = [];
 
-    //convert to numbers for math
-    const { fileIndex, rankIndex } = this.parsePosition(this.position);
+    const fileIndex = this.position.fileIndex;
+    const rankIndex = this.position.rankIndex;
 
     //find all surrounding squares
     const right = this._toSquare(fileIndex + 1, rankIndex);
@@ -41,7 +42,7 @@ export default class King extends ChessPiece {
       diagonalSW
     );
 
-    //check surrounding squares and empty and in LOS, add to valid moves
+    //check surrounding squares are empty and in LOS, add to valid moves
     for (const square in surroundingSquares) {
       if (
         board.squareIsEmpty(surroundingSquares[square]) &&

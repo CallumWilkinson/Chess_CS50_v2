@@ -16,6 +16,8 @@ export default class Position {
     //changes the digit in the second position of the string 'name' to a number starting from 0
     // '1' -> 0, '8' -> 7
     this.rankIndex = parseInt(this.name[1], 10) - 1;
+
+    this.surroundingPositions = this.#getSurroundingPositions();
   }
 
   /**
@@ -29,5 +31,42 @@ export default class Position {
       x: this.fileIndex * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
       y: (8 - this.rankIndex) * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
     };
+  }
+
+  /**
+   * @returns {Array[Position]} - returns array of position objects,
+   * this function is only run once privately each time a new positon is made, so that its result can be saved to a property for faster access
+   */
+
+  #getSurroundingPositions() {
+    const surroundingSquares = [];
+
+    //variables for readability
+    const filePlusOne = String.fromCharCode(this.file.charCodeAt(0) + 1);
+    const fileMinusOne = String.fromCharCode(this.file.charCodeAt(0) - 1);
+    const rankPlusOne = String.fromCharCode(this.rank.charCodeAt(0) + 1);
+    const rankMinusOne = String.fromCharCode(this.rank.charCodeAt(0) - 1);
+
+    //find all surrounding squares
+    const right = new Position(filePlusOne + this.rank);
+    const left = new Position(fileMinusOne + this.rank);
+    const up = new Position(this.file + rankPlusOne);
+    const down = new Position(this.file + rankMinusOne);
+    const diagonalNE = new Position(filePlusOne + rankPlusOne);
+    const diagonalSE = new Position(filePlusOne + rankMinusOne);
+    const diagonalSW = new Position(fileMinusOne + rankMinusOne);
+    const diagonalNW = new Position(fileMinusOne + rankPlusOne);
+
+    surroundingSquares.push(
+      right,
+      left,
+      up,
+      down,
+      diagonalNE,
+      diagonalSE,
+      diagonalNW,
+      diagonalSW
+    );
+    return surroundingSquares;
   }
 }
