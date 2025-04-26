@@ -1,6 +1,11 @@
 import ChessPiece from "./ChessPiece.js";
 import Board from "./board.js";
 
+/**
+ * @param {string} colour
+ * @param {Position} position
+ */
+
 export default class King extends ChessPiece {
   constructor(colour, position) {
     super("king", colour, position);

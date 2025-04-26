@@ -1,6 +1,11 @@
 import ChessPiece from "./ChessPiece.js";
 import GameStateManager from "./GameStateManager.js";
 
+/**
+ * @param {string} colour
+ * @param {Position} position
+ */
+
 export default class Pawn extends ChessPiece {
   constructor(colour, position) {
     super("pawn", colour, position);

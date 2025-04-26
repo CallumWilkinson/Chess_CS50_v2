@@ -1,9 +1,8 @@
 import Board from "./board.js";
 import ChessPiece from "./ChessPiece.js";
-
 /**
- * @param {Position} position
  * @param {string} colour
+ * @param {Position} position
  */
 
 export default class Rook extends ChessPiece {

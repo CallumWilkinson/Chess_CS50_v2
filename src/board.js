@@ -89,7 +89,9 @@ export default class Board {
 
     //create 8 white pawns
     for (let i = 0; i < 8; i++) {
-      whitePawns.push(new Pawn("white", String.fromCharCode(97 + i) + "2"));
+      whitePawns.push(
+        new Pawn("white", new Position(String.fromCharCode(97 + i) + "2"))
+      );
     }
 
     //add whitePawns to grid
@@ -101,7 +103,9 @@ export default class Board {
 
     //create 8 black pawns
     for (let i = 0; i < 8; i++) {
-      blackPawns.push(new Pawn("black", String.fromCharCode(97 + i) + "7"));
+      blackPawns.push(
+        new Pawn("black", new Position(String.fromCharCode(97 + i) + "7"))
+      );
     }
 
     //add blackPawns to grid

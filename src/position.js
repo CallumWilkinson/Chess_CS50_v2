@@ -58,12 +58,26 @@ export default class Position {
     const diagonalSW = fileMinusOne + rankMinusOne;
     const diagonalNW = fileMinusOne + rankPlusOne;
 
-    //add to array only if the square actually exists on the board
-    surroundingSquares.forEach((i) => {
-      if (FilesAndRanks.FILES.includes(surroundingSquares[i])) {
-        surroundingSquares.push(surroundingSquares[i]);
-      }
+    //add all to array
+    surroundingSquares.push(
+      right,
+      left,
+      up,
+      down,
+      diagonalNE,
+      diagonalSE,
+      diagonalSW,
+      diagonalNW
+    );
+
+    //filter out all squares that dont exist
+    const validSurroundingSquares = surroundingSquares.filter((position) => {
+      return (
+        FilesAndRanks.FILES.includes(position[0]) &&
+        FilesAndRanks.RANKS.includes(position[1])
+      );
     });
-    return surroundingSquares;
+
+    return validSurroundingSquares;
   }
 }
