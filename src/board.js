@@ -77,7 +77,12 @@ export default class Board {
 
     //add pieces to grid
     for (const piece in pieces) {
-      this.grid[pieces[piece].position] = pieces[piece];
+      //key is a string
+      //first iteration is whiteRookLeft.position.name
+      let key = pieces[piece].position.name;
+      //first iteration key is a1 (the whiterookleft's positon name)
+      //set the value at key a1 to the whiteRookLeft object
+      this.grid[key] = pieces[piece];
     }
 
     let whitePawns = [];
