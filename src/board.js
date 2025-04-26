@@ -15,6 +15,7 @@ export default class Board {
     this.grid = {};
 
     //files and ranks arrays are only used to create labels for the UI
+    //MUST REMOVE THIS AND USE THE CONSTANT INSTEAD
     this.files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     this.ranks = ["1", "2", "3", "4", "5", "6", "7", "8"];
   }

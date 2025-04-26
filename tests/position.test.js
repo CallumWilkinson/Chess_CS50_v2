@@ -28,4 +28,10 @@ describe("tests for position class", () => {
     expect(whiteRookLeft.position.fileIndex).toBe(0);
     expect(whiteRookLeft.position.rankIndex).toBe(1);
   });
+
+  test("check that position object has correct surrounding squares", () => {
+    let e4 = new Position("e4");
+    expect(e4.name).toBe("e4");
+    expect(e4.surroundingpositionNames[0]).toBe("f4");
+  });
 });

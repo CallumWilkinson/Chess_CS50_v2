@@ -16,31 +16,7 @@ export default class King extends ChessPiece {
   getPossibleMoves(board) {
     //array of position objects
     const validMoves = [];
-    const surroundingSquares = [];
-
-    const fileIndex = this.position.fileIndex;
-    const rankIndex = this.position.rankIndex;
-
-    //find all surrounding squares
-    const right = this._toSquare(fileIndex + 1, rankIndex);
-    const left = this._toSquare(fileIndex - 1, rankIndex);
-    const up = this._toSquare(fileIndex, rankIndex + 1);
-    const down = this._toSquare(fileIndex, rankIndex - 1);
-    const diagonalNE = this._toSquare(fileIndex + 1, rankIndex + 1);
-    const diagonalSE = this._toSquare(fileIndex + 1, rankIndex - 1);
-    const diagonalSW = this._toSquare(fileIndex - 1, rankIndex - 1);
-    const diagonalNW = this._toSquare(fileIndex - 1, rankIndex + 1);
-
-    surroundingSquares.push(
-      right,
-      left,
-      up,
-      down,
-      diagonalNE,
-      diagonalSE,
-      diagonalNW,
-      diagonalSW
-    );
+    const surroundingSquares = this.position.surroundingpositionNames;
 
     //check surrounding squares are empty and in LOS, add to valid moves
     for (const square in surroundingSquares) {

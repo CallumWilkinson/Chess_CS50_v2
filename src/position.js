@@ -1,4 +1,4 @@
-import { UIConstants } from "./constants.js";
+import { FilesAndRanks, UIConstants } from "./constants.js";
 
 /**
  * @param {string} name - name of a position on the chess board 'e5' ect
@@ -17,7 +17,8 @@ export default class Position {
     // '1' -> 0, '8' -> 7
     this.rankIndex = parseInt(this.name[1], 10) - 1;
 
-    this.surroundingPositions = this.#getSurroundingPositions();
+    //array of strings - strings are the names of the positions surrounding this position
+    this.surroundingpositionNames = this.#getSurroundingPositionNames();
   }
 
   /**
@@ -34,11 +35,11 @@ export default class Position {
   }
 
   /**
-   * @returns {Array[Position]} - returns array of position objects,
+   * @returns {Array[string]} - returns array of strings
    * this function is only run once privately each time a new positon is made, so that its result can be saved to a property for faster access
    */
 
-  #getSurroundingPositions() {
+  #getSurroundingPositionNames() {
     const surroundingSquares = [];
 
     //variables for readability
@@ -47,26 +48,22 @@ export default class Position {
     const rankPlusOne = String.fromCharCode(this.rank.charCodeAt(0) + 1);
     const rankMinusOne = String.fromCharCode(this.rank.charCodeAt(0) - 1);
 
-    //find all surrounding squares
-    const right = new Position(filePlusOne + this.rank);
-    const left = new Position(fileMinusOne + this.rank);
-    const up = new Position(this.file + rankPlusOne);
-    const down = new Position(this.file + rankMinusOne);
-    const diagonalNE = new Position(filePlusOne + rankPlusOne);
-    const diagonalSE = new Position(filePlusOne + rankMinusOne);
-    const diagonalSW = new Position(fileMinusOne + rankMinusOne);
-    const diagonalNW = new Position(fileMinusOne + rankPlusOne);
+    //find all surrounding squares as strings
+    const right = filePlusOne + this.rank;
+    const left = fileMinusOne + this.rank;
+    const up = this.file + rankPlusOne;
+    const down = this.file + rankMinusOne;
+    const diagonalNE = filePlusOne + rankPlusOne;
+    const diagonalSE = filePlusOne + rankMinusOne;
+    const diagonalSW = fileMinusOne + rankMinusOne;
+    const diagonalNW = fileMinusOne + rankPlusOne;
 
-    surroundingSquares.push(
-      right,
-      left,
-      up,
-      down,
-      diagonalNE,
-      diagonalSE,
-      diagonalNW,
-      diagonalSW
-    );
+    //add to array only if the square actually exists on the board
+    surroundingSquares.forEach((i) => {
+      if (FilesAndRanks.FILES.includes(surroundingSquares[i])) {
+        surroundingSquares.push(surroundingSquares[i]);
+      }
+    });
     return surroundingSquares;
   }
 }
