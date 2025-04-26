@@ -96,7 +96,8 @@ export default class Board {
 
     //add whitePawns to grid
     for (const pawn in whitePawns) {
-      this.grid[whitePawns[pawn].position] = whitePawns[pawn];
+      let key = whitePawns[pawn].position.name;
+      this.grid[key] = whitePawns[pawn];
     }
 
     let blackPawns = [];
@@ -110,7 +111,8 @@ export default class Board {
 
     //add blackPawns to grid
     for (const pawn in blackPawns) {
-      this.grid[blackPawns[pawn].position] = blackPawns[pawn];
+      let key = blackPawns[pawn].position.name;
+      this.grid[key] = blackPawns[pawn];
     }
   }
 
