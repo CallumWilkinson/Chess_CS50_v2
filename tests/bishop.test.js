@@ -2,6 +2,7 @@ import Board from "../src/board";
 import Bishop from "../src/bishop";
 import GameStateManager from "../src/GameStateManager";
 import { TurnManager } from "../src/turnManager";
+import Position from "../src/position";
 
 describe("Bishop tests", () => {
   let board;
@@ -17,7 +18,9 @@ describe("Bishop tests", () => {
 
   test("white bishop assesses moves from e5", () => {
     let possibleMovesArray;
-    whiteBishop = new Bishop("white", "e5");
+    let e5 = new Position("e5");
+    whiteBishop = new Bishop("white", e5);
+    //get possiblemoves returns array of strings (position names not objects)
     possibleMovesArray = whiteBishop.getPossibleMoves(board);
 
     let correctMoves = ["d6", "f4", "g3", "f6", "d4", "c3"];

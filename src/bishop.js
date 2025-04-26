@@ -16,7 +16,7 @@ export default class Bishop extends ChessPiece {
 
   /**
    * @param {Board} board
-   * @returns {Position[]} - array of positions
+   * @returns {string[]} - array of strings (position names)
    */
 
   getPossibleMoves(board) {
@@ -32,10 +32,6 @@ export default class Bishop extends ChessPiece {
         board.squareIsInLineOfSight(this.position, targetPosition) &&
         square != this.position.name
       ) {
-        //split string so we can calculate rank diff and file diff
-        const [fileStart, rankStart] = this.position.split("");
-        const [fileCurrent, rankCurrent] = square.split("");
-
         //calc differences
         const fileDiff = Math.abs(
           this.position.fileIndex - targetPosition.fileIndex
@@ -45,8 +41,8 @@ export default class Bishop extends ChessPiece {
         );
 
         //check diagonal
-        validMoves.push(targetPosition);
         if (fileDiff === rankDiff) {
+          validMoves.push(targetPosition.name);
         }
       }
     }
