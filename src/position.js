@@ -80,4 +80,66 @@ export default class Position {
 
     return validSurroundingSquares;
   }
+
+  /**
+   * @param {position} targetSquare - 'a3', 'e4' ect.
+   * @param {board} board
+   * @returns {Bool}
+   */
+
+  squareIsInLineOfSight(targetSquare, board) {
+    //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
+
+    const fileIndexDifferential = targetSquare.fileIndex - this.fileIndex;
+    const absFileIndexDifferential = Math.abs(fileIndexDifferential);
+
+    const rankIndexDifferential = targetSquare.rankIndex - this.rankIndex;
+    const absRankIndexDifferential = Math.abs(rankIndexDifferential);
+
+    //check if target is visible in a straight or diagonal line
+    //is true when correct
+    const isSameFile = absFileIndexDifferential === 0;
+    const isSameRank = absRankIndexDifferential === 0;
+    const isDiagonal = absFileIndexDifferential === absRankIndexDifferential;
+
+    //not valid line of sight
+    if (!isSameFile && !isSameRank && !isDiagonal) {
+      return false;
+    }
+
+    //determine file direction (positive or negative) positive is right, negative is left
+    let fileDirection = Math.sign(fileIndexDifferential);
+
+    //determine rank direction (positive or negative) positive is up, negative is down
+    let rankDirection = Math.sign(rankIndexDifferential);
+
+    //move one square at a time from startSquare towards targetSquare (currentFileIdex and currentRankIndex are INTS)
+    //stop when you are blocked by another peice
+    let currentFileIndex = this.fileIndex + fileDirection;
+    let currentRankIndex = this.rankIndex + rankDirection;
+
+    while (
+      currentFileIndex !== targetSquare.fileIndex ||
+      currentRankIndex !== targetSquare.rankIndex
+    ) {
+      //currentSquare is string ie "e4" to use as key in grid dictionary
+      let currentSquare = new Position(
+        toString(currentFileIndex, currentRankIndex)
+      );
+
+      //move cursor one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)
+      if (
+        board.grid[currentSquare] != null &&
+        board.grid[currentSquare] != undefined
+      ) {
+        //target square is NOT in line of sight
+        return false;
+      }
+      currentFileIndex += fileDirection;
+      currentRankIndex += rankDirection;
+    }
+
+    // If no occupied spaces found on path, target square IS in line of sight
+    return true;
+  }
 }

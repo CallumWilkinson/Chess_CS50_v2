@@ -1,6 +1,7 @@
 import Board from "../src/board";
 import King from "../src/king";
 import GameStateManager from "../src/GameStateManager";
+import Position from "../src/position";
 
 describe("king tests", () => {
   let gameStateManager;
@@ -15,7 +16,8 @@ describe("king tests", () => {
   });
 
   test("king assesess moves from e5", () => {
-    let whiteKing = new King("white", "e5");
+    let e5 = new Position("e5");
+    let whiteKing = new King("white", e5);
     possibleMovesArray = whiteKing.getPossibleMoves(board);
 
     let correctMoves = ["e6", "e4", "f5", "d5", "d6", "d4", "f6", "f4"];

@@ -29,7 +29,7 @@ export default class ChessPiece {
    * internal state; it doesn’t handle captures or board updates.
    *
    * @param {Position} newPosition - Square in standard notation (e.g., 'e4')
-   * @param {Array} possibleMovesArray - returned from the function getPossibleMoves(), each piece has its own implementation of the function
+   * @param {Array} possibleMovesArray - ARRAY OF STRINGS (position names) returned from the function getPossibleMoves(), each piece has its own implementation of the function
    */
 
   move(newPosition, possibleMovesArray) {
@@ -39,7 +39,7 @@ export default class ChessPiece {
     if (this.hasMoved === false) {
       validMoves = possibleMovesArray;
 
-      if (validMoves.includes(newPosition)) {
+      if (validMoves.includes(newPosition.name)) {
         this.position = newPosition;
         this.hasMoved = true;
       } else throw new Error("not a valid move");

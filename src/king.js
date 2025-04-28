@@ -1,5 +1,6 @@
 import ChessPiece from "./ChessPiece.js";
 import Board from "./board.js";
+import Position from "./position.js";
 
 /**
  * @param {string} colour
@@ -15,27 +16,27 @@ export default class King extends ChessPiece {
 
   /**
    * @param {Board} board
-   * @returns {string[]}
+   * @returns {string[]} array of strings, names of possible moves
    */
 
   getPossibleMoves(board) {
     //array of position objects
     const validMoves = [];
-    const surroundingSquares = this.position.surroundingpositionNames;
+    const surroundingSquareNames = this.position.surroundingpositionNames;
 
     //check surrounding squares are empty and in LOS, add to valid moves
-    for (const square in surroundingSquares) {
+    for (const squareName in surroundingSquareNames) {
+      let targetSquare;
       if (
-        board.squareIsEmpty(surroundingSquares[square]) &&
-        board.squareIsInLineOfSight(
-          this.position,
-          surroundingSquares[square],
-          this
+        board.squareIsEmpty([squareName]) &&
+        this.position.squareIsInLineOfSight(
+          (targetSquare = new Position(surroundingSquareNames[squareName])),
+          board
         ) &&
-        board.squareExistsOnBoard(surroundingSquares[square]) &&
-        surroundingSquares[square] != this.position
+        board.squareExistsOnBoard(surroundingSquareNames[squareName]) &&
+        surroundingSquareNames[squareName] != this.position.name
       ) {
-        validMoves.push(surroundingSquares[square]);
+        validMoves.push(surroundingSquareNames[squareName]);
       }
     }
     return validMoves;
