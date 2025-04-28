@@ -1,5 +1,6 @@
 import ChessPiece from "./ChessPiece.js";
 import GameStateManager from "./GameStateManager.js";
+import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
  * @param {string} colour
@@ -32,8 +33,9 @@ export default class Pawn extends ChessPiece {
       direction = -1;
     }
 
-    //convert current position to numbers so we can do math on it (eg e4 = 4,3)
-    const { fileIndex, rankIndex } = this.parsePosition(this.position);
+    //get file and rank index (int type)
+    const fileIndex = this.position.fileIndex;
+    const rankIndex = this.position.rankIndex;
 
     //increment position up 1
     const rankPlusOne = rankIndex + direction;
@@ -41,9 +43,9 @@ export default class Pawn extends ChessPiece {
     //increment position up 2
     const rankPlusTwo = rankIndex + direction * 2;
 
-    //convert indicies back to chess notation
-    const oneSquareForward = this._toSquare(fileIndex, rankPlusOne);
-    const twoSquaresForward = this._toSquare(fileIndex, rankPlusTwo);
+    //convert indicies back to chess notation(string)
+    const oneSquareForward = toSquareNotation(fileIndex, rankPlusOne);
+    const twoSquaresForward = toSquareNotation(fileIndex, rankPlusTwo);
 
     //if the new square doesnt exist, return error (one forward)
     if (board.squareExistsOnBoard(oneSquareForward) === false) {

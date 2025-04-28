@@ -14,18 +14,19 @@ describe("Pawn movement tests", () => {
 
   test("pawn moves from a2 to a3", () => {
     let currentPlayerColour = "white";
-
     let whitePawn;
     let a2 = new Position("a2");
+    let a3 = new Position("a3");
     whitePawn = new Pawn(currentPlayerColour, a2);
 
     let gameStateManager = new GameStateManager(board, currentPlayerColour);
 
     let possibleMovesArray;
     possibleMovesArray = whitePawn.getPossibleMoves(board, gameStateManager);
-    gameStateManager.makeMove(whitePawn, "a3", possibleMovesArray);
 
-    expect(whitePawn.position).toBe("a3");
+    gameStateManager.makeMove(whitePawn, a3, possibleMovesArray);
+
+    expect(whitePawn.position.name).toBe("a3");
     expect(whitePawn.hasMoved).toBe(true);
   });
 
@@ -33,7 +34,8 @@ describe("Pawn movement tests", () => {
     let currentPlayerColour = "white";
 
     let whitePawn;
-    whitePawn = new Pawn(currentPlayerColour, "a2");
+    let a2 = new Position("a2");
+    whitePawn = new Pawn(currentPlayerColour, a2);
 
     let gameStateManager = new GameStateManager(board, currentPlayerColour);
 
@@ -47,10 +49,12 @@ describe("Pawn movement tests", () => {
     let enemyPlayerColour = "black";
 
     let whitePawn;
-    whitePawn = new Pawn(startingPlayerColour, "a2");
+    let a2 = new Position("a2");
+    whitePawn = new Pawn(startingPlayerColour, a2);
 
     let blackPawn;
-    blackPawn = new Pawn(enemyPlayerColour, "c7");
+    let c7 = new Position("c7");
+    blackPawn = new Pawn(enemyPlayerColour, c7);
 
     let gameStateManager = new GameStateManager(board, startingPlayerColour);
 
