@@ -32,7 +32,8 @@ describe("Bishop tests", () => {
 
   test("white bishop asseses moves from starting position c1", () => {
     let possibleMovesArray;
-    whiteBishop = new Bishop("white", "c1");
+    let c1 = new Position("c1");
+    whiteBishop = new Bishop("white", c1);
     possibleMovesArray = whiteBishop.getPossibleMoves(board);
 
     let correctMoves = [];

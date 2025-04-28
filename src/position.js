@@ -1,4 +1,5 @@
 import { FilesAndRanks, UIConstants } from "./constants.js";
+import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
  * @param {string} name - name of a position on the chess board 'e5' ect
@@ -122,15 +123,16 @@ export default class Position {
       currentFileIndex !== targetSquare.fileIndex ||
       currentRankIndex !== targetSquare.rankIndex
     ) {
-      //currentSquare is string ie "e4" to use as key in grid dictionary
+      //currentSquare is POSITION OBJECT so need to access currentSquare.name to get the string version as key for the dictionary
       let currentSquare = new Position(
-        toString(currentFileIndex, currentRankIndex)
+        //returns a string (name of position)
+        toSquareNotation(currentFileIndex, currentRankIndex)
       );
 
       //move cursor one square at a time towards target until you land on an occupied square then break (Occupied if theres a value in the dict at currentSquare key)
       if (
-        board.grid[currentSquare] != null &&
-        board.grid[currentSquare] != undefined
+        board.grid[currentSquare.name] != null &&
+        board.grid[currentSquare.name] != undefined
       ) {
         //target square is NOT in line of sight
         return false;

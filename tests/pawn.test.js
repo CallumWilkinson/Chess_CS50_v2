@@ -2,6 +2,7 @@ import Board from "../src/board.js";
 import Pawn from "../src/pawn.js";
 import ChessPiece from "../src/ChessPiece.js";
 import GameStateManager from "../src/GameStateManager.js";
+import Position from "../src/position.js";
 
 describe("Pawn movement tests", () => {
   let board;
@@ -15,7 +16,8 @@ describe("Pawn movement tests", () => {
     let currentPlayerColour = "white";
 
     let whitePawn;
-    whitePawn = new Pawn(currentPlayerColour, "a2");
+    let a2 = new Position("a2");
+    whitePawn = new Pawn(currentPlayerColour, a2);
 
     let gameStateManager = new GameStateManager(board, currentPlayerColour);
 

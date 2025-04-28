@@ -24,12 +24,13 @@ export default class Bishop extends ChessPiece {
 
     //a piece is diagonal if rank dif === file dif
     //square is a string
+    //LOOPS OVER THE ENTIRE BOARD
     for (const square in board.grid) {
       let targetPosition = new Position(square);
       if (
         board.squareIsEmpty(square) &&
         //currently iterated key (string) is used to make a new position object aka - the target position
-        board.squareIsInLineOfSight(this.position, targetPosition) &&
+        this.position.squareIsInLineOfSight(targetPosition, board) &&
         square != this.position.name
       ) {
         //calc differences
