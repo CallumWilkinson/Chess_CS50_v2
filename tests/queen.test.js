@@ -1,6 +1,7 @@
 import Board from "../src/board";
 import Queen from "../src/queen";
 import GameStateManager from "../src/GameStateManager";
+import Position from "../src/position";
 
 describe("queen tests", () => {
   let gameStateManager;
@@ -16,9 +17,11 @@ describe("queen tests", () => {
 
   test("white queen moves from e5 to g3", () => {
     let whiteQueen;
-    whiteQueen = new Queen(currentPlayerColour, "e5");
+    let e5 = new Position("e5");
+    let g3 = new Position("g3");
+    whiteQueen = new Queen(currentPlayerColour, e5);
     possibleMovesArray = whiteQueen.getPossibleMoves(board);
-    gameStateManager.makeMove(whiteQueen, "g3", possibleMovesArray);
+    gameStateManager.makeMove(whiteQueen, g3, possibleMovesArray);
 
     let correctMoves = [
       "e6", // vertical up
@@ -42,7 +45,7 @@ describe("queen tests", () => {
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
-    expect(whiteQueen.position).toBe("g3");
+    expect(whiteQueen.position.name).toBe("g3");
     expect(whiteQueen.hasMoved).toBe(true);
     expect(board.grid["e5"]).toBe(null);
     expect(board.grid["g3"]).toBe(whiteQueen);

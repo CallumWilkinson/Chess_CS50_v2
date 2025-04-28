@@ -26,7 +26,7 @@ describe("tests for position class", () => {
     let a1 = new Position("a1");
     let whiteRookLeft = new Rook("white", a1);
     expect(whiteRookLeft.position.fileIndex).toBe(0);
-    expect(whiteRookLeft.position.rankIndex).toBe(1);
+    expect(whiteRookLeft.position.rankIndex).toBe(0);
   });
 
   test("check that position object has correct surrounding squares", () => {

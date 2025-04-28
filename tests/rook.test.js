@@ -1,6 +1,7 @@
 import Board from "../src/board";
 import Rook from "../src/rook";
 import GameStateManager from "../src/GameStateManager";
+import Position from "../src/position";
 
 describe("Rook tests", () => {
   let board;
@@ -11,7 +12,8 @@ describe("Rook tests", () => {
     board = new Board();
     board.createEmptyBoard();
     board.initialisePieces();
-    whiteRook = new Rook("white", "e5");
+    let e5 = new Position("e5");
+    whiteRook = new Rook("white", e5);
     gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
@@ -40,7 +42,8 @@ describe("Rook tests", () => {
 
   test("White rook cant move at start of game (cant jump over other pieces)", () => {
     let whiteRookLeft;
-    whiteRookLeft = new Rook("white", "a1");
+    let a1 = new Position("a1");
+    whiteRookLeft = new Rook("white", a1);
 
     let possibleMovesArray;
     possibleMovesArray = whiteRookLeft.getPossibleMoves(board);
@@ -50,7 +53,8 @@ describe("Rook tests", () => {
 
   test("Black Rook assesses moves from c3", () => {
     let blackRook;
-    blackRook = new Rook("black", "c3");
+    let c3 = new Position("c3");
+    blackRook = new Rook("black", c3);
 
     let possibleMovesArray;
     possibleMovesArray = blackRook.getPossibleMoves(board);

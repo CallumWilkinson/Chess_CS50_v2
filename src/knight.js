@@ -1,5 +1,6 @@
 import ChessPiece from "./ChessPiece.js";
 import Board from "./board.js";
+import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
  * @param {string} colour
@@ -20,22 +21,23 @@ export default class Knight extends ChessPiece {
 
   getPossibleMoves(board) {
     const validMoves = [];
-    const knightSquares = [];
+    const knightPossibleSquareNames = [];
 
-    //convert to numbers for math
-    const { fileIndex, rankIndex } = this.parsePosition(this.position);
+    //access rank and file index properties from the position class
+    const fileIndex = this.position.fileIndex;
+    const rankIndex = this.position.rankIndex;
 
-    //find all possible knight landing squares
-    const upLeft = this._toSquare(fileIndex - 1, rankIndex + 2);
-    const upRight = this._toSquare(fileIndex + 1, rankIndex + 2);
-    const rightUp = this._toSquare(fileIndex + 2, rankIndex + 1);
-    const rightDown = this._toSquare(fileIndex + 2, rankIndex - 1);
-    const downRight = this._toSquare(fileIndex + 1, rankIndex - 2);
-    const downLeft = this._toSquare(fileIndex - 1, rankIndex - 2);
-    const leftUp = this._toSquare(fileIndex - 2, rankIndex + 1);
-    const leftDown = this._toSquare(fileIndex - 2, rankIndex - 1);
+    //find all possible knight landing squares (names of them as strings)
+    const upLeft = toSquareNotation(fileIndex - 1, rankIndex + 2);
+    const upRight = toSquareNotation(fileIndex + 1, rankIndex + 2);
+    const rightUp = toSquareNotation(fileIndex + 2, rankIndex + 1);
+    const rightDown = toSquareNotation(fileIndex + 2, rankIndex - 1);
+    const downRight = toSquareNotation(fileIndex + 1, rankIndex - 2);
+    const downLeft = toSquareNotation(fileIndex - 1, rankIndex - 2);
+    const leftUp = toSquareNotation(fileIndex - 2, rankIndex + 1);
+    const leftDown = toSquareNotation(fileIndex - 2, rankIndex - 1);
 
-    knightSquares.push(
+    knightPossibleSquareNames.push(
       upLeft,
       upRight,
       rightUp,
@@ -47,13 +49,13 @@ export default class Knight extends ChessPiece {
     );
 
     //check knight squares and empty and in LOS, add to valid moves
-    for (const square in knightSquares) {
+    for (const square in knightPossibleSquareNames) {
       if (
-        board.squareIsEmpty(knightSquares[square]) &&
-        board.squareExistsOnBoard(knightSquares[square]) &&
-        knightSquares[square] != this.position
+        board.squareIsEmpty(knightPossibleSquareNames[square]) &&
+        board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
+        knightPossibleSquareNames[square] != this.position.name
       ) {
-        validMoves.push(knightSquares[square]);
+        validMoves.push(knightPossibleSquareNames[square]);
       }
     }
     return validMoves;
