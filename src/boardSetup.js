@@ -1,20 +1,20 @@
 import Board from "./board.js";
 import GameStateManager from "./GameStateManager.js";
-import { UIConstants } from "./constants.js";
+import { UIConstants, FilesAndRanks } from "./constants.js";
 
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {Board} chessBoard
  */
 
-//create the board with peices in their default positions, add labels to the sides and set colours of squares
 export function setupBoard(ctx, chessBoard) {
-  //setup empty board and setup pieces
+  //setup empty board, sets the keys of the dictionary to represent the squares of a chess board
   chessBoard.createEmptyBoard();
+  //setup pieces in their default positions
+  //the position of each peice in the dictionary is the 'under the hood' state of the board
   chessBoard.initialisePieces();
 
-  //draw peices on the board using unicode values
-  //also colours in the tiles
+  //update the UI to show chess peices on the screen and set the colors of the squares
   updateUI(ctx, chessBoard);
 }
 
@@ -63,7 +63,7 @@ export function updateUI(ctx, chessBoard) {
       ctx.fillStyle = "black";
       ctx.fillText(
         //starting with number 8 on top left
-        chessBoard.ranks[row],
+        FilesAndRanks.RANKS[row],
         x + 5,
         y + UIConstants.TILESIZE * 0.7
       );
@@ -73,7 +73,7 @@ export function updateUI(ctx, chessBoard) {
     if (row === 7) {
       ctx.fillStyle = "black";
       ctx.fillText(
-        chessBoard.files[col],
+        FilesAndRanks.FILES[col],
         x + UIConstants.TILESIZE * 0.75,
         y + UIConstants.TILESIZE - 5
       );

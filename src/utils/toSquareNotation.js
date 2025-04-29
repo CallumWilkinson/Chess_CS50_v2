@@ -1,6 +1,6 @@
 /**
  * Converts numeric indices back to standard chess notation.
- * this function is used in position.squareIsInLOS function, and in ALMOST every class' implementation of getPossibleMoves()
+ * this function is used in position.squareIsInLOS function, setupEventListeners, pawn class and the knight class
  *
  * @param {number} fileIndex - 0..7
  * @param {number} rankIndex - 0..7
