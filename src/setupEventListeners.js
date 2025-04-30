@@ -3,6 +3,7 @@ import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 import { updateUI } from "./boardSetup.js";
+import Position from "./position.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
@@ -12,6 +13,7 @@ import { updateUI } from "./boardSetup.js";
  */
 
 export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
+  //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = null;
   let selectedPiece;
   let possibleMovesArray;
@@ -21,10 +23,11 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
   //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove()
   //this will update board state and switch turns
   //update UI when turn switches
-  //add one event listner onto the whole canvas, then work with mouse coordinates
+  //add one event listner onto the whole canvas, first click is valid if there is a peice in that square
   canvas.addEventListener(`click`, (event) => {
+    //if first click is still null, we treat this as the first click
     if (!firstClick) {
-      //first click
+      //store the click event to a variable
       firstClick = event;
 
       //returns position and size of canvas relative to viewport
@@ -54,11 +57,12 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
         );
       } else {
         console.warn("Selected square is empty.");
+        //not a valid firstclick as theres no peice in that square to select
         firstClick = null;
         return;
       }
     } else {
-      //second click
+      //if first click was valid, then the click after will become the 'second click'
 
       //get mouse position, minus the bottom left corner of canvas in pixels
       //x and y now become the actual positions on the canvas where the user clicked
@@ -70,8 +74,12 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
       const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
 
       //find chess peice in that square
-      targetPosition = toSquareNotation(file, rank);
+      let targetPositionName = toSquareNotation(file, rank);
 
+      //make a position object to pass through make Move function
+      let targetPosition = new Position(targetPositionName);
+
+      //update game state
       gameStateManager.makeMove(
         selectedPiece,
         targetPosition,
