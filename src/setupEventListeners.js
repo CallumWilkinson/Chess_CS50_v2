@@ -1,9 +1,7 @@
 import GameStateManager from "./GameStateManager.js";
-import { squareToCanvasCoordinates } from "./utils/coordinates.js";
 import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
-import ChessPiece from "./ChessPiece.js";
 import { updateUI } from "./boardSetup.js";
 
 /**
@@ -20,7 +18,9 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
   let targetPosition;
   let canvasRect;
 
-  //after clicking on a chess piece, run gamestatemanager.makeMove()
+  //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove()
+  //this will update board state and switch turns
+  //update UI when turn switches
   //add one event listner onto the whole canvas, then work with mouse coordinates
   canvas.addEventListener(`click`, (event) => {
     if (!firstClick) {
@@ -39,12 +39,13 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
       const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
       const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
 
-      //find chess peice in that square
+      //find chess peice in that square as string to use as key
       const firstClickedSquare = toSquareNotation(file, rank);
 
-      //chess peice object
+      //get the chess peice object at given key
       selectedPiece = chessBoard.grid[firstClickedSquare];
 
+      //if there is a peice in the square you clicked
       if (selectedPiece != null) {
         //getpossiblemoves for selected peice
         possibleMovesArray = selectedPiece.getPossibleMoves(

@@ -1,5 +1,4 @@
 import Board from "./board.js";
-import GameStateManager from "./GameStateManager.js";
 import { UIConstants, FilesAndRanks } from "./constants.js";
 
 /**
@@ -14,7 +13,8 @@ export function setupBoard(ctx, chessBoard) {
   //the position of each peice in the dictionary is the 'under the hood' state of the board
   chessBoard.initialisePieces();
 
-  //update the UI to show chess peices on the screen and set the colors of the squares
+  //update the UI to show the chess peices on the screen to reflect the current board state
+  //set the colors of the squares on the board and draws numbers on left and bottom sides of cavnas
   updateUI(ctx, chessBoard);
 }
 
@@ -23,6 +23,8 @@ export function setupBoard(ctx, chessBoard) {
  * @param {Board} chessBoard
  */
 
+//need to write better comments to explain this function more
+//i want to run this function every time a turn ends
 export function updateUI(ctx, chessBoard) {
   //reset board to blank first
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -80,7 +82,7 @@ export function updateUI(ctx, chessBoard) {
     }
   });
 
-  //draw actual peices on the board to reflect the current state of the dictionary
+  //DRAW THE ACTUAL PEICES ON THE BOARD TO REFLECT THE CURRENT BOARD STATE
   ctx.font = `${UIConstants.TILESIZE - 15}px serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";

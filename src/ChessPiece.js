@@ -16,10 +16,11 @@ export default class ChessPiece {
   /**
    * Returns an array of possible squares this piece can move to.
    * @param {Board} board - An instance of Board class to check positions of pieces.
+   * @param {GameStateManager} gameStateManager - only the pawn's getpossiblemoves needs a gamesatemanager object becuase if its first turn pawn can move 2 squares forward
    * @returns {string[]} An array of valid square names (e.g., ['e5', 'f6']).
    */
 
-  getPossibleMoves(board) {
+  getPossibleMoves(board, gameStateManager) {
     // Derived classes (Pawn, King, etc.) will override this.
     return [];
   }

@@ -22,6 +22,8 @@ export default class GameStateManager {
    * @param {Array} possibleMovesArray - ARRAY OF STRINGS return value of chessPiece.possibleMovesArray(), each child class has its own implementation of this function,
    */
 
+  //moves a chesspeice around in the dictionary to change the state of the board
+  //switches player turn when the board state changes
   makeMove(chessPiece, targetSquare, possibleMovesArray) {
     //string to use key in grid
     const startSquareName = chessPiece.position.name;
