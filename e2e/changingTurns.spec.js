@@ -2,7 +2,9 @@ import { test, expect } from "@playwright/test";
 import { squareToCanvasCoordinates } from "../src/utils/coordinates";
 import { UIConstants } from "../src/constants";
 
-test("black pawn moves from e2 to e4 on its first turn", async ({ page }) => {
+test("black tries to move on whites turn and is unable to", async ({
+  page,
+}) => {
   await page.goto("http://127.0.0.1:5500"); //live server url, need to manually click live server to start test
 
   const canvas = await page.locator("#chessBoard");
@@ -10,17 +12,16 @@ test("black pawn moves from e2 to e4 on its first turn", async ({ page }) => {
 
   // get canvas position on screen
   const box = await canvas.boundingBox();
+  const startSquareCoordinates = squareToCanvasCoordinates("c2");
+  const targetSquareCoordinates = squareToCanvasCoordinates("c3");
 
-  const startSquareCoordinates = squareToCanvasCoordinates("e2");
-  const targetSquareCoordinates = squareToCanvasCoordinates("e4");
-
-  //click e2
+  //click c2
   await page.mouse.click(
     box.x + startSquareCoordinates.x,
     box.y + startSquareCoordinates.y
   );
 
-  //click e4
+  //click c3
   await page.mouse.click(
     box.x + targetSquareCoordinates.x,
     box.y + targetSquareCoordinates.y
@@ -29,17 +30,16 @@ test("black pawn moves from e2 to e4 on its first turn", async ({ page }) => {
   //wait for board to update, 200ms just to be safe
   await page.waitForTimeout(200);
 
-  //should return the chesspeice object at the key e2 in the dictionary (the value at that key)
-  const pieceAtE2 = await page.evaluate(() => {
-    return window.board.grid["e2"];
+  const pieceAtC2 = await page.evaluate(() => {
+    return window.board.grid["c2"];
   });
 
-  const pieceAtE4 = await page.evaluate(() => {
-    return window.board.grid["e4"];
+  const pieceAtC3 = await page.evaluate(() => {
+    return window.board.grid["c3"];
   });
 
-  expect(pieceAtE2).toBeNull();
-  expect(pieceAtE4.name).toBe("pawn");
-  expect(pieceAtE4.colour).toBe("white");
-  expect(pieceAtE4.position.name).toBe("e4");
+  expect(pieceAtC3).toBeNull();
+  expect(pieceAtC2.name).toBe("pawn");
+  expect(pieceAtC2.colour).toBe("black");
+  expect(pieceAtC2.position.name).toBe("c2");
 });

@@ -2,7 +2,7 @@ import GameStateManager from "./GameStateManager.js";
 import { UIConstants } from "./constants.js";
 import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
-import { updateUI } from "./boardSetup.js";
+import { updateUI } from "./updateUI.js";
 import Position from "./position.js";
 
 /**
@@ -11,13 +11,16 @@ import Position from "./position.js";
  * @param {Board} chessBoard
  * @param {CanvasRenderingContext2D} ctx
  */
-
-export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
+export function setupMovementEventListeners(
+  canvas,
+  gameStateManager,
+  chessBoard,
+  ctx
+) {
   //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = null;
   let selectedPiece;
   let possibleMovesArray;
-  let targetPosition;
   let canvasRect;
 
   //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove()
@@ -33,20 +36,20 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
       //returns position and size of canvas relative to viewport
       canvasRect = canvas.getBoundingClientRect();
 
-      //get mouse position, minus the bottom left corner of canvas in pixels
+      //get mouse position, minus the top left corner of canvas in pixels
       //x and y now become the actual positions on the canvas where the user clicked
       const x = event.clientX - canvasRect.left;
-      const y = event.clientY - canvasRect.bottom;
+      const y = event.clientY - canvasRect.top;
 
       //get file and rank clicked
       const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
-      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
+      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE));
 
       //find chess peice in that square as string to use as key
-      const firstClickedSquare = toSquareNotation(file, rank);
+      const firstClickedSquareName = toSquareNotation(file, rank);
 
       //get the chess peice object at given key
-      selectedPiece = chessBoard.grid[firstClickedSquare];
+      selectedPiece = chessBoard.grid[firstClickedSquareName];
 
       //if there is a peice in the square you clicked
       if (selectedPiece != null) {
@@ -56,41 +59,41 @@ export function setupEventListeners(canvas, gameStateManager, chessBoard, ctx) {
           gameStateManager
         );
       } else {
-        console.warn("Selected square is empty.");
         //not a valid firstclick as theres no peice in that square to select
         firstClick = null;
         return;
       }
     } else {
       //if first click was valid, then the click after will become the 'second click'
+      if (selectedPiece != null) {
+        //get mouse position, minus the top left corner of canvas in pixels
+        //x and y now become the actual positions on the canvas where the user clicked
+        const x = event.clientX - canvasRect.left;
+        const y = event.clientY - canvasRect.top;
 
-      //get mouse position, minus the bottom left corner of canvas in pixels
-      //x and y now become the actual positions on the canvas where the user clicked
-      const x = event.clientX - canvasRect.left;
-      const y = event.clientY - canvasRect.bottom;
+        //get file and rank clicked
+        const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
+        const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE));
 
-      //get file and rank clicked
-      const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
-      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE) + 1);
+        //find chess peice in that square
+        let targetPositionName = toSquareNotation(file, rank);
 
-      //find chess peice in that square
-      let targetPositionName = toSquareNotation(file, rank);
+        //make a position object to pass through make Move function
+        let targetPosition = new Position(targetPositionName);
 
-      //make a position object to pass through make Move function
-      let targetPosition = new Position(targetPositionName);
+        //update game state
+        gameStateManager.makeMove(
+          selectedPiece,
+          targetPosition,
+          possibleMovesArray
+        );
 
-      //update game state
-      gameStateManager.makeMove(
-        selectedPiece,
-        targetPosition,
-        possibleMovesArray
-      );
+        //reset click state
+        firstClick = null;
 
-      //reset click state
-      firstClick = null;
-
-      //update UI to reflect new positions in the grid
-      updateUI(ctx, chessBoard);
+        //update UI to reflect new positions in the grid
+        updateUI(ctx, chessBoard, gameStateManager);
+      }
     }
   });
 }

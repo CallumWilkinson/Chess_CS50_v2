@@ -26,16 +26,13 @@ export default class ChessPiece {
   }
 
   /**
-   * Moves this piece to a new square. This method just updates
-   * internal state; it doesn’t handle captures or board updates.
-   *
    * @param {Position} newPosition - Square in standard notation (e.g., 'e4')
    * @param {Array} possibleMovesArray - ARRAY OF STRINGS (position names) returned from the function getPossibleMoves(), each piece has its own implementation of the function
    */
 
+  //update internal state of the peice to update the posistion associated with the peice
+  //so that the grid knows where the peices are, and the peices also know where they are
   move(newPosition, possibleMovesArray) {
-    // Updates the piece's position in internal state
-    //Game.makeMove() would remove the piece from the old square in board.grid, place it in the new square, handle captures, etc.
     let validMoves = [];
     if (this.hasMoved === false) {
       validMoves = possibleMovesArray;

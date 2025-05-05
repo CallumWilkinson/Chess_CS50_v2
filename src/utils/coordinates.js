@@ -5,6 +5,7 @@ import { UIConstants } from "../constants.js";
  * @returns {{ x: number, y: number }} - the x and y canvas coordinates (center of the square passed through)
  */
 
+//used for playwrite tests
 export function squareToCanvasCoordinates(square) {
   //file is the letter
   const file = square.charCodeAt(0) - "a".charCodeAt(0);

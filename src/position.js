@@ -23,19 +23,6 @@ export default class Position {
   }
 
   /**
-   * @returns {{ x: number, y: number }} - the x and y canvas coordinates (center of the square passed through)
-   */
-
-  getCanvasCoordinates() {
-    return {
-      //this function has not been testsed as i dont think i need it??
-      //target the center of the square, multiply position by pixels to get the pixel position
-      x: this.fileIndex * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
-      y: (8 - this.rankIndex) * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
-    };
-  }
-
-  /**
    * @returns {Array[string]} - returns array of strings
    * this function is only run once privately each time a new positon is made, so that its result can be saved to a property for faster access
    */

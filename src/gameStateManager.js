@@ -1,5 +1,6 @@
 import { GameStatus } from "./constants.js";
 import { TurnManager } from "./turnManager.js";
+import ChessPiece from "./ChessPiece.js";
 
 export default class GameStateManager {
   /**
@@ -29,13 +30,17 @@ export default class GameStateManager {
     const startSquareName = chessPiece.position.name;
     const targetSquareName = targetSquare.name;
 
-    if (possibleMovesArray.includes(targetSquareName)) {
+    if (
+      possibleMovesArray.includes(targetSquareName) &
+      (chessPiece.colour === this.currentPlayerColour)
+    ) {
       //move the piece in the grid
       //the position's name {string} is the key in dictionary
       this.board.grid[startSquareName] = null;
       this.board.grid[targetSquareName] = chessPiece;
 
-      //update internal state of the peice
+      //update internal state of the peice to update the posistion associated with the peice
+      //so that the grid knows where the peices are, and the peices also know where they are
       chessPiece.move(targetSquare, possibleMovesArray);
 
       //switch turns
