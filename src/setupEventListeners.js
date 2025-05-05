@@ -1,9 +1,8 @@
 import GameStateManager from "./GameStateManager.js";
-import { UIConstants } from "./constants.js";
 import Board from "./board.js";
-import { toSquareNotation } from "./utils/toSquareNotation.js";
 import { updateUI } from "./updateUI.js";
 import Position from "./position.js";
+import getClickedSquareName from "./frontend/getClickedSquareName.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
@@ -21,7 +20,6 @@ export function setupMovementEventListeners(
   let firstClick = null;
   let selectedPiece;
   let possibleMovesArray;
-  let canvasRect;
 
   //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove()
   //this will update board state and switch turns
@@ -33,20 +31,8 @@ export function setupMovementEventListeners(
       //store the click event to a variable
       firstClick = event;
 
-      //returns position and size of canvas relative to viewport
-      canvasRect = canvas.getBoundingClientRect();
-
-      //get mouse position, minus the top left corner of canvas in pixels
-      //x and y now become the actual positions on the canvas where the user clicked
-      const x = event.clientX - canvasRect.left;
-      const y = event.clientY - canvasRect.top;
-
-      //get file and rank clicked
-      const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
-      const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE));
-
-      //find chess peice in that square as string to use as key
-      const firstClickedSquareName = toSquareNotation(file, rank);
+      //find the name of the clicked square as a string
+      const firstClickedSquareName = getClickedSquareName(event, canvas);
 
       //get the chess peice object at given key
       selectedPiece = chessBoard.grid[firstClickedSquareName];
@@ -66,17 +52,8 @@ export function setupMovementEventListeners(
     } else {
       //if first click was valid, then the click after will become the 'second click'
       if (selectedPiece != null) {
-        //get mouse position, minus the top left corner of canvas in pixels
-        //x and y now become the actual positions on the canvas where the user clicked
-        const x = event.clientX - canvasRect.left;
-        const y = event.clientY - canvasRect.top;
-
-        //get file and rank clicked
-        const file = Math.abs(Math.floor(x / UIConstants.TILESIZE));
-        const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE));
-
         //find chess peice in that square
-        let targetPositionName = toSquareNotation(file, rank);
+        const targetPositionName = getClickedSquareName(event, canvas);
 
         //make a position object to pass through make Move function
         let targetPosition = new Position(targetPositionName);
