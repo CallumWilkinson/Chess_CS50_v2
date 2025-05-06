@@ -37,6 +37,7 @@ export function setupMovementEventListeners(
 
       //get the chess peice object at given key
       selectedPiece = chessBoard.grid[firstClickedSquareName];
+      console.log(selectedPiece);
 
       //only run get possible moves if player selects their colored piece AND its their turn
       if (
@@ -65,6 +66,7 @@ export function setupMovementEventListeners(
         //second click is now considered valid
         //make a position object to pass through make Move function
         let targetPosition = new Position(secondClickSquareName);
+        console.log(targetPosition);
 
         //update game state
         const moveSuccessful = gameStateManager.makeMove(

@@ -1,7 +1,8 @@
 body {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* stack elements vertically */
   align-items: center;
+  justify-content: center;
   height: 100vh;
   margin: 0;
   background-color: #e5e4e2;
@@ -9,4 +10,27 @@ body {
 
 canvas {
   border: 2px solid #848884;
+  margin-top: 20px; /* optional: extra spacing if needed */
+}
+
+#current-turn-container {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 18 px;
+  font-weight: bold;
+  color: #333;
+  background-color: #eeeed5;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 10px 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#current-turn-heading {
+  margin-right: 10px;
+}
+
+#current-turn-contents {
+  color: #7d945d;
+  text-transform: capitalize;
 }
