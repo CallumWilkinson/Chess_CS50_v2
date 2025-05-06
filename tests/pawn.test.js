@@ -44,7 +44,8 @@ describe("Pawn movement tests", () => {
     expect(possibleMovesArray).toContain("a4");
   });
 
-  test("game starts as white, has option to move from a2 to a4 but chooses not to move. Then black moves from c7 to c5. White can only move one space next turn", () => {
+  test(`game starts as white, has option to move Pawn from a2 to a4 but chooses not to move any peices. Then black moves from c7 to c5. 
+    white then moves its pawn two spaces forward`, () => {
     let startingPlayerColour = "white";
     let enemyPlayerColour = "black";
 
@@ -59,10 +60,7 @@ describe("Pawn movement tests", () => {
     let gameStateManager = new GameStateManager(board, startingPlayerColour);
 
     let whitePossibleMovesArray;
-    whitePossibleMovesArray = whitePawn.getPossibleMoves(
-      board,
-      gameStateManager
-    );
+    whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     expect(whitePossibleMovesArray).toContain("a4");
     expect(whitePossibleMovesArray).toContain("a3");
 
@@ -70,20 +68,14 @@ describe("Pawn movement tests", () => {
     expect(gameStateManager.currentPlayerColour).toBe("black");
 
     let blackPossibleMovesArray;
-    blackPossibleMovesArray = blackPawn.getPossibleMoves(
-      board,
-      gameStateManager
-    );
+    blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
     expect(blackPossibleMovesArray).toContain("c5");
 
     gameStateManager.switchTurn();
     expect(gameStateManager.currentPlayerColour).toBe("white");
 
-    whitePossibleMovesArray = whitePawn.getPossibleMoves(
-      board,
-      gameStateManager
-    );
+    whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     expect(whitePossibleMovesArray).toContain("a3");
-    expect(whitePossibleMovesArray).not.toContain("a4");
+    expect(whitePossibleMovesArray).toContain("a4");
   });
 });

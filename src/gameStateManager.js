@@ -49,7 +49,7 @@ export default class GameStateManager {
 
     //update internal state of the peice to update the posistion associated with the peice
     //so that the grid knows where the peices are, and the peices also know where they are
-    chessPiece.move(targetSquare, possibleMovesArray);
+    chessPiece.updateInternalMoveState(targetSquare);
 
     //switch turns
     this.switchTurn();

@@ -50,10 +50,7 @@ export function setupMovementEventListeners(
       } else {
         //if there is a peice in the square you clicked and its your turn
         //getpossiblemoves for selected peice
-        possibleMovesArray = selectedPiece.getPossibleMoves(
-          chessBoard,
-          gameStateManager
-        );
+        possibleMovesArray = selectedPiece.getPossibleMoves(chessBoard);
       }
     } else {
       //second click is valid if firstClick variable is NOT NULL, so it contains a value
@@ -79,7 +76,10 @@ export function setupMovementEventListeners(
         if (moveSuccessful === true) {
           //update UI to reflect new positions in the grid
           updateUI(ctx, chessBoard, gameStateManager);
-        }
+        } else
+          console.log(
+            `move unsuccesful, gamestatemanager.makemove() returned false`
+          );
       }
       //reset click state for the next pair of clicks
       firstClick = false;

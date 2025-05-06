@@ -1,5 +1,4 @@
 import ChessPiece from "./ChessPiece.js";
-import GameStateManager from "./GameStateManager.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
@@ -18,10 +17,9 @@ export default class Pawn extends ChessPiece {
   /**
    * Calculates all possible moves for this pawn.
    * @param {Board} board - An instance of Board class.
-   * @param {GameStateManager} gameStateManager - an instance of the Game State Manager class to access current turn count
    * @returns {string[]} Array of valid square names (e.g., ['e4', 'f3']).
    */
-  getPossibleMoves(board, gameStateManager) {
+  getPossibleMoves(board) {
     //array of strings
     const validMoves = [];
 
@@ -66,19 +64,11 @@ export default class Pawn extends ChessPiece {
       );
     }
 
-    //add two forward to validMoves array if first turn
+    //add two forward to validMoves array if pawn hasnt moved yet
     if (
-      //if empty and white's first turn
+      //if empty and pawn hasnt moved yet
       board.squareIsEmpty(twoSquaresForward) &&
-      this.colour === "white" &&
-      gameStateManager.whiteTurnCount === 0
-    ) {
-      validMoves.push(twoSquaresForward);
-    } else if (
-      //else if empty and black's first turn
-      board.squareIsEmpty(twoSquaresForward) &&
-      this.colour === "black" &&
-      gameStateManager.blackTurnCount === 0
+      this.hasMoved === false
     ) {
       validMoves.push(twoSquaresForward);
     } else if (!board.squareIsEmpty(twoSquaresForward)) {
