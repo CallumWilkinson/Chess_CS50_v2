@@ -21,6 +21,7 @@ export default class GameStateManager {
    * @param {chessPiece} chessPiece - selected piece to be moved
    * @param {Position} targetSquare - position to move to
    * @param {Array} possibleMovesArray - ARRAY OF STRINGS return value of chessPiece.possibleMovesArray(), each child class has its own implementation of this function,
+   * @param {Boolean} - returns true if move successful, used to check success status in the UI
    */
 
   //moves a chesspeice around in the dictionary to change the state of the board
@@ -52,6 +53,9 @@ export default class GameStateManager {
 
     //switch turns
     this.switchTurn();
+
+    //return true when move is sucessful
+    return true;
   }
 
   endGame(winningPlayer) {
