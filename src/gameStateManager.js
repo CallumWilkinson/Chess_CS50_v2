@@ -31,15 +31,15 @@ export default class GameStateManager {
     const startSquareName = chessPiece.position.name;
     const targetSquareName = targetSquare.name;
     if (chessPiece.colour !== this.currentPlayerColour) {
-      alert(`It is not your turn. Only ${this.currentPlayerColour} can move`);
-      return;
+      throw new Error(
+        `Not your turn. Only ${this.currentPlayerColour} can move.`
+      );
     }
 
     if (!possibleMovesArray.includes(targetSquareName)) {
-      alert(
-        `Invalid move: ${targetSquareName} is not a legal move for select piece`
+      throw new Error(
+        `Invalid move: ${targetSquareName} is not a legal move for selected piece.`
       );
-      return;
     }
     //valid move so continue
     //move the piece in the grid

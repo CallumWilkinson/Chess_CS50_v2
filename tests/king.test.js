@@ -5,7 +5,7 @@ import Position from "../src/position";
 
 describe("king tests", () => {
   let gameStateManager;
-  let currentPlayerColour = "white";
+  let currentPlayerColour = "black";
   let possibleMovesArray;
   let board;
   beforeEach(() => {
@@ -15,10 +15,10 @@ describe("king tests", () => {
     gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
-  test("king assesess moves from e5", () => {
+  test("black king assesess moves from e5", () => {
     let e5 = new Position("e5");
-    let whiteKing = new King("white", e5);
-    possibleMovesArray = whiteKing.getPossibleMoves(board);
+    let blackKing = new King("black", e5);
+    possibleMovesArray = blackKing.getPossibleMoves(board);
 
     let correctMoves = ["e6", "e4", "f5", "d5", "d6", "d4", "f6", "f4"];
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
@@ -28,9 +28,17 @@ describe("king tests", () => {
     });
   });
 
-  test("king cant move at start", () => {
-    let whiteKing = new King("white", "d1");
-    possibleMovesArray = whiteKing.getPossibleMoves(board);
-    expect(possibleMovesArray).toHaveLength(0);
+  test("black king cant move at start", () => {
+    let blackKing = board.grid["e8"];
+    let targetPosition = new Position("d8");
+    possibleMovesArray = blackKing.getPossibleMoves(board);
+
+    expect(() => {
+      gameStateManager.makeMove(blackKing, targetPosition, possibleMovesArray);
+    }).toThrow("Invalid move");
+
+    //expecting the move to fail so black king is still at its start position
+    //shouldnt be able to take its own peices
+    expect(blackKing.position.name).toBe("e8");
   });
 });

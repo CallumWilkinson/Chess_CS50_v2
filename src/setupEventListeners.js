@@ -62,31 +62,49 @@ export function setupMovementEventListeners(
         firstClick = false;
         selectedPiece = null;
         possibleMovesArray = null;
-      } else {
-        //second click is now considered valid
-        //make a position object to pass through make Move function
-        let targetPosition = new Position(secondClickSquareName);
-        console.log(targetPosition);
+        firstClickedSquareName = null;
+        return;
+      }
 
-        //update game state
+      //check if the second click is on another of the player's own pieces
+      const newSelectedPiece = chessBoard.grid[secondClickSquareName];
+      if (
+        newSelectedPiece &&
+        newSelectedPiece.colour === gameStateManager.currentPlayerColour
+      ) {
+        //treat this second click as a new selection
+        firstClickedSquareName = secondClickSquareName;
+        selectedPiece = newSelectedPiece;
+        possibleMovesArray = selectedPiece.getPossibleMoves(chessBoard);
+        //firstClick remains true
+        return;
+      }
+      //second click is now considered valid
+      //make a position object to pass through make Move function
+      let targetPosition = new Position(secondClickSquareName);
+      console.log(targetPosition);
+      try {
         const moveSuccessful = gameStateManager.makeMove(
           selectedPiece,
           targetPosition,
           possibleMovesArray
         );
-        //if returns true, then move was a success
+
         if (moveSuccessful === true) {
-          //update UI to reflect new positions in the grid
           updateUI(ctx, chessBoard, gameStateManager);
-        } else
-          console.log(
-            `move unsuccesful, gamestatemanager.makemove() returned false`
-          );
+
+          //reset click state for the next pair of clicks after a sucessful move
+          firstClick = false;
+          selectedPiece = null;
+          possibleMovesArray = null;
+          firstClickedSquareName = null;
+        }
+      } catch (err) {
+        // replace with better frontend feedback later
+        alert(err.message);
       }
-      //reset click state for the next pair of clicks
-      firstClick = false;
-      selectedPiece = null;
-      possibleMovesArray = null;
+
+      return;
     }
   });
 }

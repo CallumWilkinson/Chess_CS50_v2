@@ -28,7 +28,7 @@ export default class King extends ChessPiece {
     for (const squareName in surroundingSquareNames) {
       let targetSquare;
       if (
-        board.squareIsEmpty([squareName]) &&
+        board.squareIsEmpty(surroundingSquareNames[squareName]) &&
         this.position.squareIsInLineOfSight(
           (targetSquare = new Position(surroundingSquareNames[squareName])),
           board
