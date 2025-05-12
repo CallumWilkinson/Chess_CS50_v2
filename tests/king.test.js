@@ -5,7 +5,7 @@ import Position from "../src/position";
 
 describe("king tests", () => {
   let gameStateManager;
-  let currentPlayerColour = "black";
+  const currentPlayerColour = "black";
   let possibleMovesArray;
   let board;
   beforeEach(() => {
@@ -16,11 +16,11 @@ describe("king tests", () => {
   });
 
   test("black king assesess moves from e5", () => {
-    let e5 = new Position("e5");
-    let blackKing = new King("black", e5);
+    const e5 = new Position("e5");
+    const blackKing = new King("black", e5);
     possibleMovesArray = blackKing.getPossibleMoves(board);
 
-    let correctMoves = ["e6", "e4", "f5", "d5", "d6", "d4", "f6", "f4"];
+    const correctMoves = ["e6", "e4", "f5", "d5", "d6", "d4", "f6", "f4"];
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
 
     correctMoves.forEach((move) => {
@@ -29,8 +29,8 @@ describe("king tests", () => {
   });
 
   test("black king cant move at start", () => {
-    let blackKing = board.grid["e8"];
-    let targetPosition = new Position("d8");
+    const blackKing = board.grid["e8"];
+    const targetPosition = new Position("d8");
     possibleMovesArray = blackKing.getPossibleMoves(board);
 
     expect(() => {

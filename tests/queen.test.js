@@ -5,7 +5,7 @@ import Position from "../src/position";
 
 describe("queen tests", () => {
   let gameStateManager;
-  let currentPlayerColour = "white";
+  const currentPlayerColour = "white";
   let possibleMovesArray;
   let board;
   beforeEach(() => {
@@ -16,14 +16,13 @@ describe("queen tests", () => {
   });
 
   test("white queen moves from e5 to g3", () => {
-    let whiteQueen;
-    let e5 = new Position("e5");
-    let g3 = new Position("g3");
-    whiteQueen = new Queen(currentPlayerColour, e5);
+    const e5 = new Position("e5");
+    const g3 = new Position("g3");
+    const whiteQueen = new Queen(currentPlayerColour, e5);
     possibleMovesArray = whiteQueen.getPossibleMoves(board);
     gameStateManager.makeMove(whiteQueen, g3, possibleMovesArray);
 
-    let correctMoves = [
+    const correctMoves = [
       "e6", // vertical up
       "e4",
       "e3", // vertical down

@@ -1,27 +1,22 @@
 import Board from "../src/board";
 import Rook from "../src/rook";
-import GameStateManager from "../src/GameStateManager";
 import Position from "../src/position";
 
 describe("Rook tests", () => {
   let board;
   let whiteRook;
-  let gameStateManager;
-  let currentPlayerColour = "white";
   beforeEach(() => {
     board = new Board();
     board.createEmptyBoard();
     board.initialisePieces();
-    let e5 = new Position("e5");
+    const e5 = new Position("e5");
     whiteRook = new Rook("white", e5);
-    gameStateManager = new GameStateManager(board, currentPlayerColour);
   });
 
   test("Rook assesses moves", () => {
-    let possibleMovesArray;
-    possibleMovesArray = whiteRook.getPossibleMoves(board);
+    const possibleMovesArray = whiteRook.getPossibleMoves(board);
 
-    let correctMoves = [
+    const correctMoves = [
       "e5",
       "e4",
       "e3",
@@ -41,25 +36,20 @@ describe("Rook tests", () => {
   });
 
   test("White rook cant move at start of game (cant jump over other pieces)", () => {
-    let whiteRookLeft;
-    let a1 = new Position("a1");
-    whiteRookLeft = new Rook("white", a1);
-
-    let possibleMovesArray;
-    possibleMovesArray = whiteRookLeft.getPossibleMoves(board);
+    const a1 = new Position("a1");
+    const whiteRookLeft = new Rook("white", a1);
+    const possibleMovesArray = whiteRookLeft.getPossibleMoves(board);
 
     expect(possibleMovesArray).toHaveLength(0);
   });
 
   test("Black Rook assesses moves from c3", () => {
-    let blackRook;
-    let c3 = new Position("c3");
-    blackRook = new Rook("black", c3);
+    const c3 = new Position("c3");
+    const blackRook = new Rook("black", c3);
 
-    let possibleMovesArray;
-    possibleMovesArray = blackRook.getPossibleMoves(board);
+    const possibleMovesArray = blackRook.getPossibleMoves(board);
 
-    let correctMoves = [
+    const correctMoves = [
       "c3",
       "c4",
       "c5",

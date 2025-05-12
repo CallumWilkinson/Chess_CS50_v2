@@ -1,6 +1,5 @@
 import Board from "../src/board.js";
 import Pawn from "../src/pawn.js";
-import ChessPiece from "../src/ChessPiece.js";
 import GameStateManager from "../src/GameStateManager.js";
 import Position from "../src/position.js";
 
@@ -13,16 +12,17 @@ describe("Pawn movement tests", () => {
   });
 
   test("pawn moves from a2 to a3", () => {
-    let currentPlayerColour = "white";
-    let whitePawn;
-    let a2 = new Position("a2");
-    let a3 = new Position("a3");
-    whitePawn = new Pawn(currentPlayerColour, a2);
+    const currentPlayerColour = "white";
+    const a2 = new Position("a2");
+    const a3 = new Position("a3");
+    const whitePawn = new Pawn(currentPlayerColour, a2);
 
-    let gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const gameStateManager = new GameStateManager(board, currentPlayerColour);
 
-    let possibleMovesArray;
-    possibleMovesArray = whitePawn.getPossibleMoves(board, gameStateManager);
+    const possibleMovesArray = whitePawn.getPossibleMoves(
+      board,
+      gameStateManager
+    );
 
     gameStateManager.makeMove(whitePawn, a3, possibleMovesArray);
 
@@ -31,44 +31,41 @@ describe("Pawn movement tests", () => {
   });
 
   test("white pawn moves from a2 to a4 on its first turn", () => {
-    let currentPlayerColour = "white";
+    const currentPlayerColour = "white";
 
-    let whitePawn;
-    let a2 = new Position("a2");
-    whitePawn = new Pawn(currentPlayerColour, a2);
+    const a2 = new Position("a2");
+    const whitePawn = new Pawn(currentPlayerColour, a2);
 
-    let gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const gameStateManager = new GameStateManager(board, currentPlayerColour);
 
-    let possibleMovesArray;
-    possibleMovesArray = whitePawn.getPossibleMoves(board, gameStateManager);
+    const possibleMovesArray = whitePawn.getPossibleMoves(
+      board,
+      gameStateManager
+    );
     expect(possibleMovesArray).toContain("a4");
   });
 
   test(`game starts as white, has option to move Pawn from a2 to a4 but chooses not to move any peices. Then black moves from c7 to c5. 
     white then moves its pawn two spaces forward`, () => {
-    let startingPlayerColour = "white";
-    let enemyPlayerColour = "black";
+    const startingPlayerColour = "white";
+    const enemyPlayerColour = "black";
 
-    let whitePawn;
-    let a2 = new Position("a2");
-    whitePawn = new Pawn(startingPlayerColour, a2);
+    const a2 = new Position("a2");
+    const whitePawn = new Pawn(startingPlayerColour, a2);
 
-    let blackPawn;
-    let c7 = new Position("c7");
-    blackPawn = new Pawn(enemyPlayerColour, c7);
+    const c7 = new Position("c7");
+    const blackPawn = new Pawn(enemyPlayerColour, c7);
 
-    let gameStateManager = new GameStateManager(board, startingPlayerColour);
+    const gameStateManager = new GameStateManager(board, startingPlayerColour);
 
-    let whitePossibleMovesArray;
-    whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
+    let whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     expect(whitePossibleMovesArray).toContain("a4");
     expect(whitePossibleMovesArray).toContain("a3");
 
     gameStateManager.switchTurn();
     expect(gameStateManager.currentPlayerColour).toBe("black");
 
-    let blackPossibleMovesArray;
-    blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    const blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
     expect(blackPossibleMovesArray).toContain("c5");
 
     gameStateManager.switchTurn();
