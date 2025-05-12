@@ -9,7 +9,7 @@ import { toSquareNotation } from "../utils/toSquareNotation.js";
 
 export default function getClickedSquareName(event, canvas) {
   //returns position and size of canvas relative to viewport
-  let canvasRect = canvas.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
 
   //get mouse position, minus the top left corner of canvas in pixels
   //x and y now become the actual positions on the canvas where the user clicked

@@ -1,4 +1,3 @@
-import Board from "./board.js";
 import ChessPiece from "./ChessPiece.js";
 import Position from "./position.js";
 /**
@@ -28,7 +27,7 @@ export default class Rook extends ChessPiece {
     //check if each square is empty and in LOS of the rook (checks diagonals also)
     //AND if on same vertical axis OR horizonal axis add to valid moves array(a bishop would just be diagonals only, queen is all directions)
     for (const square in board.grid) {
-      let targetSquare = new Position(square);
+      const targetSquare = new Position(square);
       if (
         board.squareIsEmpty(square) &&
         this.position.squareIsInLineOfSight(targetSquare, board)

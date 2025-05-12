@@ -1,4 +1,4 @@
-import { FilesAndRanks, UIConstants } from "./constants.js";
+import { FilesAndRanks } from "./constants.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**
@@ -96,10 +96,10 @@ export default class Position {
     }
 
     //determine file direction (positive or negative) positive is right, negative is left
-    let fileDirection = Math.sign(fileIndexDifferential);
+    const fileDirection = Math.sign(fileIndexDifferential);
 
     //determine rank direction (positive or negative) positive is up, negative is down
-    let rankDirection = Math.sign(rankIndexDifferential);
+    const rankDirection = Math.sign(rankIndexDifferential);
 
     //move one square at a time from startSquare towards targetSquare (currentFileIdex and currentRankIndex are INTS)
     //stop when you are blocked by another peice
@@ -111,7 +111,7 @@ export default class Position {
       currentRankIndex !== targetSquare.rankIndex
     ) {
       //currentSquare is POSITION OBJECT so need to access currentSquare.name to get the string version as key for the dictionary
-      let currentSquare = new Position(
+      const currentSquare = new Position(
         //returns a string (name of position)
         toSquareNotation(currentFileIndex, currentRankIndex)
       );

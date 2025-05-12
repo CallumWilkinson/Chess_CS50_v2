@@ -29,11 +29,16 @@ export function updateUI(ctx, chessBoard, gameStateManager) {
     //the grid object now functions like an array
     const col = square.charCodeAt(0) - "a".charCodeAt(0);
 
-    let x = col * UIConstants.TILESIZE;
-    let y = row * UIConstants.TILESIZE;
+    const x = col * UIConstants.TILESIZE;
+    const y = row * UIConstants.TILESIZE;
 
-    // Set alternating colors
-    ctx.fillStyle = (row + col) % 2 === 0 ? "#EEEED5" : "#7D945D";
+    if ((row + col) % 2 === 0) {
+      // light square
+      ctx.fillStyle = "#EEEED5";
+    } else {
+      // dark square
+      ctx.fillStyle = "#7D945D";
+    }
 
     // Draw tile from top left first
     ctx.fillRect(
@@ -73,12 +78,12 @@ export function updateUI(ctx, chessBoard, gameStateManager) {
   for (const square in chessBoard.grid) {
     //if there is a peice on current square
     if (chessBoard.grid[square] != null) {
-      let currentPiece = chessBoard.grid[square];
+      const currentPiece = chessBoard.grid[square];
 
       //if a white peice
       if (currentPiece.colour === "white") {
         //get the white version of it's unicode
-        let whiteUnicodeLogo = currentPiece.whiteUnicodeLogo;
+        const whiteUnicodeLogo = currentPiece.whiteUnicodeLogo;
 
         const file = square.charCodeAt(0) - 97;
         const rank = parseInt(square[1]) - 1;
@@ -94,7 +99,7 @@ export function updateUI(ctx, chessBoard, gameStateManager) {
       //if a black peice
       if (currentPiece.colour === "black") {
         //get the black version of it's unicode
-        let blackUnicodeLogo = currentPiece.blackUnicodeLogo;
+        const blackUnicodeLogo = currentPiece.blackUnicodeLogo;
 
         const file = square.charCodeAt(0) - 97;
         const rank = parseInt(square[1]) - 1;

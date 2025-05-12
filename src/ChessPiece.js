@@ -15,11 +15,10 @@ export default class ChessPiece {
 
   /**
    * Returns an array of possible squares this piece can move to.
-   * @param {Board} board - An instance of Board class to check positions of pieces.
    * @returns {string[]} An array of valid square names (e.g., ['e5', 'f6']).
    */
 
-  getPossibleMoves(board) {
+  getPossibleMoves() {
     // Derived classes (Pawn, King, etc.) will override this.
     return [];
   }

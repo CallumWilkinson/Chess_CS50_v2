@@ -18,7 +18,7 @@ export default class Board {
   //set all values to null in the dictionary as we are creating an empty board
   createEmptyBoard() {
     FilesAndRanks.RANKS.forEach((rank) => {
-      for (let file of FilesAndRanks.FILES) {
+      for (const file of FilesAndRanks.FILES) {
         const position = new Position(file + rank);
         //add keys eg a1, b1 ect and set values to null
         this.grid[position.name] = null;
@@ -33,32 +33,32 @@ export default class Board {
   //each position has a rank and file property
   //each chess peice keeps track of it's internal state (wheter it has moved or not), and has its own "possible move set"
   initialisePieces() {
-    let whiteRookLeft = new Rook("white", new Position("a1"));
-    let blackRookLeft = new Rook("black", new Position("a8"));
+    const whiteRookLeft = new Rook("white", new Position("a1"));
+    const blackRookLeft = new Rook("black", new Position("a8"));
 
-    let whiteKnightLeft = new Knight("white", new Position("b1"));
-    let blackKnightLeft = new Knight("black", new Position("b8"));
+    const whiteKnightLeft = new Knight("white", new Position("b1"));
+    const blackKnightLeft = new Knight("black", new Position("b8"));
 
-    let whiteBishopLeft = new Bishop("white", new Position("c1"));
-    let blackBishopLeft = new Bishop("black", new Position("c8"));
+    const whiteBishopLeft = new Bishop("white", new Position("c1"));
+    const blackBishopLeft = new Bishop("black", new Position("c8"));
 
-    let whiteQueen = new Queen("white", new Position("d1"));
-    let blackQueen = new Queen("black", new Position("d8"));
+    const whiteQueen = new Queen("white", new Position("d1"));
+    const blackQueen = new Queen("black", new Position("d8"));
 
-    let whiteKing = new King("white", new Position("e1"));
-    let blackKing = new King("black", new Position("e8"));
+    const whiteKing = new King("white", new Position("e1"));
+    const blackKing = new King("black", new Position("e8"));
 
-    let whiteBishopRight = new Bishop("white", new Position("f1"));
-    let blackBishopRight = new Bishop("black", new Position("f8"));
+    const whiteBishopRight = new Bishop("white", new Position("f1"));
+    const blackBishopRight = new Bishop("black", new Position("f8"));
 
-    let whiteKnightRight = new Knight("white", new Position("g1"));
-    let blackKnightRight = new Knight("black", new Position("g8"));
+    const whiteKnightRight = new Knight("white", new Position("g1"));
+    const blackKnightRight = new Knight("black", new Position("g8"));
 
-    let whiteRookRight = new Rook("white", new Position("h1"));
-    let blackRookRight = new Rook("black", new Position("h8"));
+    const whiteRookRight = new Rook("white", new Position("h1"));
+    const blackRookRight = new Rook("black", new Position("h8"));
 
     //temporary array of peices to add to the grid
-    let pieces = [
+    const pieces = [
       whiteRookLeft,
       blackRookLeft,
       whiteKnightLeft,
@@ -81,7 +81,7 @@ export default class Board {
     for (const piece in pieces) {
       //key is a string
       //first iteration of this for loops is whiteRookLeft.position.name
-      let key = pieces[piece].position.name;
+      const key = pieces[piece].position.name;
 
       //in the first iteration the key is a1 (the whiterookleft's positon name)
       //set the value at the key a1 to the instance of the whiteRookLeft object
@@ -89,7 +89,7 @@ export default class Board {
     }
 
     //now we create the white and black pawns and add them to the grid
-    let whitePawns = [];
+    const whitePawns = [];
 
     //create 8 white pawns and their starting position objects
     for (let i = 0; i < 8; i++) {
@@ -100,11 +100,11 @@ export default class Board {
 
     //add the whitePawns to grid
     for (const pawn in whitePawns) {
-      let key = whitePawns[pawn].position.name;
+      const key = whitePawns[pawn].position.name;
       this.grid[key] = whitePawns[pawn];
     }
 
-    let blackPawns = [];
+    const blackPawns = [];
 
     //create 8 black pawns
     for (let i = 0; i < 8; i++) {
@@ -115,7 +115,7 @@ export default class Board {
 
     //add the blackPawns to grid
     for (const pawn in blackPawns) {
-      let key = blackPawns[pawn].position.name;
+      const key = blackPawns[pawn].position.name;
       this.grid[key] = blackPawns[pawn];
     }
   }

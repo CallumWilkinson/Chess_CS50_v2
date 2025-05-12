@@ -1,6 +1,5 @@
 import { GameStatus } from "./constants.js";
 import { TurnManager } from "./turnManager.js";
-import ChessPiece from "./ChessPiece.js";
 
 export default class GameStateManager {
   /**
@@ -59,8 +58,8 @@ export default class GameStateManager {
   }
 
   endGame(winningPlayer) {
-    gameStatus = GameStatus.CHECKMATE;
-    winner = winningPlayer;
+    this.gameStatus = GameStatus.CHECKMATE;
+    this.winner = winningPlayer;
   }
 
   resetGame(startingPlayer) {

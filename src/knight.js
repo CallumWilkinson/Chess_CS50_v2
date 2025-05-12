@@ -1,5 +1,4 @@
 import ChessPiece from "./ChessPiece.js";
-import Board from "./board.js";
 import { toSquareNotation } from "./utils/toSquareNotation.js";
 
 /**

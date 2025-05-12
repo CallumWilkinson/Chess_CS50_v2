@@ -1,5 +1,3 @@
-import GameStateManager from "./GameStateManager.js";
-import Board from "./board.js";
 import { updateUI } from "./updateUI.js";
 import Position from "./position.js";
 import getClickedSquareName from "./frontend/getClickedSquareName.js";
@@ -81,7 +79,7 @@ export function setupMovementEventListeners(
       }
       //second click is now considered valid
       //make a position object to pass through make Move function
-      let targetPosition = new Position(secondClickSquareName);
+      const targetPosition = new Position(secondClickSquareName);
       console.log(targetPosition);
       try {
         const moveSuccessful = gameStateManager.makeMove(

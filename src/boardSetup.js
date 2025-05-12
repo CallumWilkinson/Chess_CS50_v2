@@ -1,5 +1,3 @@
-import Board from "./board.js";
-import GameStateManager from "./GameStateManager.js";
 import { updateUI } from "./updateUI.js";
 
 /**
@@ -8,7 +6,7 @@ import { updateUI } from "./updateUI.js";
  * @param {GameStateManager} gameStateManager
  */
 
-export function setupBoard(ctx, chessBoard) {
+export function setupBoard(ctx, chessBoard, gameStateManager) {
   //setup empty board, sets the keys of the dictionary to represent the squares of a chess board
   chessBoard.createEmptyBoard();
   //setup pieces in their default positions

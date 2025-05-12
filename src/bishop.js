@@ -1,4 +1,3 @@
-import Board from "./board.js";
 import ChessPiece from "./ChessPiece.js";
 import Position from "./position.js";
 
@@ -26,7 +25,7 @@ export default class Bishop extends ChessPiece {
     //square is a string
     //LOOPS OVER THE ENTIRE BOARD
     for (const square in board.grid) {
-      let targetPosition = new Position(square);
+      const targetPosition = new Position(square);
       if (
         board.squareIsEmpty(square) &&
         //currently iterated key (string) is used to make a new position object aka - the target position

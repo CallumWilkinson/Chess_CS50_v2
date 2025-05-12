@@ -1,5 +1,4 @@
 import ChessPiece from "./ChessPiece.js";
-import Board from "./board.js";
 import Position from "./position.js";
 
 /**
@@ -26,11 +25,10 @@ export default class King extends ChessPiece {
 
     //check surrounding squares are empty and in LOS, add to valid moves
     for (const squareName in surroundingSquareNames) {
-      let targetSquare;
       if (
         board.squareIsEmpty(surroundingSquareNames[squareName]) &&
         this.position.squareIsInLineOfSight(
-          (targetSquare = new Position(surroundingSquareNames[squareName])),
+          new Position(surroundingSquareNames[squareName]),
           board
         ) &&
         board.squareExistsOnBoard(surroundingSquareNames[squareName]) &&

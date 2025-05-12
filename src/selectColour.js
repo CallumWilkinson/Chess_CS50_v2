@@ -7,11 +7,11 @@ export function selectColour() {
   const blackBtn = document.getElementById("color-select-black");
 
   whiteBtn.addEventListener("click", () => {
-    let playerColour = "white";
+    const playerColour = "white";
     return playerColour;
   });
   blackBtn.addEventListener("click", () => {
-    let playerColour = "black";
+    const playerColour = "black";
     return playerColour;
   });
 }
