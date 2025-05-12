@@ -75,4 +75,22 @@ describe("Pawn movement tests", () => {
     expect(whitePossibleMovesArray).toContain("a3");
     expect(whitePossibleMovesArray).toContain("a4");
   });
+
+  test("white and black pawns move towards eachother", () => {
+    const gameStateManager = new GameStateManager(board, "black");
+    const e6 = new Position("e6");
+    const e5 = new Position("e5");
+    const e4 = new Position("e4");
+    const e3 = new Position("e3");
+    const blackPawn = board.grid["e7"];
+    const blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    const whitePawn = board.grid["e2"];
+    const whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
+
+    gameStateManager.makeMove(blackPawn, e6, blackPossibleMovesArray);
+    gameStateManager.makeMove(whitePawn, e3, whitePossibleMovesArray);
+    gameStateManager.makeMove(blackPawn, e5, blackPossibleMovesArray);
+    gameStateManager.makeMove(whitePawn, e4, whitePossibleMovesArray);
+    expect(whitePawn.position.name).toBe("e4");
+  });
 });

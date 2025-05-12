@@ -67,7 +67,7 @@ export function setupMovementEventListeners(
       //check if the second click is on another of the player's own pieces
       const newSelectedPiece = chessBoard.grid[secondClickSquareName];
       if (
-        newSelectedPiece &&
+        newSelectedPiece != null &&
         newSelectedPiece.colour === gameStateManager.currentPlayerColour
       ) {
         //treat this second click as a new selection

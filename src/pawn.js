@@ -64,18 +64,13 @@ export default class Pawn extends ChessPiece {
       );
     }
 
-    //add two forward to validMoves array if pawn hasnt moved yet
+    //add two forward to validMoves array if pawn hasnt moved yet AND BOTH squares are empty
     if (
-      //if empty and pawn hasnt moved yet
-      board.squareIsEmpty(twoSquaresForward) &&
-      this.hasMoved === false
+      //if empty and pawn hasnt moved yet, both squares must be empty or the path is blocked
+      (board.squareIsEmpty(twoSquaresForward) && this.hasMoved === false,
+      board.squareIsEmpty(oneSquareForward))
     ) {
       validMoves.push(twoSquaresForward);
-    } else if (!board.squareIsEmpty(twoSquaresForward)) {
-      //throw error if space is occupied
-      throw new Error(
-        `Invalid move: ${twoSquaresForward} is occupied by another piece.`
-      );
     }
 
     return validMoves;

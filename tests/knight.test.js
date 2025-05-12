@@ -1,6 +1,5 @@
 import Board from "../src/board";
 import Knight from "../src/knight";
-import GameStateManager from "../src/GameStateManager";
 import Position from "../src/position";
 
 describe("knight tests", () => {
