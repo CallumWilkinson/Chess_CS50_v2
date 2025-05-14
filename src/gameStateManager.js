@@ -15,6 +15,10 @@ export default class GameStateManager {
     this.moveHistory = [];
     this.whiteTurnCount = 0;
     this.blackTurnCount = 0;
+    this.capturedPieces = {
+      white: [],
+      black: [],
+    };
   }
   /**
    * @param {chessPiece} chessPiece - selected piece to be moved
