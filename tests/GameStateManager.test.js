@@ -27,7 +27,7 @@ describe("Game State Manager class tests", () => {
     gameStateManager.makeMove(blackPawn, f5, blackPossibleMovesArray);
 
     const whitePawn = board.grid["g2"];
-    let whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
+    const whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     const g4 = new Position("g4");
     gameStateManager.makeMove(whitePawn, g4, whitePossibleMovesArray);
 
@@ -46,6 +46,6 @@ describe("Game State Manager class tests", () => {
     expect(blackPawn.position.name).toBe("g4");
     expect(board.grid["g4"]).toBe(blackPawn);
     //expecting whitepawn to be in black's captured array
-    expect(gameStateManager.capturedPieces["black"[0]]).toBe(whitePawn);
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });

@@ -44,9 +44,19 @@ export default class GameStateManager {
         `Invalid move: ${targetSquareName} is not a legal move for selected piece.`
       );
     }
-    //valid move so continue
+
+    //check if there is a peice in the target square to assess a possible capture move
+    if (this.board.grid[targetSquareName] != null) {
+      const enemyPeice = this.board.grid[targetSquareName];
+      //if an enemy peice was captured in this move, add it to the capturedPieces array for the correct player
+      if (enemyPeice.colour != this.currentPlayerColour) {
+        //go into the capturedpeices array for the current player, and add the chess peice that is at the targetSquare
+        this.capturedPieces[this.currentPlayerColour].push(enemyPeice);
+      }
+    }
+
+    //otherwise its a regular valid move so continue
     //move the piece in the grid
-    //the position's name {string} is the key in dictionary
     this.board.grid[startSquareName] = null;
     this.board.grid[targetSquareName] = chessPiece;
 

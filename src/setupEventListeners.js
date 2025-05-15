@@ -90,6 +90,7 @@ export function setupMovementEventListeners(
 
         if (moveSuccessful === true) {
           updateUI(ctx, chessBoard, gameStateManager);
+          console.log(gameStateManager.capturedPieces);
 
           //reset click state for the next pair of clicks after a sucessful move
           firstClick = false;
