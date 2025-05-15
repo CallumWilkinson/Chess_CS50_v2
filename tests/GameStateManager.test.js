@@ -1,8 +1,6 @@
 import GameStateManager from "../src/GameStateManager";
 import Board from "../src/board";
 import Position from "../src/position";
-import Pawn from "../src/pawn.js";
-import expect from "expect";
 
 describe("Game State Manager class tests", () => {
   let board;
@@ -24,23 +22,30 @@ describe("Game State Manager class tests", () => {
   test("black pawn captures white pawn", () => {
     //scenario setup
     const blackPawn = board.grid["f7"];
-    const blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    let blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
     const f5 = new Position("f5");
     gameStateManager.makeMove(blackPawn, f5, blackPossibleMovesArray);
 
     const whitePawn = board.grid["g2"];
-    const whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
+    let whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     const g4 = new Position("g4");
     gameStateManager.makeMove(whitePawn, g4, whitePossibleMovesArray);
 
-    //black captures white pawn here
-    gameStateManager.capture(selectedPeice, targetPeice);
+    //possiblemoves change after each move
+    blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    //expect only to be able to move one space forward and to be able to overtake the white pawn
+    expect(blackPossibleMovesArray).toEqual(["f4", "g4"]);
+
+    gameStateManager.makeMove(blackPawn, g4, blackPossibleMovesArray);
+
+    //expecting turns to switch after a capture
     expect(gameStateManager.blackTurnCount).toEqual(2);
     expect(gameStateManager.whiteTurnCount).toEqual(1);
-    //expecting turns to switch after a capture
     expect(gameStateManager.turnManager.currentPlayerColour).toBe("white");
+    //expecting black to have moved to g4
     expect(blackPawn.Position.name).toBe("g4");
     expect(board.grid["g4"]).toBe(blackPawn);
+    //expecting white pawn to no longer exist on the grid, and to be in black's captured array
     expect(whitePawn).toBe(null);
     expect(gameStateManager.capturedPieces["black"[0]]).toBe(whitePawn);
   });

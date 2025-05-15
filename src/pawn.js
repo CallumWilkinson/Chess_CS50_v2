@@ -67,8 +67,9 @@ export default class Pawn extends ChessPiece {
     //add two forward to validMoves array if pawn hasnt moved yet AND BOTH squares are empty
     if (
       //if empty and pawn hasnt moved yet, both squares must be empty or the path is blocked
-      (board.squareIsEmpty(twoSquaresForward) && this.hasMoved === false,
-      board.squareIsEmpty(oneSquareForward))
+      board.squareIsEmpty(twoSquaresForward) &&
+      this.hasMoved === false &&
+      board.squareIsEmpty(oneSquareForward)
     ) {
       validMoves.push(twoSquaresForward);
     }
