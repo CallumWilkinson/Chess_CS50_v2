@@ -43,10 +43,9 @@ describe("Game State Manager class tests", () => {
     expect(gameStateManager.whiteTurnCount).toEqual(1);
     expect(gameStateManager.turnManager.currentPlayerColour).toBe("white");
     //expecting black to have moved to g4
-    expect(blackPawn.Position.name).toBe("g4");
+    expect(blackPawn.position.name).toBe("g4");
     expect(board.grid["g4"]).toBe(blackPawn);
-    //expecting white pawn to no longer exist on the grid, and to be in black's captured array
-    expect(whitePawn).toBe(null);
+    //expecting whitepawn to be in black's captured array
     expect(gameStateManager.capturedPieces["black"[0]]).toBe(whitePawn);
   });
 });

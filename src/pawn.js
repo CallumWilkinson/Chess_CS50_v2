@@ -23,7 +23,7 @@ export default class Pawn extends ChessPiece {
     //array of strings
     const validMoves = [];
 
-    //white moves up the board, black moves down
+    //black moves up the board, black moves down
     let direction;
     if (this.colour === "white") {
       direction = 1;
@@ -36,44 +36,66 @@ export default class Pawn extends ChessPiece {
     const rankIndex = this.position.rankIndex;
 
     //increment position up 1
-    const rankPlusOne = rankIndex + direction;
+    const rankIndexPlusOne = rankIndex + direction;
 
     //increment position up 2
-    const rankPlusTwo = rankIndex + direction * 2;
+    const rankIndexPlusTwo = rankIndex + direction * 2;
 
     //convert indicies back to chess notation(string)
-    const oneSquareForward = toSquareNotation(fileIndex, rankPlusOne);
-    const twoSquaresForward = toSquareNotation(fileIndex, rankPlusTwo);
-
-    //if the new square doesnt exist, return error (one forward)
-    if (board.squareExistsOnBoard(oneSquareForward) === false) {
-      throw new Error(`Invalid move: ${oneSquareForward} is off the board.`);
-    }
-
-    //if the new square doesnt exist, return error (two forward)
-    if (board.squareExistsOnBoard(twoSquaresForward) === false) {
-      throw new Error(`Invalid move: ${twoSquaresForward} is off the board.`);
-    }
+    const oneSquareForward = toSquareNotation(fileIndex, rankIndexPlusOne);
+    const twoSquaresForward = toSquareNotation(fileIndex, rankIndexPlusTwo);
 
     //add one forward to validMoves array
-    if (board.squareIsEmpty(oneSquareForward)) {
+    if (
+      board.squareExistsOnBoard(oneSquareForward) &&
+      board.squareIsEmpty(oneSquareForward)
+    ) {
       validMoves.push(oneSquareForward);
-    } else {
-      throw new Error(
-        `Invalid move: ${oneSquareForward} is occupied by another piece.`
-      );
     }
 
     //add two forward to validMoves array if pawn hasnt moved yet AND BOTH squares are empty
     if (
       //if empty and pawn hasnt moved yet, both squares must be empty or the path is blocked
-      board.squareIsEmpty(twoSquaresForward) &&
       this.hasMoved === false &&
+      board.squareExistsOnBoard(twoSquaresForward) &&
+      board.squareExistsOnBoard(oneSquareForward) &&
+      board.squareIsEmpty(twoSquaresForward) &&
       board.squareIsEmpty(oneSquareForward)
     ) {
       validMoves.push(twoSquaresForward);
     }
 
+    //set variables for capture moves
+    const rankIndexForward = rankIndex + direction;
+    const fileIndexPlusOne = fileIndex + 1;
+    const fileIndexMinusOne = fileIndex - 1;
+    const NWPositionName = toSquareNotation(
+      fileIndexMinusOne,
+      rankIndexForward
+    );
+    const NEPositionName = toSquareNotation(fileIndexPlusOne, rankIndexForward);
+    const chessPieceAtNWPosition = board.grid[NWPositionName];
+    const chessPieceAtNEPosition = board.grid[NEPositionName];
+
+    if (
+      //if there is a chess peice NW and its an enemy piece
+      board.squareExistsOnBoard(NWPositionName) &&
+      chessPieceAtNWPosition != null &&
+      chessPieceAtNWPosition.colour != this.colour
+    ) {
+      //allow a capture
+      validMoves.push(NWPositionName);
+    }
+
+    if (
+      //if there is a peice NE and its and its an enemy peice
+      board.squareExistsOnBoard(NEPositionName) &&
+      chessPieceAtNEPosition != null &&
+      chessPieceAtNEPosition.colour != this.colour
+    ) {
+      //allow a capture
+      validMoves.push(NEPositionName);
+    }
     return validMoves;
   }
 }
