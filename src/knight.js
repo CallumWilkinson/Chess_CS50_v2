@@ -47,13 +47,24 @@ export default class Knight extends ChessPiece {
       leftDown
     );
 
-    //check knight squares and empty and in LOS, add to valid moves
+    //check knight squares are empty and in LOS, add to valid moves
     for (const square in knightPossibleSquareNames) {
       if (
         board.squareIsEmpty(knightPossibleSquareNames[square]) &&
         board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
         knightPossibleSquareNames[square] != this.position.name
       ) {
+        validMoves.push(knightPossibleSquareNames[square]);
+      }
+      //check for capture
+      const possibleCapture = board.grid[knightPossibleSquareNames[square]];
+      if (
+        possibleCapture != null &&
+        possibleCapture.colour != this.colour &&
+        board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
+        knightPossibleSquareNames[square] != this.position.name
+      ) {
+        //add possible capture
         validMoves.push(knightPossibleSquareNames[square]);
       }
     }

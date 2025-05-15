@@ -22,31 +22,47 @@ export default class Bishop extends ChessPiece {
     const validMoves = [];
 
     //a piece is diagonal if rank dif === file dif
-    //square is a string
     //LOOPS OVER THE ENTIRE BOARD
     for (const square in board.grid) {
       const targetPosition = new Position(square);
+
+      //calc differences in file and rank to determine if square is diagonal
+      const fileDiff = Math.abs(
+        this.position.fileIndex - targetPosition.fileIndex
+      );
+      const rankDiff = Math.abs(
+        this.position.rankIndex - targetPosition.rankIndex
+      );
+      //create variables for readability
+      const isDiagonal = fileDiff === rankDiff;
+      const isInLineOfSight = this.position.squareIsInLineOfSight(
+        targetPosition,
+        board
+      );
+      const isNotBishopsPosition = square != this.position.name;
+
+      //if empty space, add as possible move
       if (
         board.squareIsEmpty(square) &&
-        //currently iterated key (string) is used to make a new position object aka - the target position
-        this.position.squareIsInLineOfSight(targetPosition, board) &&
-        square != this.position.name
+        isDiagonal &&
+        isInLineOfSight &&
+        isNotBishopsPosition
       ) {
-        //calc differences
-        const fileDiff = Math.abs(
-          this.position.fileIndex - targetPosition.fileIndex
-        );
-        const rankDiff = Math.abs(
-          this.position.rankIndex - targetPosition.rankIndex
-        );
+        validMoves.push(targetPosition.name);
+      }
 
-        //check diagonal
-        if (fileDiff === rankDiff) {
-          validMoves.push(targetPosition.name);
-        }
+      //if enemy piece, add as possible capture
+      const possibleCapture = board.grid[targetPosition.name];
+      if (
+        possibleCapture != null &&
+        possibleCapture.colour != this.colour &&
+        isDiagonal &&
+        isInLineOfSight &&
+        isNotBishopsPosition
+      ) {
+        validMoves.push(targetPosition.name);
       }
     }
-
     return validMoves;
   }
 }

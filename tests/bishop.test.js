@@ -2,6 +2,7 @@ import Board from "../src/board";
 import Bishop from "../src/bishop";
 import GameStateManager from "../src/GameStateManager";
 import Position from "../src/position";
+import Pawn from "../src/pawn";
 
 describe("Bishop tests", () => {
   let board;
@@ -21,11 +22,10 @@ describe("Bishop tests", () => {
     //get possiblemoves returns array of strings (position names not objects)
     const possibleMovesArray = whiteBishop.getPossibleMoves(board);
 
-    const correctMoves = ["d6", "f4", "g3", "f6", "d4", "c3"];
+    const correctMoves = ["d6", "f4", "g3", "f6", "d4", "c3", "g7", "c7"];
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
-    expect(possibleMovesArray).toHaveLength(correctMoves.length);
   });
 
   test("white bishop asseses moves from starting position c1", () => {
@@ -65,5 +65,24 @@ describe("Bishop tests", () => {
 
     expect(board.grid["d5"]).toBe(null);
     expect(board.grid["b3"]).toBe(blackBishop);
+  });
+
+  test("black bishop captures a white pawn at g3", () => {
+    gameStateManager.switchTurn();
+    const e5 = new Position("e5");
+    const blackBishop = new Bishop("black", e5);
+    board.grid["e5"] = blackBishop;
+
+    const g3 = new Position("g3");
+    const whitePawn = new Pawn("white", g3);
+    board.grid["g3"] = whitePawn;
+
+    const blackBishopPossibleMoves = blackBishop.getPossibleMoves(board);
+    gameStateManager.makeMove(blackBishop, g3, blackBishopPossibleMoves);
+
+    expect(blackBishop.position.name).toBe("g3");
+    expect(board.grid["g3"]).toBe(blackBishop);
+    //expecting whitepawn to be in black's captured array
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });

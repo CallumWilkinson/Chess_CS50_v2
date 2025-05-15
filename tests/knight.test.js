@@ -1,6 +1,8 @@
 import Board from "../src/board";
 import Knight from "../src/knight";
 import Position from "../src/position";
+import GameStateManager from "../src/GameStateManager";
+import Pawn from "../src/pawn";
 
 describe("knight tests", () => {
   let possibleMovesArray;
@@ -29,5 +31,25 @@ describe("knight tests", () => {
     const whiteKnight = new Knight("white", c1);
     possibleMovesArray = whiteKnight.getPossibleMoves(board);
     expect(possibleMovesArray).toHaveLength(2);
+  });
+
+  test("black knight captures a white pawn at g4", () => {
+    const gameStateManager = new GameStateManager(board, "black");
+
+    const f6 = new Position("f6");
+    const blackKnight = new Knight("black", f6);
+    board.grid["f6"] = blackKnight;
+
+    const g4 = new Position("g4");
+    const whitePawn = new Pawn("white", g4);
+    board.grid["g4"] = whitePawn;
+
+    const blackKnightPossibleMoves = blackKnight.getPossibleMoves(board);
+    gameStateManager.makeMove(blackKnight, g4, blackKnightPossibleMoves);
+
+    expect(blackKnight.position.name).toBe("g4");
+    expect(board.grid["g4"]).toBe(blackKnight);
+    //expecting whitepawn to be in black's captured array
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });

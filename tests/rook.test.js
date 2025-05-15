@@ -1,6 +1,8 @@
 import Board from "../src/board";
 import Rook from "../src/rook";
 import Position from "../src/position";
+import Pawn from "../src/pawn";
+import GameStateManager from "../src/GameStateManager";
 
 describe("Rook tests", () => {
   let board;
@@ -28,6 +30,7 @@ describe("Rook tests", () => {
       "f5",
       "g5",
       "h5",
+      "e7", //capture black pawn
     ];
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
@@ -61,11 +64,32 @@ describe("Rook tests", () => {
       "f3",
       "g3",
       "h3",
+      "c2", //capture white pawn
     ];
     correctMoves.forEach((move) => {
       expect(possibleMovesArray).toContain(move);
     });
 
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
+  });
+
+  test("black Rook captures a white pawn at g4", () => {
+    const gameStateManager = new GameStateManager(board, "black");
+
+    const g6 = new Position("g6");
+    const blackRook = new Rook("black", g6);
+    board.grid["g6"] = blackRook;
+
+    const g4 = new Position("g4");
+    const whitePawn = new Pawn("white", g4);
+    board.grid["g4"] = whitePawn;
+
+    const blackRookPossibleMoves = blackRook.getPossibleMoves(board);
+    gameStateManager.makeMove(blackRook, g4, blackRookPossibleMoves);
+
+    expect(blackRook.position.name).toBe("g4");
+    expect(board.grid["g4"]).toBe(blackRook);
+    //expecting whitepawn to be in black's captured array
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });
