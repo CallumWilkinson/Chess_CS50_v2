@@ -35,6 +35,18 @@ export default class Queen extends ChessPiece {
       ) {
         validMoves.push(square);
       }
+      const possibleCapture = board.grid[square];
+      //assess possible capture
+      //if possible capture has an enemy peice, is in LOS and is not the queen's current position
+      if (
+        possibleCapture != null &&
+        possibleCapture.colour != this.colour &&
+        this.position.squareIsInLineOfSight(targetPosition, board) &&
+        square != this.position.name
+      ) {
+        //capture
+        validMoves.push(square);
+      }
     }
 
     return validMoves;

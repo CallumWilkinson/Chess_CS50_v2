@@ -19,12 +19,12 @@ export default class King extends ChessPiece {
    */
 
   getPossibleMoves(board) {
-    //array of position objects
     const validMoves = [];
     const surroundingSquareNames = this.position.surroundingpositionNames;
 
     //check surrounding squares are empty and in LOS, add to valid moves
     for (const squareName in surroundingSquareNames) {
+      //if square is empty, in LOS of the king, exists on the board AND is not the current kings position
       if (
         board.squareIsEmpty(surroundingSquareNames[squareName]) &&
         this.position.squareIsInLineOfSight(
@@ -36,7 +36,25 @@ export default class King extends ChessPiece {
       ) {
         validMoves.push(surroundingSquareNames[squareName]);
       }
+
+      const possibleCapture = board.grid[surroundingSquareNames[squareName]];
+      //check for possible captures
+      //if iterated square contains enemy piece, in LOS of the king, exists on the board AND is not the current kings position
+      if (
+        possibleCapture != null &&
+        possibleCapture.colour != this.colour &&
+        this.position.squareIsInLineOfSight(
+          new Position(surroundingSquareNames[squareName]),
+          board
+        ) &&
+        board.squareExistsOnBoard(surroundingSquareNames[squareName]) &&
+        surroundingSquareNames[squareName] != this.position.name
+      ) {
+        //capture
+        validMoves.push(surroundingSquareNames[squareName]);
+      }
     }
+
     return validMoves;
   }
 }

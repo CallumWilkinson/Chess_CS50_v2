@@ -19,7 +19,7 @@ describe("Game State Manager class tests", () => {
     expect(gameStateManager.whiteTurnCount).toEqual(0);
   });
 
-  test("black pawn captures white pawn", () => {
+  test("black pawn captures white pawn, gamestatemanger tracks the capture", () => {
     //scenario setup
     const blackPawn = board.grid["f7"];
     let blackPossibleMovesArray = blackPawn.getPossibleMoves(board);

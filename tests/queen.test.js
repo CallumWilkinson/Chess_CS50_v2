@@ -2,6 +2,7 @@ import Board from "../src/board";
 import Queen from "../src/queen";
 import GameStateManager from "../src/GameStateManager";
 import Position from "../src/position";
+import Pawn from "../src/pawn";
 
 describe("queen tests", () => {
   let gameStateManager;
@@ -39,6 +40,9 @@ describe("queen tests", () => {
       "c3", // diagonal down-left
       "f4",
       "g3", // diagonal down-right
+      "c7", //capture black pawn
+      "e7", //capture black pawn
+      "g7", //capture black pawn
     ];
     expect(possibleMovesArray).toHaveLength(correctMoves.length);
     correctMoves.forEach((move) => {
@@ -48,5 +52,25 @@ describe("queen tests", () => {
     expect(whiteQueen.hasMoved).toBe(true);
     expect(board.grid["e5"]).toBe(null);
     expect(board.grid["g3"]).toBe(whiteQueen);
+  });
+
+  test("black queen captures a white pawn", () => {
+    //make it whites turn just for this test
+    gameStateManager.switchTurn();
+    const e5 = new Position("e5");
+    const blackQueen = new Queen("black", e5);
+    board.grid["e5"] = blackQueen;
+
+    const f5 = new Position("f5");
+    const whitePawn = new Pawn("white", f5);
+    board.grid["f5"] = whitePawn;
+
+    const blackQueenPossibleMoves = blackQueen.getPossibleMoves(board);
+    gameStateManager.makeMove(blackQueen, f5, blackQueenPossibleMoves);
+
+    expect(blackQueen.position.name).toBe("f5");
+    expect(board.grid["f5"]).toBe(blackQueen);
+    //expecting whitepawn to be in black's captured array
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });

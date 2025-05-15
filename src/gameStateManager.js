@@ -12,7 +12,6 @@ export default class GameStateManager {
     this.gameStatus = GameStatus.ONGOING; // 'ongoing', 'checkmate', 'stalemate', 'draw'
     this.winner = null;
     this.turnManager = new TurnManager(currentPlayerColour);
-    this.moveHistory = [];
     this.whiteTurnCount = 0;
     this.blackTurnCount = 0;
     this.capturedPieces = {
@@ -45,7 +44,7 @@ export default class GameStateManager {
       );
     }
 
-    //check if there is a peice in the target square to assess a possible capture move
+    //if target square contains an enemy peice, capture it
     if (this.board.grid[targetSquareName] != null) {
       const enemyPeice = this.board.grid[targetSquareName];
       //if an enemy peice was captured in this move, add it to the capturedPieces array for the correct player
@@ -55,7 +54,7 @@ export default class GameStateManager {
       }
     }
 
-    //otherwise its a regular valid move so continue
+    //otherwise its a regular valid move into an empty square
     //move the piece in the grid
     this.board.grid[startSquareName] = null;
     this.board.grid[targetSquareName] = chessPiece;
@@ -71,17 +70,6 @@ export default class GameStateManager {
     return true;
   }
 
-  endGame(winningPlayer) {
-    this.gameStatus = GameStatus.CHECKMATE;
-    this.winner = winningPlayer;
-  }
-
-  resetGame(startingPlayer) {
-    this.turnManager.resetTurn(startingPlayer);
-    this.gameStatus = GameStatus.ONGOING;
-    this.winner = null;
-  }
-
   switchTurn() {
     this.currentPlayerColour = this.turnManager.switchTurn();
     if (this.currentPlayerColour == "black") {
@@ -89,5 +77,10 @@ export default class GameStateManager {
     } else {
       this.blackTurnCount++;
     }
+  }
+
+  endGame(winningPlayer) {
+    this.winner = winningPlayer;
+    this.gameStatus = GameStatus.CHECKMATE;
   }
 }

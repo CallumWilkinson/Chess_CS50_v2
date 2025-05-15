@@ -2,6 +2,7 @@ import Board from "../src/board";
 import King from "../src/king";
 import GameStateManager from "../src/GameStateManager";
 import Position from "../src/position";
+import Pawn from "../src/pawn";
 
 describe("king tests", () => {
   let gameStateManager;
@@ -40,5 +41,23 @@ describe("king tests", () => {
     //expecting the move to fail so black king is still at its start position
     //shouldnt be able to take its own peices
     expect(blackKing.position.name).toBe("e8");
+  });
+
+  test("black king captures a white pawn", () => {
+    const e5 = new Position("e5");
+    const blackKing = new King("black", e5);
+    board.grid["e5"] = blackKing;
+
+    const f5 = new Position("f5");
+    const whitePawn = new Pawn("white", f5);
+    board.grid["f5"] = whitePawn;
+
+    const blackKingPossibleMoves = blackKing.getPossibleMoves(board);
+    gameStateManager.makeMove(blackKing, f5, blackKingPossibleMoves);
+
+    expect(blackKing.position.name).toBe("f5");
+    expect(board.grid["f5"]).toBe(blackKing);
+    //expecting whitepawn to be in black's captured array
+    expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });
