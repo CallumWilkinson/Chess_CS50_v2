@@ -30,7 +30,7 @@ export default class Queen extends ChessPiece {
         board.squareIsEmpty(square) &&
         //does LOS also include diagonal?
         //do diagonals pass as true?
-        this.position.squareIsInLineOfSight(targetPosition, board) &&
+        this.position.isTraversable(targetPosition, board) &&
         square != this.position.name
       ) {
         validMoves.push(square);
@@ -41,7 +41,7 @@ export default class Queen extends ChessPiece {
       if (
         possibleCapture != null &&
         possibleCapture.colour != this.colour &&
-        this.position.squareIsInLineOfSight(targetPosition, board) &&
+        this.position.isTraversable(targetPosition, board) &&
         square != this.position.name
       ) {
         //capture

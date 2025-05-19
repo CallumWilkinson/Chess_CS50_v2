@@ -30,6 +30,7 @@ export default class GameStateManager {
   //switches player turn when the board state changes
   makeMove(chessPiece, targetSquare, possibleMovesArray) {
     //string to use key in grid
+
     const startSquareName = chessPiece.position.name;
     const targetSquareName = targetSquare.name;
     if (chessPiece.colour !== this.currentPlayerColour) {

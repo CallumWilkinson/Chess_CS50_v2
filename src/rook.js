@@ -30,10 +30,7 @@ export default class Rook extends ChessPiece {
       const sameVerticalAxis = square[0] == startingPositionName[0];
       const sameHorizontalAxis = square[1] == startingPositionName[1];
 
-      const isInLineOfSight = this.position.squareIsInLineOfSight(
-        targetSquare,
-        board
-      );
+      const isInLineOfSight = this.position.isTraversable(targetSquare, board);
       //if space is empty add possible move
       if (board.squareIsEmpty(square) && isInLineOfSight) {
         //only add if also on same vertical or horizontal axis

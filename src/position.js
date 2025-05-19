@@ -19,7 +19,7 @@ export default class Position {
     this.rankIndex = parseInt(this.name[1], 10) - 1;
 
     //array of strings - strings are the names of the positions surrounding this position
-    this.surroundingpositionNames = this.#getSurroundingPositionNames();
+    this.surroundingpositionNames = this._getSurroundingPositionNames();
   }
 
   /**
@@ -27,7 +27,7 @@ export default class Position {
    * this function is only run once privately each time a new positon is made, so that its result can be saved to a property for faster access
    */
 
-  #getSurroundingPositionNames() {
+  _getSurroundingPositionNames() {
     const surroundingSquares = [];
 
     //variables for readability
@@ -75,9 +75,8 @@ export default class Position {
    * @returns {Bool}
    */
 
-  squareIsInLineOfSight(targetSquare, board) {
+  isTraversable(targetSquare, board) {
     //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
-
     const fileIndexDifferential = targetSquare.fileIndex - this.fileIndex;
     const absFileIndexDifferential = Math.abs(fileIndexDifferential);
 

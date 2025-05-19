@@ -35,7 +35,7 @@ export default class Bishop extends ChessPiece {
       );
       //create variables for readability
       const isDiagonal = fileDiff === rankDiff;
-      const isInLineOfSight = this.position.squareIsInLineOfSight(
+      const isInLineOfSight = this.position.isTraversable(
         targetPosition,
         board
       );

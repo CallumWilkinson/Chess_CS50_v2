@@ -27,7 +27,7 @@ export default class King extends ChessPiece {
       //if square is empty, in LOS of the king, exists on the board AND is not the current kings position
       if (
         board.squareIsEmpty(surroundingSquareNames[squareName]) &&
-        this.position.squareIsInLineOfSight(
+        this.position.isTraversable(
           new Position(surroundingSquareNames[squareName]),
           board
         ) &&
@@ -43,7 +43,7 @@ export default class King extends ChessPiece {
       if (
         possibleCapture != null &&
         possibleCapture.colour != this.colour &&
-        this.position.squareIsInLineOfSight(
+        this.position.isTraversable(
           new Position(surroundingSquareNames[squareName]),
           board
         ) &&
