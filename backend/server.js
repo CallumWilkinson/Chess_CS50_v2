@@ -25,7 +25,8 @@ const PORT = process.env.PORT || 3000;
 //basically means when someone goes to port 3000 send them all files in the public folder
 app.use(express.static(path.join(__dirname, "../public")));
 
-//serve the /src folder so the browser can load the entry point (main.js)
+//serve the /src folder so the browser
+//i dont think this is needed or a good thing to do, i can remove but just leaving it for now for dev purposes
 app.use("/src", express.static(path.join(__dirname, "../src")));
 
 //key is socket.id, values are objects with username and colour
