@@ -14,7 +14,11 @@ export default defineConfig([
       sourceType: "module",
       globals: {
         ...globals.browser,
+        process: "readonly",
       },
+    },
+    env: {
+      node: true,
     },
     rules: {
       "no-unused-vars": "warn",
@@ -37,7 +41,7 @@ export default defineConfig([
       sourceType: "module",
       globals: {
         ...globals.browser,
-        ...globals.jest, // 👈 THIS IS THE CRUCIAL LINE
+        ...globals.jest,
       },
     },
   },

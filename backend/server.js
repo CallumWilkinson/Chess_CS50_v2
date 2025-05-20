@@ -18,8 +18,8 @@ const httpServer = createServer(app);
 //this turns ther web server into a real time webSocket server so clients can talk to eachother
 const io = new Server(httpServer);
 
-//set port to 3000 (most common default port)
-const PORT = 3000;
+//set port to 3000 (most common default port), or to the node.js process to upload to render/hosting service
+const PORT = process.env.PORT || 3000;
 
 //serve static files from public folder (all the front end stuff)
 //basically means when someone goes to port 3000 send them all files in the public folder
