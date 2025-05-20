@@ -1,9 +1,9 @@
-import { setupBoard } from "/src/boardSetup.js";
-import Board from "/src/board.js";
-import GameStateManager from "/src/GameStateManager.js";
-import { setupMovementEventListeners } from "/src/setupEventListeners.js";
-import { setupAuthentication } from "/src/setupAuthentication.js";
-import { setupSocketListeners } from "/src/setupSocketListeners.js";
+import { setupBoard } from "./src/boardSetup.js";
+import Board from "./src/board.js";
+import GameStateManager from "./src/GameStateManager.js";
+import { setupMovementEventListeners } from "./src/setupEventListeners.js";
+import { setupAuthentication } from "./src/setupAuthentication.js";
+import { setupSocketListeners } from "./src/setupSocketListeners.js";
 
 window.onload = () => {
   //get username and pass it as the auth object to the socket
