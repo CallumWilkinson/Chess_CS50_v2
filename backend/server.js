@@ -28,11 +28,38 @@ app.use(express.static(path.join(__dirname, "../public")));
 //serve the /src folder so the browser can load the entry point (main.js)
 app.use("/src", express.static(path.join(__dirname, "../src")));
 
+//key is socket.id, values are objects with username and colour
+const players = {};
+
 //listen for new socket connections, this runs everytime someone connects to the server
 //a socket is a 2 day communication channel between browser and server
 io.on("connection", (socket) => {
+  //get username from clients auth handsake, if none default to guest
+  const username = socket.handshake.auth.username || "Guest";
+
+  //get array of colours currently being used by connected players
+  const connectedPlayers = Object.values(players).map((p) => p.colour);
+
+  //if white is taken, assign black to new player, otherwise assign white
+  let assignedColour;
+
+  if (connectedPlayers.includes("white")) {
+    assignedColour = "black";
+  } else {
+    assignedColour = "white";
+  }
+
+  //save the player's username and color in the players object using socket.id key
+  players[socket.id] = { username, colour: assignedColour };
+
   //console log in terminal when a user connects
-  console.log("A user has connected:", socket.id);
+  console.log(`${username} connected as ${assignedColour}`);
+
+  //send a playerinfo message to the newly connected client, tell them their username and color
+  socket.emit("playerInfo", {
+    username,
+    colour: assignedColour,
+  });
 
   //listen for a 'move' event from this client
   socket.on("move", (data) => {
@@ -46,8 +73,9 @@ io.on("connection", (socket) => {
 
   //handle disconnects
   socket.on("disconnect", () => {
-    //log disconnection to terminal
-    console.log("User disconnected:", socket.id);
+    //log disconnection to terminal and delete player username and color
+    console.log(`${username} disconnected`);
+    delete players[socket.id];
   });
 });
 

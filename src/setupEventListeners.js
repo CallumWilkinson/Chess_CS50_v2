@@ -39,7 +39,8 @@ export function setupMovementEventListeners(
       //only run get possible moves if player selects their colored piece AND its their turn
       if (
         selectedPiece == null ||
-        selectedPiece.colour !== gameStateManager.currentPlayerColour
+        selectedPiece.colour !== gameStateManager.currentPlayerColour ||
+        selectedPiece.colour !== window.playerColour
       ) {
         //reset click state as it is an invalid click/invalid selection
         firstClick = false;
@@ -67,7 +68,8 @@ export function setupMovementEventListeners(
       const newSelectedPiece = chessBoard.grid[secondClickSquareName];
       if (
         newSelectedPiece != null &&
-        newSelectedPiece.colour === gameStateManager.currentPlayerColour
+        newSelectedPiece.colour === gameStateManager.currentPlayerColour &&
+        newSelectedPiece.colour === window.playerColour
       ) {
         //treat this second click as a new selection
         firstClickedSquareName = secondClickSquareName;

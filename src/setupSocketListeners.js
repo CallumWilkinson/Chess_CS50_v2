@@ -11,6 +11,12 @@ import { updateUI } from "./updateUI.js";
 export function setupSocketListeners(ctx, board, gameStateManager) {
   //only run if a socket connection exists
   if (typeof window.socket !== "undefined") {
+    //when a new player connects, set its colour to window.playerColour global variable
+    window.socket.on("playerInfo", (data) => {
+      console.log("You are playing as", data.colour);
+      window.playerColour = data.colour;
+    });
+
     //when an ENEMY MOVE IS RECEIVED
     window.socket.on("move", (data) => {
       //listens for a "move" event from the server
@@ -32,7 +38,7 @@ export function setupSocketListeners(ctx, board, gameStateManager) {
         true
       );
 
-      //update local UI
+      //update local UI to show the move
       updateUI(ctx, board, gameStateManager);
     });
   }
