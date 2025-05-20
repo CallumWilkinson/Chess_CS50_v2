@@ -12,14 +12,6 @@
       <p id="current-turn-contents"></p>
     </div>
     <canvas id="chessBoard" width="640" height="640"></canvas>
-    <script type="module">
-      import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
-      // connect to the socket.io server
-      const socket = io();
-
-      //make the socket available globally
-      window.socket = socket;
-    </script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

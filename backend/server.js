@@ -31,22 +31,22 @@ app.use("/src", express.static(path.join(__dirname, "../src")));
 //listen for new socket connections, this runs everytime someone connects to the server
 //a socket is a 2 day communication channel between browser and server
 io.on("connection", (socket) => {
-  //console log when a user connects
+  //console log in terminal when a user connects
   console.log("A user has connected:", socket.id);
 
   //listen for a 'move' event from this client
   socket.on("move", (data) => {
-    //console log move data received
+    //console log in terminal move data received
     console.log("Received move:", data);
 
-    //broadcast the move to all other connected clients
+    //broadcast the move to all other connected clients(not to self)
     //player B can see player A's move
     socket.broadcast.emit("move", data);
   });
 
-  //hadle disconnects
+  //handle disconnects
   socket.on("disconnect", () => {
-    //log disconnection
+    //log disconnection to terminal
     console.log("User disconnected:", socket.id);
   });
 });
