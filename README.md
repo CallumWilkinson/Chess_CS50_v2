@@ -3,4 +3,4 @@
 
 https://multiplayer-chess-qh1o.onrender.com/
 
-- link to test multiplayer demo
+- link to test multiplayer demo, open in two tabs to play against yourself
