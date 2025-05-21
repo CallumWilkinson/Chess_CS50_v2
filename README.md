@@ -1,16 +1,44 @@
 # Multiplayer Online Chess
 
+[Play the Demo](https://multiplayer-chess-qh1o.onrender.com/)  
+_(Best viewed on desktop)_
 
-https://multiplayer-chess-qh1o.onrender.com/
+---
 
-- link above to test multiplayer demo, open in two tabs to play against yourself, as it is hosted on the free tier of render, the server may take 30 seconds or so to boot up
-- both tabs/players need to be logged in before the first move, otherwise the game will be out of sync (planning to fix this)
-- hosted on render with a node.js backend and express server
-- multiplayer communication using socket.io
-- game is made in vanilla JS using ES6 classes, HTML canvas, JS doc, Jest (unit testing), Playwright and ES Modules (import/export)
-- I built this myself with no tutorials as i wanted to focus on making my own design decisions
-- I originally starting making this as my final project for Harvard's CS50 course but i decided to keep adding to it to try pushing the complexity
-- I focused on OOP as I wanted to make the code modular and chose to focus on readability over performance where I could
-- Chose to lean on the side of "over commenting" just so I can keep track of my arcitechture decsions
-- I have refactored this project a few times as I learnt more
-- had multiple code reviews with a senior dev friend and implemented their recommendations
+## How It Works
+
+- Hosted on **Render** (free tier), with a **Node.js** backend and **Express** server.
+- Multiplayer communication powered by **Socket.IO**.
+- All game logic and rendering are handled **client-side** using:
+  - **Vanilla JavaScript (ES6 classes)**
+  - **HTML Canvas**
+  - **ES Modules (`import`/`export`)**
+  - **JSDoc**
+  - **Jest** for unit testing
+  - **Playwright** for end-to-end testing
+
+---
+
+## Multiplayer Notes
+
+- Open the link in **two tabs** to test multiplayer — you can play against yourself.
+- Due to Render’s free tier, the server may take **30+ seconds** to boot up.
+- **Both players must be logged in before the first move**; otherwise, the game may desync. (Planned fix coming.)
+- The **first player to connect is black**, and the **second is white**.
+
+---
+
+## Project Background
+
+- Built entirely from scratch — no tutorials — to focus on making my own **design decisions**.
+- Originally created as my **final project for Harvard’s CS50**, but I’ve continued developing it to increase complexity.
+- Emphasized **OOP and modularity**, prioritizing **readability over performance** where practical.
+- Added **extensive comments** to document architectural decisions and keep the code understandable.
+- Refactored the project multiple times as I learned more.
+- Had **code reviews** with a senior developer friend and implemented their feedback.
+
+---
+
+## Technical Note
+
+- The server's only role is to **relay moves** between clients; **all game state and logic is managed locally** on each client.
