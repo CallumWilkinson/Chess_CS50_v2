@@ -37,13 +37,13 @@ io.on("connection", (socket) => {
   //get array of colours currently being used by connected players
   const connectedPlayers = Object.values(players).map((p) => p.colour);
 
-  //if white is taken, assign black to new player, otherwise assign white
+  //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
   let assignedColour;
 
-  if (connectedPlayers.includes("white")) {
-    assignedColour = "black";
-  } else {
+  if (connectedPlayers.includes("black")) {
     assignedColour = "white";
+  } else {
+    assignedColour = "black";
   }
 
   //save the player's username and color in the players object using socket.id key
