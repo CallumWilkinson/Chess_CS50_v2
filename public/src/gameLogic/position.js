@@ -1,6 +1,5 @@
-import { FilesAndRanks } from "./constants.js";
-import { toSquareNotation } from "./utils/toSquareNotation.js";
-
+import { FilesAndRanks } from "../utils/constants.js";
+import { toSquareNotation } from "../utils/toSquareNotation.js";
 /**
  * @param {string} name - name of a position on the chess board 'e5' ect
  */

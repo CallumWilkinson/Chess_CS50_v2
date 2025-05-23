@@ -14,7 +14,7 @@
 
 - Hosted on Render (free tier), with a Node.js backend and Express server.
 - Multiplayer communication handled by Socket.IO.
-- All game logic and rendering are handled client-side using:
+- All game logic and rendering is handled client-side using:
   - Vanilla JavaScript (ES6 classes)
   - HTML Canvas
   - ES Modules (import/export)
