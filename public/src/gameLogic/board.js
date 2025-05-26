@@ -1,11 +1,11 @@
-import Pawn from "./pawn.js";
-import Rook from "./rook.js";
-import Knight from "./knight.js";
-import King from "./king.js";
-import Queen from "./queen.js";
-import Bishop from "./bishop.js";
+import Pawn from "../chessPieces/pawn.js";
+import Rook from "../chessPieces/rook.js";
+import Knight from "../chessPieces/knight.js";
+import King from "../chessPieces/king.js";
+import Queen from "../chessPieces/queen.js";
+import Bishop from "../chessPieces/bishop.js";
 import Position from "./position.js";
-import { FilesAndRanks } from "./constants.js";
+import { FilesAndRanks } from "../utilities/constants.js";
 
 export default class Board {
   constructor() {

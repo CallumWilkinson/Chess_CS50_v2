@@ -1,4 +1,4 @@
-import { UIConstants } from "../constants.js";
+import { UIConstants } from "../utilities/constants.js";
 
 /**
  * @param {string} square - square as a string like e2 ect

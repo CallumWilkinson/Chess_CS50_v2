@@ -1,8 +1,8 @@
-import Board from "../public/src/board";
-import King from "../public/src/king";
-import GameStateManager from "../public/src/GameStateManager";
-import Position from "../public/src/position";
-import Pawn from "../public/src/pawn";
+import Board from "../public/src/gameLogic/board";
+import King from "../public/src/chessPieces/king";
+import GameStateManager from "../public/src/gameLogic/GameStateManager";
+import Position from "../public/src/gameLogic/position";
+import Pawn from "../public/src/chessPieces/pawn";
 
 describe("king tests", () => {
   let gameStateManager;

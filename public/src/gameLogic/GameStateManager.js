@@ -1,4 +1,4 @@
-import { GameStatus } from "./constants.js";
+import { GameStatus } from "../utilities/constants.js";
 import { TurnManager } from "./turnManager.js";
 
 export default class GameStateManager {

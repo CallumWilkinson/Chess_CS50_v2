@@ -1,5 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
-import Position from "./position.js";
+import Position from "../gameLogic/position.js";
 
 /**
  * @param {string} colour

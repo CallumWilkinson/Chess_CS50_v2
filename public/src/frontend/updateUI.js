@@ -1,4 +1,4 @@
-import { UIConstants, FilesAndRanks } from "./constants.js";
+import { UIConstants, FilesAndRanks } from "../utilities/constants.js";
 
 /**
  * @param {CanvasRenderingContext2D} ctx

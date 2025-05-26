@@ -1,4 +1,4 @@
-import Position from "./position.js";
+import Position from "../gameLogic/position.js";
 import { updateUI } from "./updateUI.js";
 
 /**

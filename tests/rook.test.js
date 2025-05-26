@@ -1,8 +1,8 @@
-import Board from "../public/src/board";
-import Rook from "../public/src/rook";
-import Position from "../public/src/position";
-import Pawn from "../public/src/pawn";
-import GameStateManager from "../public/src/GameStateManager";
+import Board from "../public/src/gameLogic/board";
+import Rook from "../public/src/chessPieces/rook";
+import Position from "../public/src/gameLogic/position";
+import Pawn from "../public/src/chessPieces/pawn";
+import GameStateManager from "../public/src/gameLogic/GameStateManager";
 
 describe("Rook tests", () => {
   let board;

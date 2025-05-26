@@ -1,7 +1,7 @@
-import Board from "../public/src/board.js";
-import Pawn from "../public/src/pawn.js";
-import GameStateManager from "../public/src/GameStateManager.js";
-import Position from "../public/src/position.js";
+import Board from "../public/src/gameLogic/board.js";
+import Pawn from "../public/src/chessPieces/pawn.js";
+import GameStateManager from "../public/src/gameLogic/GameStateManager.js";
+import Position from "../public/src/gameLogic/position.js";
 
 describe("Pawn movement tests", () => {
   let board;

@@ -1,6 +1,6 @@
 import { updateUI } from "./updateUI.js";
-import Position from "./position.js";
-import getClickedSquareName from "./frontend/getClickedSquareName.js";
+import Position from "../gameLogic/position.js";
+import getClickedSquareName from "./getClickedSquareName.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved

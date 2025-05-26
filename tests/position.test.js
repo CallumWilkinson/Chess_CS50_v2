@@ -1,6 +1,6 @@
-import Board from "../public/src/board.js";
-import Position from "../public/src/position.js";
-import Rook from "../public/src/rook.js";
+import Board from "../public/src/gameLogic/board.js";
+import Position from "../public/src/gameLogic/position.js";
+import Rook from "../public/src/chessPieces/rook.js";
 
 describe("tests for position class", () => {
   let board;
