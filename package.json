@@ -5,7 +5,8 @@
     "@types/node": "^22.14.0",
     "eslint": "^9.26.0",
     "globals": "^16.1.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   },
   "scripts": {
     "start": "node backend/server.js",
@@ -18,7 +19,8 @@
     "transform": {},
     "testPathIgnorePatterns": [
       "/e2e/"
-    ]
+    ],
+    "testEnvironment": "jsdom"
   },
   "name": "chess_cs50_v2",
   "version": "1.0.0",
