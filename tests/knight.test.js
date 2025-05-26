@@ -1,8 +1,8 @@
-import Board from "../src/board";
-import Knight from "../src/knight";
-import Position from "../src/position";
-import GameStateManager from "../src/GameStateManager";
-import Pawn from "../src/pawn";
+import Board from "../public/src/board";
+import Knight from "../public/src/knight";
+import Position from "../public/src/position";
+import GameStateManager from "../public/src/GameStateManager";
+import Pawn from "../public/src/pawn";
 
 describe("knight tests", () => {
   let possibleMovesArray;

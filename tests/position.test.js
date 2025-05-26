@@ -1,7 +1,6 @@
-import { beforeEach, describe } from "node:test";
-import Board from "../src/board.js";
-import Position from "../src/position.js";
-import Rook from "../src/rook.js";
+import Board from "../public/src/board.js";
+import Position from "../public/src/position.js";
+import Rook from "../public/src/rook.js";
 
 describe("tests for position class", () => {
   let board;

@@ -1,11 +1,10 @@
-// //import board class
-import Bishop from "../src/bishop.js";
-import Board from "../src/board.js";
-import King from "../src/king.js";
-import Knight from "../src/knight.js";
-import Pawn from "../src/pawn.js";
-import Queen from "../src/queen.js";
-import Rook from "../src/rook.js";
+import Bishop from "../public/src/bishop.js";
+import Board from "../public/src/board.js";
+import King from "../public/src/king.js";
+import Knight from "../public/src/knight.js";
+import Pawn from "../public/src/pawn.js";
+import Queen from "../public/src/queen.js";
+import Rook from "../public/src/rook.js";
 
 //describe is a jest function to group related tests together into a test suite called "chess board"
 describe("Chess Board", () => {

@@ -1,8 +1,8 @@
-import Board from "../src/board";
-import Bishop from "../src/bishop";
-import GameStateManager from "../src/GameStateManager";
-import Position from "../src/position";
-import Pawn from "../src/pawn";
+import Board from "../public/src/board";
+import Bishop from "../public/src/bishop";
+import GameStateManager from "../public/src/GameStateManager";
+import Position from "../public/src/position";
+import Pawn from "../public/src/pawn";
 
 describe("Bishop tests", () => {
   let board;

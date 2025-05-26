@@ -1,4 +1,4 @@
-import { TurnManager } from "../src/turnManager";
+import { TurnManager } from "../public/src/turnManager";
 
 describe("Turn Manager", () => {
   let turnManager;

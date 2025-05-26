@@ -1,6 +1,6 @@
-import GameStateManager from "../src/GameStateManager";
-import Board from "../src/board";
-import Position from "../src/position";
+import GameStateManager from "../public/src/GameStateManager";
+import Board from "../public/src/board";
+import Position from "../public/src/position";
 
 describe("Game State Manager class tests", () => {
   let board;
