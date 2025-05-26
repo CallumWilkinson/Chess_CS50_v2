@@ -1,4 +1,4 @@
-import { TurnManager } from "../public/src/gameLogic/turnManager";
+import { TurnManager } from "../backend/gameLogic/turnManager";
 
 describe("Turn Manager", () => {
   let turnManager;

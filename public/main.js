@@ -1,6 +1,6 @@
 import { setupBoard } from "./src/frontend/boardSetup.js";
-import Board from "./src/gameLogic/board.js";
-import GameStateManager from "./src/gameLogic/GameStateManager.js";
+import Board from "../backend/gameLogic/board.js";
+import GameStateManager from "../backend/gameLogic/GameStateManager.js";
 import { setupMovementEventListeners } from "./src/frontend/setupEventListeners.js";
 import { setupAuthentication } from "./src/frontend/setupAuthentication.js";
 import { setupSocketListeners } from "./src/frontend/setupSocketListeners.js";

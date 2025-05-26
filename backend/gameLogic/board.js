@@ -5,7 +5,7 @@ import King from "../chessPieces/king.js";
 import Queen from "../chessPieces/queen.js";
 import Bishop from "../chessPieces/bishop.js";
 import Position from "./position.js";
-import { FilesAndRanks } from "../utilities/constants.js";
+import { FilesAndRanks } from "../../shared/utilities/constants";
 
 export default class Board {
   constructor() {

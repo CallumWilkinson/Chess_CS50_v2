@@ -1,5 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
-import { toSquareNotation } from "../utilities/toSquareNotation.js";
+import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
  * @param {string} colour

@@ -1,5 +1,5 @@
 import { updateUI } from "./updateUI.js";
-import Position from "../gameLogic/position.js";
+import Position from "../../../backend/gameLogic/position.js";
 import getClickedSquareName from "./getClickedSquareName.js";
 
 /**

@@ -1,5 +1,5 @@
-import { UIConstants } from "../utilities/constants.js";
-import { toSquareNotation } from "../utilities/toSquareNotation.js";
+import { UIConstants } from "../../../shared/utilities/constants.js";
+import { toSquareNotation } from "../../../shared/utilities/toSquareNotation.js";
 
 /**
  * @param {MouseEvent} event mouse event

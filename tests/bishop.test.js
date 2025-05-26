@@ -1,8 +1,8 @@
-import Board from "../public/src/gameLogic/board";
-import Bishop from "../public/src/chessPieces/bishop";
-import GameStateManager from "../public/src/gameLogic/GameStateManager";
-import Position from "../public/src/gameLogic/position";
-import Pawn from "../public/src/chessPieces/pawn";
+import Board from "../backend/gameLogic/board.js";
+import Bishop from "../backend/chessPieces/bishop";
+import GameStateManager from "../backend/gameLogic/GameStateManager.js";
+import Position from "../backend/gameLogic/position";
+import Pawn from "../backend/chessPieces/pawn";
 
 describe("Bishop tests", () => {
   let board;
