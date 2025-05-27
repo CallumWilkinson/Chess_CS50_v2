@@ -78,6 +78,7 @@ io.on("connection", (socket) => {
       jsonMoveData,
       gameInstance.gameStateManager
     );
+    console.log(newGameState);
 
     //broadcast the move to all other connected clients(not to self)
     socket.broadcast.emit("new game state", newGameState);

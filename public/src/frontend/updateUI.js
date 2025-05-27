@@ -2,13 +2,13 @@ import { UIConstants, FilesAndRanks } from "./shared/utilities/constants.js";
 
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @param {Board} chessBoard
+ * @param {Board} board
  * @param {GameStateManager} gameStateManager
  */
 
 //need to write better comments to explain this function more
 //i want to run this function every time a turn ends
-export function updateUI(ctx, chessBoard, gameStateManager) {
+export function updateUI(ctx, board, gameStateManager) {
   //reset board to blank first
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   // then redraw everything
@@ -19,7 +19,7 @@ export function updateUI(ctx, chessBoard, gameStateManager) {
   ctx.textBaseline = "middle";
 
   // Draw chessboard based on grid keys
-  Object.keys(chessBoard.grid).forEach((square) => {
+  Object.keys(board.grid).forEach((square) => {
     //convert dict keys from letters to numbers
     //square is a string
     //convert the string number in "a1" to an int type
@@ -75,10 +75,10 @@ export function updateUI(ctx, chessBoard, gameStateManager) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  for (const square in chessBoard.grid) {
+  for (const square in board.grid) {
     //if there is a peice on current square
-    if (chessBoard.grid[square] != null) {
-      const currentPiece = chessBoard.grid[square];
+    if (board.grid[square] != null) {
+      const currentPiece = board.grid[square];
 
       //if a white peice
       if (currentPiece.colour === "white") {

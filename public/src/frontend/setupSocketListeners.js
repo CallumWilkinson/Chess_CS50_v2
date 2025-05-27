@@ -6,25 +6,30 @@ import { updateUI } from "./updateUI.js";
 
 export function updateUIWithNewGameState(ctx) {
   //when a SUCCESSFULL MOVE IS RECEIVED
-  socket.on("new game state", (newGameState) => {
-    //extract the json objects
-    const { GameStateManager } = newGameState;
-
+  //extract the gamestatemanger from json object received
+  socket.on("new game state", ({ currentGameStateManager }) => {
     //update local UI to show the new game state
-    updateUI(ctx, GameStateManager.board, GameStateManager);
-
-    return GameStateManager;
+    updateUI(ctx, currentGameStateManager.board, currentGameStateManager);
   });
 }
 
-export function getPlayerColourAndInitialBoardState(socket) {
+export function getPlayerColourAndInitialBoardState(socket, callback) {
   //only run if a socket connection exists
   if (socket !== "undefined") {
     //when a new player connects, set its colour to window.playerColour global variable
-    socket.on("playerInfo and initial board state", (data) => {
-      console.log("You are playing as", data.colour);
-      window.playerColour = data.colour;
-      return data.gameInstance.GameStateManager;
-    });
+    socket.on(
+      "playerInfo and initial board state",
+      ({ username, colour, gameInstance }) => {
+        console.log("Hello", username);
+        console.log("You are playing as", colour);
+        console.log("gameinstance:", gameInstance);
+        window.playerColour = colour;
+        window.initialBoard = gameInstance.board;
+        window.initialGameStateManager = gameInstance.gameStateManager;
+
+        //now that the client has actually got the data from the server, we can run the callback function
+        callback();
+      }
+    );
   }
 }

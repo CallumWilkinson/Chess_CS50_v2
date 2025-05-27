@@ -12,19 +12,22 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  //getplayer colour
-  const initialGameStateManager = getPlayerColourAndInitialBoardState(socket);
-  updateUI(ctx, initialGameStateManager.board, initialGameStateManager);
+  //get the initial gamestatemanager and board state from the server, using the socket
+  //this should be a fresh game
+  //runs a callback function so that the game is only loaded when the data is received from the server
+  getPlayerColourAndInitialBoardState(socket, () => {
+    updateUI(ctx, window.initialBoard, window.initialGameStateManager);
 
-  //setup eventlisteners make ui respond to player input
-  //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove() function to update board state, switch turns and update UI
-  setupMovementEventListeners(
-    canvas,
-    initialGameStateManager.board,
-    initialGameStateManager,
-    ctx
-  );
+    //setup eventlisteners make ui respond to player input
+    //clicking on a chesspeice and then on an empty, legal square, will send json data to the server with details of the player's intended move
+    setupMovementEventListeners(
+      canvas,
+      window.initialBoard,
+      window.initialGameStateManager,
+      ctx
+    );
+  });
 
-  //update ui when new game state is received from server
+  //update ui when a new game state object is received from server
   updateUIWithNewGameState(ctx);
 };
