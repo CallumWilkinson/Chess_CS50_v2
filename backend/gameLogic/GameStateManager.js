@@ -1,4 +1,4 @@
-import { GameStatus } from "../../shared/utilities/constants";
+import { GameStatus } from "../../shared/utilities/constants.js";
 import { TurnManager } from "./turnManager.js";
 
 export default class GameStateManager {
@@ -28,21 +28,7 @@ export default class GameStateManager {
 
   //moves a chesspeice around in the dictionary to change the state of the board
   //switches player turn when the board state changes
-  makeMove(chessPiece, targetSquare, possibleMovesArray, isRemote = false) {
-    //check if a socket connection exists in the browser
-    //only emit the move if it was made by the LOCAL PLAYER
-    if (!isRemote && typeof window.socket !== "undefined") {
-      //send a move event to the server, this enables real time communication
-      //sever will broadcast this data to your opponent
-      window.socket.emit("move", {
-        //these details are sent to the server
-        from: chessPiece.position.name,
-        to: targetSquare.name,
-        piece: chessPiece.name,
-        colour: chessPiece.colour,
-      });
-    }
-
+  makeMove(chessPiece, targetSquare, possibleMovesArray) {
     //string to use key in grid
     const startSquareName = chessPiece.position.name;
     const targetSquareName = targetSquare.name;

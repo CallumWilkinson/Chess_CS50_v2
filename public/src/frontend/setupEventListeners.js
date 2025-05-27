@@ -1,18 +1,15 @@
-import { updateUI } from "./updateUI.js";
-import Position from "../../../backend/gameLogic/position.js";
 import getClickedSquareName from "./getClickedSquareName.js";
+import { sendMoveData } from "./sendMoveData.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
  * @param {Board} chessBoard
- * @param {CanvasRenderingContext2D} ctx
  */
 export function setupMovementEventListeners(
   canvas,
-  gameStateManager,
   chessBoard,
-  ctx
+  gameStateManager
 ) {
   //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = false;
@@ -26,6 +23,7 @@ export function setupMovementEventListeners(
   //add one event listner onto the whole canvas, first click is valid if there is a peice in that square
   canvas.addEventListener(`click`, (event) => {
     //if first click is null, we treat this click event as the first click
+    //this essentially means if it is the first click then proceed
     if (firstClick == false) {
       //set to true as this becomes the first click
       firstClick = true;
@@ -38,6 +36,7 @@ export function setupMovementEventListeners(
 
       //only run get possible moves if player selects their colored piece AND its their turn
       if (
+        //if square is empty OR its not your colour then reset click state
         selectedPiece == null ||
         selectedPiece.colour !== gameStateManager.currentPlayerColour ||
         selectedPiece.colour !== window.playerColour
@@ -48,7 +47,8 @@ export function setupMovementEventListeners(
         return;
       } else {
         //if there is a peice in the square you clicked and its your turn
-        //getpossiblemoves for selected peice
+        //THEN FIRST CLICK IS SUCCESSFUL
+        //getpossiblemoves for selected peice, THIS IS NEEDED FOR CLIENT SIDE VALIDATION
         possibleMovesArray = selectedPiece.getPossibleMoves(chessBoard);
       }
     } else {
@@ -79,31 +79,21 @@ export function setupMovementEventListeners(
         return;
       }
       //second click is now considered valid
-      //make a position object to pass through make Move function
-      const targetPosition = new Position(secondClickSquareName);
+      const targetPositionName = secondClickSquareName;
 
       try {
-        const moveSuccessful = gameStateManager.makeMove(
-          selectedPiece,
-          targetPosition,
-          possibleMovesArray
-        );
+        //send intent to move to the server, the server will make the move if it is valid
+        sendMoveData(selectedPiece, targetPositionName, possibleMovesArray);
 
-        if (moveSuccessful === true) {
-          updateUI(ctx, chessBoard, gameStateManager);
-          console.log(gameStateManager.capturedPieces);
-
-          //reset click state for the next pair of clicks after a sucessful move
-          firstClick = false;
-          selectedPiece = null;
-          possibleMovesArray = null;
-          firstClickedSquareName = null;
-        }
+        //reset click state for the next pair of clicks after a sucessful move
+        firstClick = false;
+        selectedPiece = null;
+        possibleMovesArray = null;
+        firstClickedSquareName = null;
       } catch (err) {
         // replace with better frontend feedback later
         alert(err.message);
       }
-
       return;
     }
   });

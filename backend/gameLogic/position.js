@@ -1,4 +1,4 @@
-import { FilesAndRanks } from "../../shared/utilities/constants";
+import { FilesAndRanks } from "../../shared/utilities/constants.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**

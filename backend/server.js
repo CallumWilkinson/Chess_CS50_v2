@@ -3,6 +3,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getNewGameState } from "./gameLogic/getNewGameState.js";
+import GameInstance from "./gameSetup/GameInstance.js";
 
 //setup directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -22,7 +24,7 @@ const io = new Server(httpServer);
 const PORT = process.env.PORT || 3000;
 
 //serve static files from public folder (all the front end stuff)
-//basically means when someone goes to port 3000 send them all files in the public folder
+//basically means when someone goes to port 3000 send them all files in the public folder (the front end)
 app.use(express.static(path.join(__dirname, "../public")));
 
 //key is socket.id, values are objects with username and colour
@@ -36,6 +38,10 @@ io.on("connection", (socket) => {
 
   //get array of colours currently being used by connected players
   const connectedPlayers = Object.values(players).map((p) => p.colour);
+
+  //create a new game, this function essentially creates the board, gamestatemanager and peices for the backend
+  const gameInstance = new GameInstance();
+  gameInstance.createNewGame();
 
   //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
   let assignedColour;
@@ -53,19 +59,28 @@ io.on("connection", (socket) => {
   console.log(`${username} connected as ${assignedColour}`);
 
   //send a playerinfo message to the newly connected client, tell them their username and color
-  socket.emit("playerInfo", {
+  //also send the inital board state???
+  socket.emit("playerInfo and initial board state", {
     username,
     colour: assignedColour,
+    gameInstance,
   });
 
   //listen for a 'move' event from this client
-  socket.on("move", (data) => {
+  socket.on("move", (jsonMoveData) => {
     //console log in terminal move data received
-    console.log("Received move:", data);
+    console.log("Received move:", jsonMoveData);
+
+    //when you receive a move from the opponent, run the make move function
+    //return gamestatemanager and board to send to the client
+    //this function will run the gamestatemnager.makemove() and return json objects of board and gamestate to send back to client
+    const newGameState = getNewGameState(
+      jsonMoveData,
+      gameInstance.gameStateManager
+    );
 
     //broadcast the move to all other connected clients(not to self)
-    //player B can see player A's move
-    socket.broadcast.emit("move", data);
+    socket.broadcast.emit("new game state", newGameState);
   });
 
   //handle disconnects

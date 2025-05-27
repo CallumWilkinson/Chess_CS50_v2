@@ -1,45 +1,30 @@
-import Position from "../../../backend/gameLogic/position.js";
 import { updateUI } from "./updateUI.js";
 
 /**
- *
- * @param {Board} board
- * @param {GameStateManager} gameStateManager
  * @param {CanvasRenderingContext2D} ctx
  */
 
-export function setupSocketListeners(ctx, board, gameStateManager) {
+export function updateUIWithNewGameState(ctx) {
+  //when a SUCCESSFULL MOVE IS RECEIVED
+  socket.on("new game state", (newGameState) => {
+    //extract the json objects
+    const { GameStateManager } = newGameState;
+
+    //update local UI to show the new game state
+    updateUI(ctx, GameStateManager.board, GameStateManager);
+
+    return GameStateManager;
+  });
+}
+
+export function getPlayerColourAndInitialBoardState(socket) {
   //only run if a socket connection exists
-  if (typeof window.socket !== "undefined") {
+  if (socket !== "undefined") {
     //when a new player connects, set its colour to window.playerColour global variable
-    window.socket.on("playerInfo", (data) => {
+    socket.on("playerInfo and initial board state", (data) => {
       console.log("You are playing as", data.colour);
       window.playerColour = data.colour;
-    });
-
-    //when an ENEMY MOVE IS RECEIVED
-    window.socket.on("move", (data) => {
-      //listens for a "move" event from the server
-      //gamestatemanager.makeMove() will send a json object to the server when a player moves
-      //extract the square/position names from the data
-      const { from, to } = data;
-
-      //simulate the move locally
-      //retrive peice that the opponent moved
-      const chessPiece = board.grid[from];
-      const targetPosition = new Position(to);
-      const possibleMoves = chessPiece.getPossibleMoves(board);
-
-      //tell local game state manager to execute move, update board and switch turns
-      gameStateManager.makeMove(
-        chessPiece,
-        targetPosition,
-        possibleMoves,
-        true
-      );
-
-      //update local UI to show the move
-      updateUI(ctx, board, gameStateManager);
+      return data.gameInstance.GameStateManager;
     });
   }
 }
