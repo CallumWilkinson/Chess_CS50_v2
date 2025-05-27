@@ -4,13 +4,9 @@ import { sendMoveData } from "./sendMoveData.js";
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
- * @param {Board} chessBoard
+ * @param {Board} board
  */
-export function setupMovementEventListeners(
-  canvas,
-  chessBoard,
-  gameStateManager
-) {
+export function setupMovementEventListeners(canvas, board, gameStateManager) {
   //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = false;
   let firstClickedSquareName = null;
@@ -32,7 +28,7 @@ export function setupMovementEventListeners(
       firstClickedSquareName = getClickedSquareName(event, canvas);
 
       //get the chess peice object at given key
-      selectedPiece = chessBoard.grid[firstClickedSquareName];
+      selectedPiece = board.grid[firstClickedSquareName];
 
       //only run get possible moves if player selects their colored piece AND its their turn
       if (
@@ -49,7 +45,7 @@ export function setupMovementEventListeners(
         //if there is a peice in the square you clicked and its your turn
         //THEN FIRST CLICK IS SUCCESSFUL
         //getpossiblemoves for selected peice, THIS IS NEEDED FOR CLIENT SIDE VALIDATION
-        possibleMovesArray = selectedPiece.getPossibleMoves(chessBoard);
+        possibleMovesArray = selectedPiece.getPossibleMoves(board);
       }
     } else {
       //second click is valid if firstClick variable is NOT NULL, so it contains a value
@@ -65,7 +61,7 @@ export function setupMovementEventListeners(
       }
 
       //check if the second click is on another of the player's own pieces
-      const newSelectedPiece = chessBoard.grid[secondClickSquareName];
+      const newSelectedPiece = board.grid[secondClickSquareName];
       if (
         newSelectedPiece != null &&
         newSelectedPiece.colour === gameStateManager.currentPlayerColour &&
@@ -74,7 +70,7 @@ export function setupMovementEventListeners(
         //treat this second click as a new selection
         firstClickedSquareName = secondClickSquareName;
         selectedPiece = newSelectedPiece;
-        possibleMovesArray = selectedPiece.getPossibleMoves(chessBoard);
+        possibleMovesArray = selectedPiece.getPossibleMoves(board);
         //firstClick remains true
         return;
       }

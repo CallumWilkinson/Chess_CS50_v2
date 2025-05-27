@@ -4,7 +4,7 @@ import { updateUI } from "./updateUI.js";
  * @param {CanvasRenderingContext2D} ctx
  */
 
-export function updateUIWithNewGameState(ctx) {
+export function updateUIWithNewGameState(ctx, socket) {
   //when a SUCCESSFULL MOVE IS RECEIVED
   //extract the gamestatemanger from json object received
   socket.on("new game state", ({ currentGameStateManager }) => {

@@ -29,5 +29,5 @@ window.onload = () => {
   });
 
   //update ui when a new game state object is received from server
-  updateUIWithNewGameState(ctx);
+  updateUIWithNewGameState(ctx, socket);
 };
