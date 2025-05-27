@@ -2,7 +2,10 @@ import Position from "./position.js";
 
 export function getNewGameState(jsonMoveData, currentGameStateManager) {
   //deconstruct the json data object
-  const { possibleMovesArray, chessPiece, targetSquareName } = jsonMoveData;
+  const { chessPiece, targetSquareName } = jsonMoveData;
+
+  //i dont think this will work cos json data wont have access to methods
+  const possibleMovesArray = chessPiece.getPossibleMoves();
 
   //make position object so i can run makemove
   //note for later i could probably just remove this and pass jsut the name through to makemove but that would mean refactoring all my tests too

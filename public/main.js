@@ -21,6 +21,7 @@ window.onload = () => {
     //setup eventlisteners make ui respond to player input
     //clicking on a chesspeice and then on an empty, legal square, will send json data to the server with details of the player's intended move
     setupMovementEventListeners(
+      socket,
       canvas,
       window.initialBoard,
       window.initialGameStateManager,

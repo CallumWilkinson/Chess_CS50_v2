@@ -6,12 +6,16 @@ import { sendMoveData } from "./sendMoveData.js";
  * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
  * @param {Board} board
  */
-export function setupMovementEventListeners(canvas, board, gameStateManager) {
+export function setupMovementEventListeners(
+  socket,
+  canvas,
+  board,
+  gameStateManager
+) {
   //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = false;
   let firstClickedSquareName = null;
   let selectedPiece = null;
-  let possibleMovesArray = null;
 
   //clicking on a chesspeice and then on an empty, legal square, will run the gameStateManager.makeMove()
   //this will update board state and switch turns
@@ -41,11 +45,6 @@ export function setupMovementEventListeners(canvas, board, gameStateManager) {
         firstClick = false;
         selectedPiece = null;
         return;
-      } else {
-        //if there is a peice in the square you clicked and its your turn
-        //THEN FIRST CLICK IS SUCCESSFUL
-        //getpossiblemoves for selected peice, THIS IS NEEDED FOR CLIENT SIDE VALIDATION
-        possibleMovesArray = selectedPiece.getPossibleMoves(board);
       }
     } else {
       //second click is valid if firstClick variable is NOT NULL, so it contains a value
@@ -55,7 +54,6 @@ export function setupMovementEventListeners(canvas, board, gameStateManager) {
       if (firstClickedSquareName === secondClickSquareName) {
         firstClick = false;
         selectedPiece = null;
-        possibleMovesArray = null;
         firstClickedSquareName = null;
         return;
       }
@@ -70,7 +68,6 @@ export function setupMovementEventListeners(canvas, board, gameStateManager) {
         //treat this second click as a new selection
         firstClickedSquareName = secondClickSquareName;
         selectedPiece = newSelectedPiece;
-        possibleMovesArray = selectedPiece.getPossibleMoves(board);
         //firstClick remains true
         return;
       }
@@ -79,12 +76,11 @@ export function setupMovementEventListeners(canvas, board, gameStateManager) {
 
       try {
         //send intent to move to the server, the server will make the move if it is valid
-        sendMoveData(selectedPiece, targetPositionName, possibleMovesArray);
+        sendMoveData(socket, selectedPiece, targetPositionName);
 
         //reset click state for the next pair of clicks after a sucessful move
         firstClick = false;
         selectedPiece = null;
-        possibleMovesArray = null;
         firstClickedSquareName = null;
       } catch (err) {
         // replace with better frontend feedback later

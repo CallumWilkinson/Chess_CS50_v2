@@ -7,10 +7,16 @@ import { updateUI } from "./updateUI.js";
 export function updateUIWithNewGameState(ctx, socket) {
   //when a SUCCESSFULL MOVE IS RECEIVED
   //extract the gamestatemanger from json object received
-  socket.on("new game state", ({ currentGameStateManager }) => {
-    //update local UI to show the new game state
-    updateUI(ctx, currentGameStateManager.board, currentGameStateManager);
-  });
+  if (socket !== "undefined") {
+    socket.on("new game state", ({ currentGameStateManager }) => {
+      console.log(
+        "client recived this new gamestatemanager",
+        currentGameStateManager
+      );
+      //update local UI to show the new game state
+      updateUI(ctx, currentGameStateManager.board, currentGameStateManager);
+    });
+  }
 }
 
 export function getPlayerColourAndInitialBoardState(socket, callback) {
@@ -22,7 +28,7 @@ export function getPlayerColourAndInitialBoardState(socket, callback) {
       ({ username, colour, gameInstance }) => {
         console.log("Hello", username);
         console.log("You are playing as", colour);
-        console.log("gameinstance:", gameInstance);
+        console.log("client received this initial gameinstance:", gameInstance);
         window.playerColour = colour;
         window.initialBoard = gameInstance.board;
         window.initialGameStateManager = gameInstance.gameStateManager;
