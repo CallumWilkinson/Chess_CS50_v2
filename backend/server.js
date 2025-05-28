@@ -3,8 +3,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
-import { getNewGameState } from "./gameLogic/getNewGameState.js";
 import GameInstance from "./gameSetup/GameInstance.js";
+import { handleMove } from "./helpers/handleMove.js";
 
 //setup directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -68,39 +68,7 @@ io.on("connection", (socket) => {
 
   //listen for a 'move' event from this client
   socket.on("move", (jsonMoveData) => {
-    //check if the move is from the current player
-    const currentPlayerColour =
-      gameInstance.gameStateManager.turnManager.currentPlayerColour;
-
-    //send error to client if player tried to move when its not their turn
-    if (players[socket.id].colour !== currentPlayerColour) {
-      socket.emit("It's not your turn!");
-      return;
-    }
-    //console log in terminal move data received
-    console.log("Server has received a move");
-
-    try {
-      //when you receive a move from the opponent, run the make move function
-      //return gamestatemanager and board to send to the client
-      //this function will run the gamestatemnager.makemove() and return json objects of board and gamestate to send back to client
-      const newGameState = getNewGameState(
-        jsonMoveData,
-        gameInstance.gameStateManager,
-        gameInstance.board
-      );
-
-      //send to everyone, including the client that sent the data
-      socket.emit("new game state", newGameState);
-      console.log("new game state and board as been sent to the client");
-    } catch (err) {
-      console.error("Server error processing move:", err);
-      socket.emit(
-        "error",
-        err.message ||
-          "An error occurred on the server when processing your move."
-      );
-    }
+    handleMove(socket, jsonMoveData, players, gameInstance);
   });
 
   //handle disconnects
