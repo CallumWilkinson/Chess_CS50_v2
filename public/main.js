@@ -31,4 +31,10 @@ window.onload = () => {
 
   //update ui when a new game state object is received from server
   updateUIWithNewGameState(ctx, socket);
+
+  //find another place for this later but leave it here for now
+  //this is to catch errors when the client tries to move when its not their turn
+  socket.on("It's not your turn!", () => {
+    alert("It's not your turn!");
+  });
 };

@@ -58,7 +58,7 @@ export function setupMovementEventListeners(
         return;
       }
 
-      //check if the second click is on another of the player's own pieces
+      //check if the second click is on another of the player's own pieces and its their turn
       const newSelectedPiece = board.grid[secondClickSquareName];
       if (
         newSelectedPiece != null &&
