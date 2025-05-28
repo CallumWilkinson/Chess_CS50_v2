@@ -69,19 +69,20 @@ io.on("connection", (socket) => {
   //listen for a 'move' event from this client
   socket.on("move", (jsonMoveData) => {
     //console log in terminal move data received
-    console.log("Received move:", jsonMoveData);
+    console.log("Server has received move:", jsonMoveData);
 
     //when you receive a move from the opponent, run the make move function
     //return gamestatemanager and board to send to the client
     //this function will run the gamestatemnager.makemove() and return json objects of board and gamestate to send back to client
     const newGameState = getNewGameState(
       jsonMoveData,
-      gameInstance.gameStateManager
+      gameInstance.gameStateManager,
+      gameInstance.board
     );
     console.log(newGameState);
 
-    //broadcast the move to all other connected clients(not to self)
-    socket.broadcast.emit("new game state", newGameState);
+    //send to everyone, including the client that sent the data
+    socket.emit("new game state", newGameState);
   });
 
   //handle disconnects
