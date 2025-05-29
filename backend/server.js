@@ -3,8 +3,6 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
-import GameInstance from "./gameSetup/GameInstance.js";
-import { handleMove } from "./helpers/handleMove.js";
 
 //setup directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -27,57 +25,8 @@ const PORT = process.env.PORT || 3000;
 //basically means when someone goes to port 3000 send them all files in the public folder (the front end)
 app.use(express.static(path.join(__dirname, "../public")));
 
-//key is socket.id, values are objects with username and colour
-const players = {};
-
-//listen for new socket connections, this runs everytime someone connects to the server
-//a socket is a 2 day communication channel between browser and server
-io.on("connection", (socket) => {
-  //get username from clients auth handsake, if none default to guest
-  const username = socket.handshake.auth.username || "Guest";
-
-  //get array of colours currently being used by connected players
-  const connectedPlayers = Object.values(players).map((p) => p.colour);
-
-  //create a new game, this function essentially creates the board, gamestatemanager and peices for the backend
-  const gameInstance = new GameInstance();
-  gameInstance.createNewGame();
-
-  //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
-  let assignedColour;
-
-  if (connectedPlayers.includes("black")) {
-    assignedColour = "white";
-  } else {
-    assignedColour = "black";
-  }
-
-  //save the player's username and color in the players object using socket.id key
-  players[socket.id] = { username, colour: assignedColour };
-
-  //console log in terminal when a user connects
-  console.log(`${username} connected as ${assignedColour}`);
-
-  //send a playerinfo message to the newly connected client, tell them their username and color
-  //also send the inital board state???
-  socket.emit("playerInfo and initial board state", {
-    username,
-    colour: assignedColour,
-    gameInstance,
-  });
-
-  //listen for a 'move' event from this client
-  socket.on("move", (jsonMoveData) => {
-    handleMove(socket, jsonMoveData, players, gameInstance);
-  });
-
-  //handle disconnects
-  socket.on("disconnect", () => {
-    //log disconnection to terminal and delete player username and color
-    console.log(`${username} disconnected`);
-    delete players[socket.id];
-  });
-});
+//creates new game sessions and adds all socket listeners
+launchServer(io);
 
 //start HTTP server and listen on the specified port
 //when i run node backend/server.js this line makes the server go live
