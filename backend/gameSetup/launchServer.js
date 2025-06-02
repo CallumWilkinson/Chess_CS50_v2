@@ -2,7 +2,10 @@ import GameInstance from "./GameInstance.js";
 import { handleMove } from "../helpers/handleMove.js";
 
 export function launchServer(server) {
-  //holds all game sessions, key is GameID, contains game session objects
+  //holds all game sessions, key is GameID, contains game session objects that have the following values:
+  //gameID
+  //connectedPlayersSocketIDs.players[]
+  //gameInstance
   const gameSessions = {};
 
   //create a mapping of socketID to gameID so that i can effiently find which player belongs to which "game session"
@@ -79,7 +82,7 @@ function createNewSession(gameSessions, socketIDtoGameID, socket) {
   console.log(`${username} connected to gameID ${gameID} as ${assignedColour}`);
 
   //send a playerinfo message to the newly connected client, tell them their username, their color and the inital board state for them to uptdate their ui
-  socket.emit("playerInfo and initial board state", {
+  socket.emit("playerInfoAndInitialGameState", {
     username,
     colour: assignedColour,
     gameInstance,
@@ -109,7 +112,7 @@ function joinExistingSession(gameID, gameSessions, socketIDtoGameID, socket) {
   const gameInstance = gameSessions[gameID].gameInstance;
 
   //send a playerinfo message to the newly connected client, tell them their username, their color and the inital board state for them to uptdate their ui
-  socket.emit("playerInfo and initial board state", {
+  socket.emit("playerInfoAndInitialGameState", {
     username,
     colour: assignedColour,
     gameInstance,
@@ -123,24 +126,26 @@ function handleDisconnect(gameSessions, socketIDtoGameID, socket) {
   //get session data for the player
   const sessionData = gameSessions[gameID];
 
-  //var for readability, this stores username and colour
-  const playerDataStoredInsideSession =
-    sessionData.connectedPlayersSocketIDs.players[socket.id];
+  if (sessionData != null) {
+    //var for readability, this stores username and colour
+    const playerDataStoredInsideSession =
+      sessionData.connectedPlayersSocketIDs.players[socket.id];
 
-  //get the username of the person disconnecting
-  const playerUsername = playerDataStoredInsideSession.username;
+    //get the username of the person disconnecting
+    const playerUsername = playerDataStoredInsideSession.username;
 
-  //remove the player data from the session (name and colour)
-  //i dont actually know if i even need this line tbh but i just want to be safe
-  playerDataStoredInsideSession = null;
+    //remove the player data from the session (name and colour)
+    //i dont actually know if i even need this line tbh but i just want to be safe
+    playerDataStoredInsideSession = null;
 
-  //delete the key
-  delete sessionData.connectedPlayersSocketIDs.players[socket.id];
+    //delete the key
+    delete sessionData.connectedPlayersSocketIDs.players[socket.id];
 
-  //log disconnection to terminal and delete player username and color
-  console.log(
-    `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameID}`
-  );
+    //log disconnection to terminal and delete player username and color
+    console.log(
+      `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameID}`
+    );
+  }
 }
 
 function generateGameId() {
