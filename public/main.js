@@ -12,6 +12,8 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
+  // joinExistingGameOrCreateNewGame();
+
   //get the initial gamestatemanager and board state from the server, using the socket
   //this should be a fresh game
   //runs a callback function so that the game is only loaded when the data is received from the server
@@ -27,10 +29,12 @@ window.onload = () => {
       window.initialGameStateManager,
       ctx
     );
+
+    //update ui when a new game state object is received from server
+    updateUIWithNewGameState(ctx, socket);
   });
 
-  //update ui when a new game state object is received from server
-  updateUIWithNewGameState(ctx, socket);
+  // disconnectFromGame();
 
   //find another place for this later but leave it here for now
   //this is to catch errors when the client tries to move when its not their turn
