@@ -16,17 +16,21 @@ window.onload = () => {
 
   //get the initial gamestatemanager and board state from the server, using the socket
   //this should be a fresh game
-  //runs a callback function so that the game is only loaded when the data is received from the server
-  getPlayerColourAndInitialBoardState(socket, () => {
-    updateUI(ctx, window.initialBoard, window.initialGameStateManager);
+  //runs a callback function so that the game is only loaded when the data is received from the server and lets me access the gameinstance from the server
+  getPlayerColourAndInitialBoardState(socket, ({ gameInstance }) => {
+    updateUI(
+      ctx,
+      gameInstance.initialBoard,
+      gameInstance.initialGameStateManager
+    );
 
     //setup eventlisteners make ui respond to player input
     //clicking on a chesspeice and then on an empty, legal square, will send json data to the server with details of the player's intended move
     setupMovementEventListeners(
       socket,
       canvas,
-      window.initialBoard,
-      window.initialGameStateManager,
+      gameInstance.initialBoard,
+      gameInstance.initialGameStateManager,
       ctx
     );
 
@@ -38,7 +42,7 @@ window.onload = () => {
 
   //find another place for this later but leave it here for now
   //this is to catch errors when the client tries to move when its not their turn
-  socket.on("It's not your turn!", () => {
+  socket.on("notYourTurn", () => {
     alert("It's not your turn!");
   });
 };

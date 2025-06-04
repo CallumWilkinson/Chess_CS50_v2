@@ -1,4 +1,12 @@
-//sockerid is a string
+import { jest } from "@jest/globals";
+import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import path from "path";
+import { fileURLToPath } from "url";
+import { launchServer } from "../backend/gameSetup/launchServer.js";
+
+//socketid is a string
 function createMockSocket(socketID) {
   //to test if join was called we make a mock function
   //if no implementation is given, fn() will return undefined
@@ -12,15 +20,18 @@ function createMockSocket(socketID) {
   };
 }
 
-describe("Tests for when the server makes a new game session", () => {
-  let gameSessions;
+describe("Testing that the server is sending and receiving data over sockets as intended", () => {
+  let appMock, httpServerMock, socketServerMock, listenMock;
 
   beforeEach(() => {
-    //reset gamesessions dictionary
-    gameSessions = {};
+    //create an express application
+    appMock = express();
+
+    listenMock;
   });
+
   test("Client chooses to make a new game session", () => {
     const socket = createMockSocket("socket1");
-    const gameID = 
+    socket.emit("createNewGame");
   });
 });

@@ -22,7 +22,7 @@ export function handleMove(
 
   //send error to client if player tried to move when its not their turn
   if (players[socket.id].colour !== currentPlayerColour) {
-    socket.emit("It's not your turn!");
+    socket.emit("notYourTurn");
     return;
   }
   //console log in terminal move data received
@@ -39,7 +39,7 @@ export function handleMove(
     );
 
     //send the move to everyone, including the client that sent the data
-    socket.emit("new game state", newGameState);
+    socket.emit("newGameState", newGameState);
     console.log("new game state and board as been sent to the client");
   } catch (err) {
     console.error("Server error processing move:", err);
