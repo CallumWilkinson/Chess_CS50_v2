@@ -12,6 +12,9 @@ function createMockSocket() {
     //id for the socket
     id: "mockSocketID1234",
 
+    //mock function for socket.join
+    join: jest.fn(),
+
     //add auth value to the socket to simulate auth
     handshake: {
       auth: {
@@ -49,8 +52,6 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
   test("Client chooses to make a new game session, sends createnewgame event to server and server sends back the initial board state", () => {
     const mockSocket = createMockSocket();
-    //simulate that the user wrote callum as their username in the browser popup
-    mockSocket.handshake.auth.username = "callum";
 
     //create a server that has an on(event, callback) method it can call on itself
     const mockServer = {
@@ -72,7 +73,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     expect(mockSocket.emit).toHaveBeenCalledWith(
       "playerInfoAndInitialGameState",
       expect.objectContaining({
-        username: expect.any(String),
+        username: "callum",
         colour: expect.any(String),
         gameInstance: expect.any(Object),
       })

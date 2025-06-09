@@ -24,12 +24,18 @@ export function launchServer(server) {
     //when the player selects an existing game to join, run this on the receipt of a "join game" event fom the client
     //join the game, add new player's socketid to the gamesession object and send back the board initial state to the player
     socket.on("joinExistingGame", (gameID) => {
-      joinExistingSession(gameID, gameSessions, socketIDtoGameID, socket);
+      joinExistingSession(
+        gameID,
+        gameSessions,
+        socketIDtoGameID,
+        socket,
+        username
+      );
     });
 
     //OR when client chooses to create a new game
     socket.on("createNewGame", () => {
-      createNewSession(gameSessions, socketIDtoGameID, socket);
+      createNewSession(gameSessions, socketIDtoGameID, socket, username);
     });
 
     //listen for a 'move' event from this client
@@ -44,7 +50,7 @@ export function launchServer(server) {
   });
 }
 
-function createNewSession(gameSessions, socketIDtoGameID, socket) {
+function createNewSession(gameSessions, socketIDtoGameID, socket, username) {
   //create a new gameID and gameInstance to add to the gameSessions object
   const gameID = generateGameId();
   const gameInstance = new GameInstance(gameID);
@@ -59,7 +65,7 @@ function createNewSession(gameSessions, socketIDtoGameID, socket) {
   const assignedColour = getPlayerColour(players);
 
   //save the player's username and color in the players object using socket.id key
-  players[socket.id] = { username, colour: assignedColour };
+  players[socket.id] = { username: username, colour: assignedColour };
 
   //add to id mapping object to easily associate players with game ids, this is used when a player makes a move
   socketIDtoGameID[socket.id] = gameID;
@@ -89,7 +95,13 @@ function createNewSession(gameSessions, socketIDtoGameID, socket) {
   });
 }
 
-function joinExistingSession(gameID, gameSessions, socketIDtoGameID, socket) {
+function joinExistingSession(
+  gameID,
+  gameSessions,
+  socketIDtoGameID,
+  socket,
+  username
+) {
   //add player's socket.id to the gameSession dict
   //this basically "adds" the player to the player's dictionary for this game session
   const players = gameSessions[gameID].connectedPlayersSocketIDs.players;
@@ -103,7 +115,7 @@ function joinExistingSession(gameID, gameSessions, socketIDtoGameID, socket) {
 
   //assign username and colour to the player's socket.id in the gamesession dict
   //this adds values to the key
-  players[socket.id] = { username, colour: assignedColour };
+  players[socket.id] = { username: username, colour: assignedColour };
 
   //join an exisiting "socket room"
   socket.join(gameID);
