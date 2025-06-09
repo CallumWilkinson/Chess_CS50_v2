@@ -9,8 +9,8 @@ function createMockSocket() {
   const handlers = {};
 
   return {
-    //id for the socket
-    id: "mockSocketID1234",
+    //random id for the socket, this simulates socket.id
+    id: Math.random().toString(36).slice(2, 8),
 
     //mock function for socket.join
     join: jest.fn(),
@@ -18,7 +18,8 @@ function createMockSocket() {
     //add auth value to the socket to simulate auth
     handshake: {
       auth: {
-        username: "callum",
+        //setting to undefined simulates every user just going in as guest
+        username: undefined,
       },
     },
 
@@ -48,13 +49,17 @@ function createMockSocket() {
 }
 
 describe("Testing that the server is sending and receiving data over sockets as intended", () => {
-  beforeEach(() => {});
+  let mockSocket;
+  let mockServer;
+  let socketIDtoGameID;
 
-  test("Client chooses to make a new game session, sends createnewgame event to server and server sends back the initial board state", () => {
-    const mockSocket = createMockSocket();
+  //this beforeEach block does pretty much everything that server.js does so it works like an entry point
+  beforeEach(() => {
+    //run the createmocksocket function above
+    mockSocket = createMockSocket();
 
     //create a server that has an on(event, callback) method it can call on itself
-    const mockServer = {
+    mockServer = {
       on(event, callback) {
         if (event === "connection") {
           callback(mockSocket);
@@ -63,8 +68,11 @@ describe("Testing that the server is sending and receiving data over sockets as 
     };
 
     //this will call server.on and attaches all socket.on event listners on the server side
-    launchServer(mockServer);
+    //this function is the logic that i want to test
+    socketIDtoGameID = launchServer(mockServer);
+  });
 
+  test("Client chooses to make a new game session, sends createnewgame event to server and server sends back the initial board state", () => {
     //simulate the client sending a createnewgame event to the server
     //the server's response logic will trigger once this line runs
     mockSocket.simulateIncoming("createNewGame");
@@ -73,7 +81,28 @@ describe("Testing that the server is sending and receiving data over sockets as 
     expect(mockSocket.emit).toHaveBeenCalledWith(
       "playerInfoAndInitialGameState",
       expect.objectContaining({
-        username: "callum",
+        colour: expect.any(String),
+        gameInstance: expect.any(Object),
+      })
+    );
+  });
+
+  test("client chooses to join an existing game, server sends back the game instance they choose to join", () => {
+    //user A chooses to createNewGame
+    mockSocket.simulateIncoming("createNewGame");
+
+    //lookup game id using the socket.id connection that made the game above
+    const gameID = socketIDtoGameID[mockSocket.id];
+
+    //does each player have their own mockSocket?
+    let mockSocketTwo = createMockSocket();
+
+    //user B chooses to join the game that user A created
+    mockSocketTwo.simulateIncoming("joinExistingGame", gameID);
+
+    expect(mockSocketTwo.emit).toHaveBeenCalledWith(
+      "playerInfoAndInitialGameState",
+      expect.objectContaining({
         colour: expect.any(String),
         gameInstance: expect.any(Object),
       })

@@ -48,6 +48,9 @@ export function launchServer(server) {
       handleDisconnect(gameSessions, socketIDtoGameID, socket);
     });
   });
+
+  //for testss
+  return socketIDtoGameID;
 }
 
 function createNewSession(gameSessions, socketIDtoGameID, socket, username) {
