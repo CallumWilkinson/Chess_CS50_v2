@@ -77,7 +77,7 @@ function createNewSession(gameSessions, socketIDtoGameID, socket, username) {
   //i will have 2 players associated with each gameID
   gameSessions[gameID] = {
     id: gameID,
-    connectedPlayersSocketIDs: players,
+    connectedPlayersSocketIDs: { players: {} },
     gameInstance: gameInstance,
   };
 
@@ -105,20 +105,20 @@ function joinExistingSession(
   socket,
   username
 ) {
-  //add player's socket.id to the gameSession dict
-  //this basically "adds" the player to the player's dictionary for this game session
-  const players = gameSessions[gameID].connectedPlayersSocketIDs.players;
-  players.push(socket.id);
-
   //add to id mapping object to easily associate players with game ids, this is used when a player makes a move
   socketIDtoGameID[socket.id] = gameID;
 
   //assign color based on joining order
-  const assignedColour = getPlayerColour(players);
+  const assignedColour = getPlayerColour(
+    gameSessions[gameID].connectedPlayersSocketIDs.players
+  );
 
   //assign username and colour to the player's socket.id in the gamesession dict
   //this adds values to the key
-  players[socket.id] = { username: username, colour: assignedColour };
+  gameSessions[gameID].connectedPlayersSocketIDs.players[socket.id] = {
+    username: username,
+    colour: assignedColour,
+  };
 
   //join an exisiting "socket room"
   socket.join(gameID);
@@ -150,8 +150,6 @@ function handleDisconnect(gameSessions, socketIDtoGameID, socket) {
     const playerUsername = playerDataStoredInsideSession.username;
 
     //remove the player data from the session (name and colour)
-    //i dont actually know if i even need this line tbh but i just want to be safe
-    playerDataStoredInsideSession = null;
 
     //delete the key
     delete sessionData.connectedPlayersSocketIDs.players[socket.id];

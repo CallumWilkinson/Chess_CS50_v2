@@ -108,4 +108,36 @@ describe("Testing that the server is sending and receiving data over sockets as 
       })
     );
   });
+
+  test("joining an existing game adds the player's socket id to the mapping socketIDtoGameID, essentially confirming that the second player has joined the game", () => {
+    //each player gets their own socket
+    const socketA = createMockSocket();
+    const socketB = createMockSocket();
+
+    //both players connect to the server
+    const multiServer = {
+      on(event, callback) {
+        if (event === "connection") {
+          callback(socketA);
+          callback(socketB);
+        }
+      },
+    };
+
+    //if this mapping has both socket.ids then they have both joined
+    const socketIDtoGameID = launchServer(multiServer);
+
+    //player A makes a new game
+    socketA.simulateIncoming("createNewGame");
+
+    //get game id from player a socket id
+    const gameID = socketIDtoGameID[socketA.id];
+
+    //expecting not to get an error then player B joins the lobby
+    expect(() =>
+      socketB.simulateIncoming("joinExistingGame", gameID)
+    ).not.toThrow();
+    //expecting player B to be in the game lobby
+    expect(socketIDtoGameID[socketB.id]).toBe(gameID);
+  });
 });
