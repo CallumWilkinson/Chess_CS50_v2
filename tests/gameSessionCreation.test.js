@@ -52,6 +52,8 @@ describe("Testing that the server is sending and receiving data over sockets as 
   let mockSocket;
   let mockServer;
   let socketIDtoGameID;
+  //stores a callback FUNCTION inside a variable
+  let connectionCallBack;
 
   //this beforeEach block does pretty much everything that server.js does so it works like an entry point
   beforeEach(() => {
@@ -62,6 +64,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockServer = {
       on(event, callback) {
         if (event === "connection") {
+          connectionCallBack = callback;
           callback(mockSocket);
         }
       },
@@ -94,8 +97,13 @@ describe("Testing that the server is sending and receiving data over sockets as 
     //lookup game id using the socket.id connection that made the game above
     const gameID = socketIDtoGameID[mockSocket.id];
 
-    //does each player have their own mockSocket?
+    //second player connects to server
     let mockSocketTwo = createMockSocket();
+
+    //use the connection callback variable (which is actually a function stored inside the variable)
+    //this is what connects the second player to the existing socket?
+    //we connect another mock socket by using the connection callback we stored earlier
+    connectionCallBack(mockSocketTwo);
 
     //user B chooses to join the game that user A created
     mockSocketTwo.simulateIncoming("joinExistingGame", gameID);

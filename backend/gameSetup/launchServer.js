@@ -4,7 +4,7 @@ import { handleMove } from "../helpers/handleMove.js";
 export function launchServer(server) {
   //holds all game sessions, key is GameID, contains game session objects that have the following values:
   //gameID
-  //connectedPlayersSocketIDs.players[]
+  //connectedPlayersSocketIDs.players[{ username, colour }]
   //gameInstance
   const gameSessions = {};
 
@@ -77,7 +77,7 @@ function createNewSession(gameSessions, socketIDtoGameID, socket, username) {
   //i will have 2 players associated with each gameID
   gameSessions[gameID] = {
     id: gameID,
-    connectedPlayersSocketIDs: { players: {} },
+    connectedPlayersSocketIDs: { players },
     gameInstance: gameInstance,
   };
 
