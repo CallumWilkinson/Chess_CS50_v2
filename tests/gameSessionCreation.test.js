@@ -127,6 +127,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
       on(event, callback) {
         if (event === "connection") {
           callback(socketA);
+          //isnt this the same as using the connectionCallBack variable?
           callback(socketB);
         }
       },
