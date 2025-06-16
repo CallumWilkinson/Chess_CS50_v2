@@ -29,9 +29,11 @@ function Get-Lines {
             $files += Get-ChildItem -Path $path -Recurse -Include *.js -File -ErrorAction SilentlyContinue
         }
     }
-    $files = $files | Where-Object {
-        $_.FullName -notmatch $nodeModulesPattern -and
-        ($IncludeTests ? ($_.Name -match $testPattern) : ($_.Name -notmatch $testPattern))
+     $files = $files | Where-Object { $_.FullName -notmatch $nodeModulesPattern }
+    if ($IncludeTests) {
+        $files = $files | Where-Object { $_.Name -match $testPattern }
+    } else {
+        $files = $files | Where-Object { $_.Name -notmatch $testPattern }
     }
 
     if ($files.Count -eq 0) { return 0 }
@@ -43,6 +45,8 @@ function Get-Lines {
 
 $jsLines   = Get-Lines -Paths $sourceFolders -IncludeTests:$false
 $testLines = Get-Lines -Paths @($testFolder) -IncludeTests:$true
+$totalLines = $jsLines + $testLines
 
 Write-Host "JavaScript Source Lines (backend + public, no node_modules): $jsLines"
-Write-Host "Jest Test Lines (tests, no node_modules):           $testLines"
+Write-Host "Jest Test Lines (tests):                                     $testLines"
+Write-Host "Total lines:                                                 $totalLines"
