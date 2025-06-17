@@ -150,8 +150,6 @@ function handleDisconnect(gameSessions, socketIDtoGameID, socket) {
     //get the username of the person disconnecting
     const playerUsername = playerDataStoredInsideSession.username;
 
-    //remove the player data from the session (name and colour)
-
     //delete the key
     delete sessionData.connectedPlayersSocketIDs.players[socket.id];
 

@@ -122,24 +122,36 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //both players connect to the server
     //this is to mock the io server
+    //this simulates the server, WHICH IS DIFFERENT TO THE SOCKET sending socket events is different to sending server events
     mockIOServer = {
+      //mock the .on() method
       on(event, callback) {
         if (event === "connection") {
+          //simulate each client connecting to the server
           callback(mockSocketA);
           callback(mockSocketB);
         }
       },
+      //mock the emit method to spy on how it is called
       emit: jest.fn(),
+      //mock the to(room) method to mock how handlemove.js broadcasts events to ALL clients in a roon
       to: jest.fn((room) => ({
+        //mock the emit() method that would be chained after io.to()
         emit: (eventName, ...args) => {
+          //check room exists first
           if (rooms[room]) {
+            //loop over all sockets in the room
             for (const sock of rooms[room]) {
+              //simulate sending events to each socket in the room (including sender)
               sock.emit(eventName, ...args);
             }
           }
+          //call a test spy function to track this emit
+          //this is needed so we can call our assertions/expects later on in our tests
           toEmitMock(eventName, ...args);
         },
       })),
+      //expose the spy so we can assert io.to().emit() was called
       __toEmitMock: toEmitMock,
     };
 
@@ -213,15 +225,21 @@ describe("Testing that the server is sending and receiving data over sockets as 
     //expecting player B to be in the game lobby
     expect(socketIDtoGameID[mockSocketB.id]).toBe(gameID);
 
-    console.log(mockSocketA.emit.mock.calls);
-
-    //assert that playerA RECEIVED THE NEW GAME STATE
+    //this tests the actual server logic that it was emited to everyone including the sender
     expect(mockIOServer.__toEmitMock).toHaveBeenCalledWith(
       "newGameState",
       expect.any(Object)
     );
 
+    //assert that playerA RECEIVED THE NEW GAME STATE
+    //this tests that the client received the event
+    expect(mockSocketA.emit).toHaveBeenCalledWith(
+      "newGameState",
+      expect.any(Object)
+    );
+
     //assert that playerB RECEIVED THE NEW GAME STATE
+    //this tests that the client received the event
     expect(mockSocketB.emit).toHaveBeenCalledWith(
       "newGameState",
       expect.any(Object)
