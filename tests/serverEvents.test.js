@@ -5,7 +5,7 @@ import Position from "../backend/gameLogic/position.js";
 
 //this method returns an object with functions on it
 //the mock socket can simulate what happens when the server recieves an event from the client
-function createMockSocket() {
+function createMockSocket(rooms) {
   //store callbacks like createNewGame ect
   //key is eventName
   const handlers = {};
@@ -25,11 +25,9 @@ function createMockSocket() {
       //add room (string) to array
       this.joinedRooms.push(room);
 
-      //the rooms[] is shared across all sockets, wheras joinedRooms[] is per socket
-      //rooms[] tracks who is in what room
-      const rooms = [];
-
       //check if the room exists already
+      //the rooms[] is shared across all sockets, wheras joinedRooms[] is per socket, rooms object is defined OUTISDE OF THIS FUNCTION
+      //rooms[] tracks who is in what room
       const roomExists = rooms[room] !== undefined;
 
       //if it doesnt, make a new set
@@ -37,12 +35,11 @@ function createMockSocket() {
       //its also faster than searching an array
       if (!roomExists) {
         rooms[room] = new Set();
-
-        //adds this mock socket to the room's set we made above
-        //this way, each room is store a list of sockets
-        //so when i call socket.to(room1).emit(...) i can send events to all other sockets in that room
-        rooms[room].add(this);
       }
+      //adds this mock socket to the room's set we made above
+      //this way, each room is store a list of sockets
+      //so when i call socket.to(room1).emit(...) i can send events to all other sockets in that room
+      rooms[room].add(this);
     }),
 
     //add auth value to the socket to simulate auth
@@ -69,6 +66,9 @@ function createMockSocket() {
     //allows me to call .to(room) on the socket
     //this allows me to send to EVERY SOCKET IN THE ROOM EXCEPT THE SENDER
     to(room) {
+      //we need this variable so we can referece the current object in the code below ("this" inside the "emit" function is different to "this" inside the "to" function)
+      const sender = this;
+
       //returns a new object with an emit() function so i can call
       //socket.to("room123").emit("someEvent", payload);
       return {
@@ -79,7 +79,7 @@ function createMockSocket() {
             //rooms[room] is a set of sockets Set { socketA, socketB, socketC }
             for (const sock of rooms[room]) {
               //skip the sender, we only want to send to other sockets
-              if (sock !== this) {
+              if (sock !== sender) {
                 //simulate emiting the event to the socket currently iterated
                 sock.emit(eventName, ...args);
               }
@@ -102,23 +102,27 @@ function createMockSocket() {
 }
 
 describe("Testing that the server is sending and receiving data over sockets as intended", () => {
-  let mockSocket;
+  let mockSocketA;
+  let mockSocketB;
   let mockServer;
   let socketIDtoGameID;
-  //stores a callback FUNCTION inside a variable
-  let connectionCallBack;
+  let rooms;
 
   //this beforeEach block does pretty much everything that server.js does so it works like an entry point
   beforeEach(() => {
-    //run the createmocksocket function above
-    mockSocket = createMockSocket();
+    //new room state for each test
+    rooms = {};
 
-    //create a server that has an on(event, callback) method it can call on itself
+    //each player gets their own socket
+    mockSocketA = createMockSocket(rooms);
+    mockSocketB = createMockSocket(rooms);
+
+    //both players connect to the server
     mockServer = {
       on(event, callback) {
         if (event === "connection") {
-          connectionCallBack = callback;
-          callback(mockSocket);
+          callback(mockSocketA);
+          callback(mockSocketB);
         }
       },
     };
@@ -128,33 +132,20 @@ describe("Testing that the server is sending and receiving data over sockets as 
     socketIDtoGameID = launchServer(mockServer);
   });
 
+  //ensures a clean spy state before each test, not sure if needed but may aswell
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("moves are broadcast to all players in the same lobby", () => {
-    //each player gets their own socket
-    const socketA = createMockSocket();
-    const socketB = createMockSocket();
-
-    //both players connect to the server
-    const multiServer = {
-      on(event, callback) {
-        if (event === "connection") {
-          callback(socketA);
-          //isnt this the same as using the connectionCallBack variable?
-          callback(socketB);
-        }
-      },
-    };
-
-    //if this mapping has both socket.ids then they have both joined
-    const socketIDtoGameID = launchServer(multiServer);
-
     //player A makes a new game
-    socketA.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewGame");
 
     //get game id from playerA socket id
-    const gameID = socketIDtoGameID[socketA.id];
+    const gameID = socketIDtoGameID[mockSocketA.id];
 
     //player B joins it
-    socketB.simulateIncoming("joinExistingGame", gameID);
+    mockSocketB.simulateIncoming("joinExistingGame", gameID);
 
     //playerA moves pawn at a7 to a6
     let a7 = new Position("a7");
@@ -164,22 +155,22 @@ describe("Testing that the server is sending and receiving data over sockets as 
       chessPiece: blackPawn,
       targetSquare: a6,
     };
-    socketA.simulateIncoming("move", moveData);
+    mockSocketA.simulateIncoming("move", moveData);
 
     //expecting player A to be in the game lobby
-    expect(socketIDtoGameID[socketA.id]).toBe(gameID);
+    expect(socketIDtoGameID[mockSocketA.id]).toBe(gameID);
 
     //expecting player B to be in the game lobby
-    expect(socketIDtoGameID[socketB.id]).toBe(gameID);
+    expect(socketIDtoGameID[mockSocketB.id]).toBe(gameID);
 
     //assert that playerA RECEIVED THE NEW GAME STATE
-    expect(socketA.emit).toHaveBeenCalledWith(
+    expect(mockSocketA.emit).toHaveBeenCalledWith(
       "newGameState",
       expect.any(Object)
     );
 
     //assert that playerB RECEIVED THE NEW GAME STATE
-    expect(socketB.emit).toHaveBeenCalledWith(
+    expect(mockSocketB.emit).toHaveBeenCalledWith(
       "newGameState",
       expect.any(Object)
     );
@@ -188,10 +179,10 @@ describe("Testing that the server is sending and receiving data over sockets as 
   test("Client chooses to make a new game session, sends createnewgame event to server and server sends back the initial board state", () => {
     //simulate the client sending a createnewgame event to the server
     //the server's response logic will trigger once this line runs
-    mockSocket.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewGame");
 
     //expect that once the server receives this createnewgame event, it sends back the playerinfo and initial game state object to the client
-    expect(mockSocket.emit).toHaveBeenCalledWith(
+    expect(mockSocketA.emit).toHaveBeenCalledWith(
       "playerInfoAndInitialGameState",
       expect.objectContaining({
         colour: expect.any(String),
@@ -202,23 +193,15 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
   test("client chooses to join an existing game, server sends back the game instance they choose to join", () => {
     //user A chooses to createNewGame
-    mockSocket.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewGame");
 
     //lookup game id using the socket.id connection that made the game above
-    const gameID = socketIDtoGameID[mockSocket.id];
-
-    //second player connects to server
-    let mockSocketTwo = createMockSocket();
-
-    //use the connection callback variable (which is actually a function stored inside the variable)
-    //this is what connects the second player to the existing socket?
-    //we connect another mock socket by using the connection callback we stored earlier
-    connectionCallBack(mockSocketTwo);
+    const gameID = socketIDtoGameID[mockSocketA.id];
 
     //user B chooses to join the game that user A created
-    mockSocketTwo.simulateIncoming("joinExistingGame", gameID);
+    mockSocketB.simulateIncoming("joinExistingGame", gameID);
 
-    expect(mockSocketTwo.emit).toHaveBeenCalledWith(
+    expect(mockSocketB.emit).toHaveBeenCalledWith(
       "playerInfoAndInitialGameState",
       expect.objectContaining({
         colour: expect.any(String),
