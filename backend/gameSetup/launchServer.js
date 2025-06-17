@@ -155,6 +155,9 @@ function handleDisconnect(gameSessions, socketIDtoGameID, socket) {
     //delete the key
     delete sessionData.connectedPlayersSocketIDs.players[socket.id];
 
+    //remove stale mapping so reconnects work correctly
+    delete socketIDtoGameID[socket.id];
+
     //log disconnection to terminal and delete player username and color
     console.log(
       `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameID}`

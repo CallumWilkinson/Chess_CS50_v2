@@ -117,6 +117,9 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockSocketA = createMockSocket(rooms);
     mockSocketB = createMockSocket(rooms);
 
+    //so we can assert against the same function used in handleMove.js
+    const toEmitMock = jest.fn();
+
     //both players connect to the server
     //this is to mock the io server
     mockIOServer = {
@@ -127,9 +130,17 @@ describe("Testing that the server is sending and receiving data over sockets as 
         }
       },
       emit: jest.fn(),
-      to: jest.fn(() => ({
-        emit: jest.fn(),
+      to: jest.fn((room) => ({
+        emit: (eventName, ...args) => {
+          if (rooms[room]) {
+            for (const sock of rooms[room]) {
+              sock.emit(eventName, ...args);
+            }
+          }
+          toEmitMock(eventName, ...args);
+        },
       })),
+      __toEmitMock: toEmitMock,
     };
 
     //this will call server.on and attaches all socket.on event listners on the server side
@@ -205,7 +216,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     console.log(mockSocketA.emit.mock.calls);
 
     //assert that playerA RECEIVED THE NEW GAME STATE
-    expect(mockIOServer.to().emit()).toHaveBeenCalledWith(
+    expect(mockIOServer.__toEmitMock).toHaveBeenCalledWith(
       "newGameState",
       expect.any(Object)
     );
