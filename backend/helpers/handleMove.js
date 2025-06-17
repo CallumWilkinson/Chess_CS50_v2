@@ -4,7 +4,8 @@ export function handleMove(
   socket,
   jsonMoveData,
   gameSessions,
-  socketIDtoGameID
+  socketIDtoGameID,
+  io
 ) {
   //get gameID from socketid of the player
   const gameID = socketIDtoGameID[socket.id];
@@ -38,8 +39,12 @@ export function handleMove(
       currentSessionData.gameInstance.board
     );
 
-    //send the move to everyone, including the client that sent the data
-    socket.emit("newGameState", newGameState);
+    console.log(io);
+
+    //send the move to everyone in the socket room, so it sends to player A and player B
+    //remember that in launchServer.js I called socket.join(gameID), this created a "socket room" and gave it the same name as it's corresponding gameID
+    //its confusing but socket.to(roomID).emit will exclude the sender, but i need to call it on the SERVER not the socket, so that i can include the sender as the sender also needs to get back the updated game state after its move has been validated
+    io.to(gameID).emit("newGameState", newGameState);
     console.log("new game state and board as been sent to the client");
   } catch (err) {
     console.error("Server error processing move:", err);

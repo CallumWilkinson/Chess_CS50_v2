@@ -1,7 +1,7 @@
 import GameInstance from "./GameInstance.js";
 import { handleMove } from "../helpers/handleMove.js";
 
-export function launchServer(server) {
+export function launchServer(io) {
   //holds all game sessions, key is GameID, contains game session objects that have the following values:
   //gameID
   //connectedPlayersSocketIDs.players[{ username, colour }]
@@ -14,7 +14,7 @@ export function launchServer(server) {
   const socketIDtoGameID = {};
 
   //WHEN A NEW PLAYER CONNECTS TO THE SERVER DO THIS
-  server.on("connection", (socket) => {
+  io.on("connection", (socket) => {
     //get username from clients auth handsake, if none default to guest
     const username = socket.handshake.auth.username || "Guest";
 
@@ -39,8 +39,9 @@ export function launchServer(server) {
     });
 
     //listen for a 'move' event from this client
+    //i feel like its wrong to pass the whole server object here jsut so i can called server.to(roomID).emit()?
     socket.on("move", (jsonMoveData) => {
-      handleMove(socket, jsonMoveData, gameSessions, socketIDtoGameID);
+      handleMove(socket, jsonMoveData, gameSessions, socketIDtoGameID, io);
     });
 
     //handle disconnects

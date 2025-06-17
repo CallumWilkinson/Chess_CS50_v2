@@ -11,7 +11,7 @@ export function getNewGameState(jsonMoveData, currentGameStateManager, board) {
 
   //make position object so i can run makemove
   //note for later i could probably just remove this and pass jsut the name through to makemove but that would mean refactoring all my tests too
-  const targetSquarePositionObject = new Position(targetSquare);
+  const targetSquarePositionObject = new Position(targetSquare.name);
 
   //run the move on server side
   const moveSuccessful = currentGameStateManager.makeMove(
