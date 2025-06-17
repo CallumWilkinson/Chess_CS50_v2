@@ -1,6 +1,6 @@
 # Multiplayer Online Chess
 
-[Play the Demo](https://multiplayer-chess-qh1o.onrender.com/)  
+[Play the Demo](https://multiplayer-chess-qh1o.onrender.com)  
 (Best viewed on desktop)
 
 ## Important notes for playing the game
