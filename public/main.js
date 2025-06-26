@@ -12,7 +12,7 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  // joinExistingGameOrCreateNewGame();
+  // joinExistingGameOrCreateNewChessGame();
 
   //get the initial gamestatemanager and board state from the server, using the socket
   //this should be a fresh game

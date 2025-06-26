@@ -2,7 +2,14 @@ import Board from "../gameLogic/board.js";
 import GameStateManager from "../gameLogic/GameStateManager.js";
 
 export default class GameInstance {
-  constructor(gameID) {
+  constructor(gameInstanceID) {
+    //a gameInstanceID is associated with each GameInstance
+    this.gameInstanceID = gameInstanceID;
+    this.board;
+    this.gameStateManager;
+  }
+
+  createNewChessGame() {
     //create a board object and assign it to the browser window
     //board contains a dictionary where it's keys are the names of the squares on a chess board
     //the position of each chess peice in the dictionary is the 'under the hood' state of the board
@@ -14,16 +21,13 @@ export default class GameInstance {
     //gameStateManager contains a turn manager that tracks who's turn it is
     this.gameStateManager = new GameStateManager(this.board, "black");
 
-    //a gameID is assosciated with each GameInstance
-    this.gameID = gameID;
-  }
-
-  //i want to reaname this so initialiseChessGame
-  createNewGame() {
     //setup empty board, sets the keys of the dictionary to represent the squares of a chess board
     this.board.createEmptyBoard();
     //setup pieces in their default positions
     //the position of each peice in the dictionary is the 'under the hood' state of the board
     this.board.initialisePieces();
   }
+
+  //im not going to actually make a checkers game yet but this is just an example, like with this gameInstance class i can create games inside it
+  createNewCheckersGame() {}
 }

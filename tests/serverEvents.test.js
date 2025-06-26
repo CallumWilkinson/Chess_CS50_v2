@@ -1,4 +1,3 @@
-import { expect, jest } from "@jest/globals";
 import { launchServer } from "../backend/gameSetup/launchServer.js";
 import Pawn from "../backend/chessPieces/pawn.js";
 import Position from "../backend/gameLogic/position.js";
@@ -6,7 +5,7 @@ import Position from "../backend/gameLogic/position.js";
 //this method returns an object with functions on it
 //the mock socket can simulate what happens when the server recieves an event from the client
 function createMockSocket(rooms) {
-  //store callbacks like createNewGame ect
+  //store callbacks like createNewChessGame ect
   //key is eventName
   const handlers = {};
 
@@ -105,7 +104,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
   let mockSocketA;
   let mockSocketB;
   let mockIOServer;
-  let socketIDtoGameID;
+  let socketIDtoGameSessionID;
   let rooms;
 
   //this beforeEach block does pretty much everything that server.js does so it works like an entry point
@@ -157,7 +156,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //this will call server.on and attaches all socket.on event listners on the server side
     //this function is the logic that i want to test
-    socketIDtoGameID = launchServer(mockIOServer);
+    socketIDtoGameSessionID = launchServer(mockIOServer);
   });
 
   //ensures a clean spy state before each test, not sure if needed but may aswell
@@ -168,7 +167,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
   test("PlayerA chooses to make a new game session, asserting that the client sends createnewgame event to server and server sends back the initial board state", () => {
     //simulate the client sending a createnewgame event to the server
     //the server's response logic will trigger once this line runs
-    mockSocketA.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewChessGame");
 
     //expect that once the server receives this createnewgame event, it sends back the playerinfo and initial game state object to the client
     expect(mockSocketA.emit).toHaveBeenCalledWith(
@@ -182,10 +181,10 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
   test("Player A chooses to join an existing game, asserting that the server sends back the correct game instance that they choose to join", () => {
     //user A chooses to createNewGame
-    mockSocketA.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewChessGame");
 
     //lookup game id using the socket.id connection that made the game above
-    const gameID = socketIDtoGameID[mockSocketA.id];
+    const gameID = socketIDtoGameSessionID[mockSocketA.id];
 
     //user B chooses to join the game that user A created
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
@@ -201,10 +200,10 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
   test("When player A makes a move, I expect that both player A and player B will BOTH receive the updated game state", () => {
     //player A makes a new game
-    mockSocketA.simulateIncoming("createNewGame");
+    mockSocketA.simulateIncoming("createNewChessGame");
 
     //get game id from playerA socket id
-    const gameID = socketIDtoGameID[mockSocketA.id];
+    const gameID = socketIDtoGameSessionID[mockSocketA.id];
 
     //player B joins it
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
@@ -220,10 +219,10 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockSocketA.simulateIncoming("move", moveData);
 
     //expecting player A to be in the game lobby
-    expect(socketIDtoGameID[mockSocketA.id]).toBe(gameID);
+    expect(socketIDtoGameSessionID[mockSocketA.id]).toBe(gameID);
 
     //expecting player B to be in the game lobby
-    expect(socketIDtoGameID[mockSocketB.id]).toBe(gameID);
+    expect(socketIDtoGameSessionID[mockSocketB.id]).toBe(gameID);
 
     //this tests the actual server logic that it was emited to everyone including the sender
     expect(mockIOServer.__toEmitMock).toHaveBeenCalledWith(
