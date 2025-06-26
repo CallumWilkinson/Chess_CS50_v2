@@ -18,6 +18,7 @@ export default class GameInstance {
     this.gameID = gameID;
   }
 
+  //i want to reaname this so initialiseChessGame
   createNewGame() {
     //setup empty board, sets the keys of the dictionary to represent the squares of a chess board
     this.board.createEmptyBoard();
