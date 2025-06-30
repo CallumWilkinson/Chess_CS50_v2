@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { launchServer } from "../backend/gameSetup/launchServer.js";
 import Pawn from "../backend/chessPieces/pawn.js";
 import Position from "../backend/gameLogic/position.js";

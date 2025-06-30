@@ -15,8 +15,11 @@ export default class GameSession {
     //generate a 6 character random id (letters and numbers)
     //tostring(36) is base 36 so letters are included
     //slice makes it 6 chars long
-    let gameInstanceID = Math.random().toString(36).slice(2, 8);
-    let gameInstance = new GameInstance(gameInstanceID, player1, player2);
+    const gameInstanceID = Math.random().toString(36).slice(2, 8);
+
+    //create a new game instance inside this session
+    const gameInstance = new GameInstance(gameInstanceID);
+
     this.gameInstance = gameInstance;
     return gameInstance;
   }

@@ -31,16 +31,13 @@ export default class GameInstance {
   }
 
   addPlayersToInstance(connectedUsers) {
-    //assign new player a colour
-    //get array of colours currently being used by connected players so we can assign black or white to the new player
-    const connectedUsers = Object.values(connectedUsers).map(
-      (p) => p.connectedUsers
-    );
+    //assign new player a colour based on the currently connected players
+    const colours = Object.values(connectedUsers).map((p) => p.colour);
 
     //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
     let assignedColour;
 
-    if (connectedUsers.includes("black")) {
+    if (colours.includes("black")) {
       assignedColour = "white";
     } else {
       assignedColour = "black";

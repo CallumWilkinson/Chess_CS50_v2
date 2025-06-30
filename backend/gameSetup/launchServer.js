@@ -13,12 +13,9 @@ export function launchServer(io) {
   //this will hold every player that joins the server over a websocket(added on connection to the server)
   const connectedPlayers = {};
 
-  //create a mapping of socketID to GameSessionID so that i can effiently find which player belongs to which "game session"
-  //this will be much more effienct than looping over all game sessions each time someone wants to make a move
-  //i guess its like an index in an sql table?
-  //once ive made a gameSession class i can remove this
-  //can access gameSession.gameSessionID and gameSession.gameInstance.gameInstanceID
-  // const socketIDtoGameSessionID = {};
+  //mapping of socket.id to the gameSessionID that the socket belongs to
+  //helps quickly find a player's game session without searching all sessions
+  const socketIDtoGameSessionID = {};
 
   //WHEN A NEW PLAYER CONNECTS TO THE SERVER DO THIS
   io.on("connection", (socket) => {
@@ -37,28 +34,55 @@ export function launchServer(io) {
     //when the player selects an existing game to join, run this function on the receipt of a "join game" event fom the client
     //join the game, add new player's socketid to the gamesession object and send back the board initial state to the player
     socket.on("joinExistingGame", (gameSessionID) => {
-      joinExistingSession(gameSessionID, gameSessions, socket, username);
+      joinExistingSession(
+        gameSessionID,
+        gameSessions,
+        socketIDtoGameSessionID,
+        socket,
+        username
+      );
     });
 
     //OR when client chooses to create a new game
     socket.on("createNewChessGame", () => {
-      createNewSession(gameSessions, socket, username, connectedPlayers);
+      createNewSession(
+        gameSessions,
+        socketIDtoGameSessionID,
+        socket,
+        username,
+        connectedPlayers
+      );
     });
 
     //listen for a 'move' event from this client
     //i feel like its wrong to pass the whole server object here jsut so i can called server.to(roomID).emit()?
     socket.on("move", (jsonMoveData) => {
-      handleMove(socket, jsonMoveData, gameSessions, io);
+      handleMove(
+        socket,
+        jsonMoveData,
+        gameSessions,
+        socketIDtoGameSessionID,
+        io
+      );
     });
 
     //handle disconnects
     socket.on("disconnect", () => {
-      handleDisconnect(gameSessions, socket);
+      handleDisconnect(gameSessions, socketIDtoGameSessionID, socket);
     });
   });
+
+  //return mapping for testing purposes
+  return socketIDtoGameSessionID;
 }
 
-function createNewSession(gameSessions, socket, username, connectedPlayers) {
+function createNewSession(
+  gameSessions,
+  socketIDtoGameSessionID,
+  socket,
+  username,
+  connectedPlayers
+) {
   //create a new gameSession, which as a gameSession ID, knows which players are connected and has a fuction to make a gameInstance
   const newGameSession = new GameSession();
 
@@ -69,12 +93,26 @@ function createNewSession(gameSessions, socket, username, connectedPlayers) {
   //the game is now setup like a normal chess board
   newGameInstance.createNewChessGame();
 
-  const assignedColour = newGameInstance.player1;
+  //track players connected to this session
+  const players = {};
+
+  //assign colour to the first player joining this session
+  const assignedColour = getPlayerColour(players);
 
   //get gameSessionID
   const gameSessionID = newGameSession.gameSessionID;
 
-  //add game session object to the gameSessions dictionary, this creates a new entry at the correct key
+  //store mapping between this socket and the new session
+  socketIDtoGameSessionID[socket.id] = gameSessionID;
+
+  //attach player info to the session object
+  newGameSession.connectedPlayersSocketIDs = { players };
+  newGameSession.connectedPlayersSocketIDs.players[socket.id] = {
+    username,
+    colour: assignedColour,
+  };
+
+  //add game session object to the sessions dictionary
   gameSessions[gameSessionID] = newGameSession;
 
   //create a new "room" which is a group of sockets, and connect to it
@@ -94,10 +132,23 @@ function createNewSession(gameSessions, socket, username, connectedPlayers) {
   });
 }
 
-function joinExistingSession(gameSessionID, gameSessions, socket, username) {
-  //assign username and colour to the player's socket.id in the gamesession dict
-  //this adds values to the key
-  gameSessions[gameSessionID].connectedPlayersSocketIDs.players[socket.id] = {
+function joinExistingSession(
+  gameSessionID,
+  gameSessions,
+  socketIDtoGameSessionID,
+  socket,
+  username
+) {
+  //map this socket to the session so moves can be routed corectly
+  socketIDtoGameSessionID[socket.id] = gameSessionID;
+
+  const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
+
+  //determins color for the joining player
+  const assignedColour = getPlayerColour(players);
+
+  //assign username and colour to the player's socket.id in the gamesession
+  players[socket.id] = {
     username: username,
     colour: assignedColour,
   };
@@ -116,7 +167,7 @@ function joinExistingSession(gameSessionID, gameSessions, socket, username) {
   });
 }
 
-function handleDisconnect(gameSessions, socket) {
+function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
   //find what session the player is in
   const gameSessionID = socketIDtoGameSessionID[socket.id];
 
@@ -142,4 +193,10 @@ function handleDisconnect(gameSessions, socket) {
       `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameSessionID}`
     );
   }
+}
+
+function getPlayerColour(players) {
+  const connectedPlayers = Object.values(players).map((p) => p.colour);
+
+  return connectedPlayers.includes("black") ? "white" : "black";
 }

@@ -1,8 +1,6 @@
 export default class Player {
-  constructor(user) {
-    this.user = user;
-    this.colour = this._getPlayerColour;
+  constructor(username, socketID) {
+    this.username = username;
+    this.socketID = socketID;
   }
-
-  _getPlayerColour(players) {}
 }
