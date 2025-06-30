@@ -210,9 +210,9 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
 
     //playerA moves pawn at a7 to a6
-    let a7 = new Position("a7");
-    let blackPawn = new Pawn("black", a7);
-    let a6 = new Position("a6");
+    const a7 = new Position("a7");
+    const blackPawn = new Pawn("black", a7);
+    const a6 = new Position("a6");
     const moveData = {
       chessPiece: blackPawn,
       targetSquare: a6,

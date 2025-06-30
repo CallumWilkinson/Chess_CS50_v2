@@ -32,6 +32,10 @@ export default class GameSession {
     const connectedPlayers = Object.values(players).map((p) => p.colour);
 
     //assigns black to the player, or if black exists then assign white
-    return connectedPlayers.includes("black") ? "white" : "black";
+    if (connectedPlayers.includes("black")) {
+      return "white";
+    } else {
+      return "black";
+    }
   }
 }

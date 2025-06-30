@@ -39,7 +39,7 @@ describe("Chess Board", () => {
       e1: King,
     };
 
-    for (let position in expectedWhitePieces) {
+    for (const position in expectedWhitePieces) {
       expect(board.grid[position]).toBeInstanceOf(
         expectedWhitePieces[position]
       );
@@ -61,7 +61,7 @@ describe("Chess Board", () => {
       e8: King,
     };
 
-    for (let position in expectedPieces) {
+    for (const position in expectedPieces) {
       expect(board.grid[position]).toBeInstanceOf(expectedPieces[position]);
       expect(board.grid[position].colour).toBe("black");
     }

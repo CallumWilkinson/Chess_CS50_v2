@@ -1,4 +1,3 @@
-import GameInstance from "./GameInstance.js";
 import { handleMove } from "../helpers/handleMove.js";
 import GameSession from "./gameSession.js";
 import Player from "./player.js";
@@ -45,13 +44,7 @@ export function launchServer(io) {
 
     //OR when client chooses to create a new game
     socket.on("createNewChessGame", () => {
-      createNewSession(
-        gameSessions,
-        socketIDtoGameSessionID,
-        socket,
-        username,
-        connectedPlayers
-      );
+      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username);
     });
 
     //listen for a 'move' event from this client
@@ -80,8 +73,7 @@ function createNewSession(
   gameSessions,
   socketIDtoGameSessionID,
   socket,
-  username,
-  connectedPlayers
+  username
 ) {
   //create a new gameSession, which as a gameSession ID, knows which players are connected and has a fuction to make a gameInstance
   const newGameSession = new GameSession();

@@ -14,11 +14,9 @@ export default defineConfig([
       sourceType: "module",
       globals: {
         ...globals.browser,
+        ...globals.node,
         process: "readonly",
       },
-    },
-    env: {
-      node: true,
     },
     rules: {
       "no-unused-vars": "warn",
