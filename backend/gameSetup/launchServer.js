@@ -69,6 +69,8 @@ function createNewSession(gameSessions, socket, username, connectedPlayers) {
   //the game is now setup like a normal chess board
   newGameInstance.createNewChessGame();
 
+  const assignedColour = newGameInstance.player1;
+
   //get gameSessionID
   const gameSessionID = newGameSession.gameSessionID;
 
@@ -93,14 +95,6 @@ function createNewSession(gameSessions, socket, username, connectedPlayers) {
 }
 
 function joinExistingSession(gameSessionID, gameSessions, socket, username) {
-  //add to id mapping object to easily associate players with game session ids, this is used when a player makes a move
-  socketIDtoGameSessionID[socket.id] = gameSessionID;
-
-  //assign color based on joining order
-  const assignedColour = getPlayerColour(
-    gameSessions[gameSessionID].connectedPlayersSocketIDs.players
-  );
-
   //assign username and colour to the player's socket.id in the gamesession dict
   //this adds values to the key
   gameSessions[gameSessionID].connectedPlayersSocketIDs.players[socket.id] = {

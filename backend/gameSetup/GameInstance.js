@@ -7,6 +7,7 @@ export default class GameInstance {
     this.gameInstanceID = gameInstanceID;
     this.board;
     this.gameStateManager;
+    this.players = [];
   }
 
   createNewChessGame() {
@@ -23,9 +24,28 @@ export default class GameInstance {
 
     //setup empty board, sets the keys of the dictionary to represent the squares of a chess board
     this.board.createEmptyBoard();
+
     //setup pieces in their default positions
     //the position of each peice in the dictionary is the 'under the hood' state of the board
     this.board.initialisePieces();
+  }
+
+  addPlayersToInstance(connectedUsers) {
+    //assign new player a colour
+    //get array of colours currently being used by connected players so we can assign black or white to the new player
+    const connectedUsers = Object.values(connectedUsers).map(
+      (p) => p.connectedUsers
+    );
+
+    //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
+    let assignedColour;
+
+    if (connectedUsers.includes("black")) {
+      assignedColour = "white";
+    } else {
+      assignedColour = "black";
+    }
+    return assignedColour;
   }
 
   //im not going to actually make a checkers game yet but this is just an example, like with this gameInstance class i can create games inside it
