@@ -27,4 +27,11 @@ export default class GameSession {
   addPlayerToSession() {}
 
   disconnectFromGameSession() {}
+
+  getPlayerColour(players) {
+    const connectedPlayers = Object.values(players).map((p) => p.colour);
+
+    //assigns black to the player, or if black exists then assign white
+    return connectedPlayers.includes("black") ? "white" : "black";
+  }
 }

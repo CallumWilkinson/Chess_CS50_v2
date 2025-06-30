@@ -96,8 +96,8 @@ function createNewSession(
   //track players connected to this session
   const players = {};
 
-  //assign colour to the first player joining this session
-  const assignedColour = getPlayerColour(players);
+  //assign colour to the first player joining this session, players should be blank before passing object to this function as its a new game
+  const assignedColour = newGameSession.getPlayerColour(players);
 
   //get gameSessionID
   const gameSessionID = newGameSession.gameSessionID;
@@ -139,13 +139,18 @@ function joinExistingSession(
   socket,
   username
 ) {
-  //map this socket to the session so moves can be routed corectly
+  //assign this user's socket id and the game they selected to the mapping
+  //this allows us in future to associate this user with this gameSession they are about to join
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
+  //get the players array so we know if anyone has already connected, this is needed as the second player to join is always white and the first is black
   const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
 
-  //determins color for the joining player
-  const assignedColour = getPlayerColour(players);
+  //get the gamesession object so we can assign a colour to the player
+  const selectedGameSession = gameSessions[gameSessionID];
+
+  //determines color for the joining player
+  const assignedColour = selectedGameSession.getPlayerColour(players);
 
   //assign username and colour to the player's socket.id in the gamesession
   players[socket.id] = {
@@ -193,10 +198,4 @@ function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
       `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameSessionID}`
     );
   }
-}
-
-function getPlayerColour(players) {
-  const connectedPlayers = Object.values(players).map((p) => p.colour);
-
-  return connectedPlayers.includes("black") ? "white" : "black";
 }
