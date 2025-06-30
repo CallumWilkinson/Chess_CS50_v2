@@ -3,6 +3,7 @@ import { setupSocketWithAuthentication } from "./src/frontend/setupAuthenticatio
 import { updateUIWithNewGameState } from "./src/frontend/setupSocketListeners.js";
 import { updateUI } from "./src/frontend/updateUI.js";
 import { getPlayerColourAndInitialBoardState } from "./src/frontend/setupSocketListeners.js";
+import joinExistingGameOrCreateNewChessGame from "./src/frontend/joinExistingGameOrCreateNewChessGame.js";
 
 window.onload = () => {
   //get username and pass it as the auth object to the socket
@@ -12,25 +13,25 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  // joinExistingGameOrCreateNewChessGame();
+  //this function runs on window load
+  //eventually i will add some more ui so that on window load you will get a list of available games to join
+  //and a button to create a new game
+  //but for now i just want to create a new game if there is none already, and if there is already a game made then join it
+  joinExistingGameOrCreateNewChessGame(socket);
 
   //get the initial gamestatemanager and board state from the server, using the socket
   //this should be a fresh game
   //runs a callback function so that the game is only loaded when the data is received from the server and lets me access the gameinstance from the server
   getPlayerColourAndInitialBoardState(socket, ({ gameInstance }) => {
-    updateUI(
-      ctx,
-      gameInstance.initialBoard,
-      gameInstance.initialGameStateManager
-    );
+    updateUI(ctx, gameInstance.board, gameInstance.gameStateManager);
 
     //setup eventlisteners make ui respond to player input
     //clicking on a chesspeice and then on an empty, legal square, will send json data to the server with details of the player's intended move
     setupMovementEventListeners(
       socket,
       canvas,
-      gameInstance.initialBoard,
-      gameInstance.initialGameStateManager,
+      gameInstance.board,
+      gameInstance.gameStateManager,
       ctx
     );
 

@@ -30,6 +30,12 @@ export function launchServer(io) {
     //when a player connects to the server send them a list of available game ID's so they can choose a lobby to join
     socket.emit("availableGames", Object.keys(gameSessions));
 
+    //when client chooses to create a new game
+    socket.on("createNewChessGame", () => {
+      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username);
+    });
+
+    //OR
     //when the player selects an existing game to join, run this function on the receipt of a "join game" event fom the client
     //join the game, add new player's socketid to the gamesession object and send back the board initial state to the player
     socket.on("joinExistingGame", (gameSessionID) => {
@@ -42,13 +48,9 @@ export function launchServer(io) {
       );
     });
 
-    //OR when client chooses to create a new game
-    socket.on("createNewChessGame", () => {
-      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username);
-    });
-
     //listen for a 'move' event from this client
     //i feel like its wrong to pass the whole server object here jsut so i can called server.to(roomID).emit()?
+    //i think this function should belong to the session class?
     socket.on("move", (jsonMoveData) => {
       handleMove(
         socket,
@@ -86,6 +88,7 @@ function createNewSession(
   newGameInstance.createNewChessGame();
 
   //track players connected to this session
+  //do i need this? cant i just use the connectedPlayers object?
   const players = {};
 
   //assign colour to the first player joining this session, players should be blank before passing object to this function as its a new game
