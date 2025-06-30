@@ -39,8 +39,6 @@ export function handleMove(
       currentSessionData.gameInstance.board
     );
 
-    console.log(io);
-
     //send the move to everyone in the socket room, so it sends to player A and player B
     //remember that in launchServer.js I called socket.join(gameSessionID), this created a "socket room" and gave it the same name as it's corresponding gameSessionID
     //its confusing but socket.to(roomID).emit will exclude the sender, but i need to call it on the SERVER not the socket, so that i can include the sender as the sender also needs to get back the updated game state after its move has been validated
