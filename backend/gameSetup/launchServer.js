@@ -116,15 +116,15 @@ function createNewSession(
   //if there is no game with that ID this function makes a new room/lobby automatically
   socket.join(gameSessionID);
 
-  //console log in terminal when a user connects
-  console.log(`${username} connected to gameSessionID ${gameSessionID}`);
-
   //send a playerinfo message to the newly connected client, tell them their username, their color and the inital board state for them to uptdate their ui
   socket.emit("playerInfoAndInitialGameState", {
     username,
     colour: assignedColour,
     gameInstance: newGameInstance,
   });
+
+  //console log in server terminal when a user connects
+  console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
 function joinExistingSession(
@@ -165,6 +165,9 @@ function joinExistingSession(
     colour: assignedColour,
     gameInstance,
   });
+
+  //console log in server terminal when a user connects
+  console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
 function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
@@ -190,7 +193,7 @@ function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
 
     //log disconnection to terminal and delete player username and color
     console.log(
-      `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameID ${gameSessionID}`
+      `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameSessionID ${gameSessionID}`
     );
   }
 }

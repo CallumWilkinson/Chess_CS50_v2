@@ -8,6 +8,7 @@ export default class GameSession {
     this.gameSessionID = Math.random().toString(36).slice(2, 8);
     //a user belongs to the game session, but a player belongs to the gameInstance
     this.connectedUsers = [];
+    //this is set when you run gamesession.createGameInstance()
     this.gameInstance;
   }
 

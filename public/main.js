@@ -39,6 +39,11 @@ window.onload = () => {
     updateUIWithNewGameState(ctx, socket);
   });
 
+  //manually connect to the socket after all socket listeners have been registered
+  //this ensures everything above is actually loaded first
+  //i have turned autoconnect off in the setupAuthentication.js file
+  socket.connect();
+
   // disconnectFromGame();
 
   //find another place for this later but leave it here for now

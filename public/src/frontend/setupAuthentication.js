@@ -9,6 +9,9 @@ export function setupSocketWithAuthentication() {
     auth: {
       username: username || `Guest${Math.floor(Math.random() * 1000)}`,
     },
+    //disable autoconnect so that i can manually connect in main.js once all socket listeners have setup properly
+    //this fixes alot of "state" related web issues
+    autoConnect: false,
   });
 
   return socket;
