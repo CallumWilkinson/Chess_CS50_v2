@@ -9,9 +9,19 @@ export function getNewGameState(jsonMoveData, currentGameStateManager, board) {
 
   const possibleMovesArray = selectedPiece.getPossibleMoves(board);
 
+  //json data coming from the client sends the target square as a string
+  //but the server side tests still use a Position object
+  //handle both cases here to keep backwards compatibility
+  let targetSquareName;
+  if (typeof targetSquare === "string") {
+    targetSquareName = targetSquare;
+  } else {
+    //else if it comes as a position object, then access its string name property
+    targetSquareName = targetSquare.name;
+  }
+
   //make position object so i can run makemove
-  //note for later i could probably just remove this and pass jsut the name through to makemove but that would mean refactoring all my tests too
-  const targetSquarePositionObject = new Position(targetSquare);
+  const targetSquarePositionObject = new Position(targetSquareName);
 
   //run the move on server side
   const moveSuccessful = currentGameStateManager.makeMove(
