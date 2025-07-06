@@ -1,5 +1,5 @@
 /**
- * @param @param {import("socket.io").Socket} socket
+ * @param {import("socket.io").Socket} socket
  */
 
 export default function joinExistingGameOrCreateNewChessGame(socket) {

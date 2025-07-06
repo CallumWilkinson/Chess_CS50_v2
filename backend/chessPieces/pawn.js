@@ -23,7 +23,10 @@ export default class Pawn extends ChessPiece {
     //array of strings
     const validMoves = [];
 
-    //black moves up the board, black moves down
+    //white moves up the board, black moves down
+    //i think this is a little confusing cos when i render the page, i think i flipped it?
+    //from memory i think it was becuase i originally made the dictionary as white first, but then switched it to black first
+    //will need to review this
     let direction;
     if (this.colour === "white") {
       direction = 1;

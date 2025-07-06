@@ -6,8 +6,8 @@ describe("tests for position class", () => {
   let board;
   beforeEach(() => {
     board = new Board();
-    board.createEmptyBoard;
-    board.initialisePieces;
+    board.createEmptyBoard();
+    board.initialisePieces();
   });
 
   test("create a position object", () => {
