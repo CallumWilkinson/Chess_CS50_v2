@@ -254,25 +254,105 @@ describe("Testing that the server is sending and receiving data over sockets as 
   test("server prevents more than two players from joining the same session", () => {
     //player A creates a new game
     mockSocketA.simulateIncoming("createNewChessGame");
-    
+
     //get the game ID from the mapping
     const gameID = socketIDtoGameSessionID[mockSocketA.id];
-    
+
     //player B joins the game (should work fine)
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
-    
+
     //create a third socket for the third player
     const mockSocketC = createMockSocket(rooms);
     //register it with the server
     connectionHandler(mockSocketC);
-    
+
     //clear previous emits so we only see the join attempt response
     mockSocketC.emit.mockClear();
-    
+
     //third player tries to join the same game (should be rejected)
     mockSocketC.simulateIncoming("joinExistingGame", gameID);
-    
+
     //verify the server sent back an error message
-    expect(mockSocketC.emit).toHaveBeenCalledWith("error", "Game session is full");
+    expect(mockSocketC.emit).toHaveBeenCalledWith(
+      "error",
+      "Game session is full"
+    );
+  });
+
+  test("when a client connects, they dont automatically join a game", () => {
+    //in the beforeEach, both socketA and socketB are already connected
+    //the new flow should only send a welcome message, not automatically pair
+
+    //verify player A got connected message (not game state)
+    expect(mockSocketA.emit).toHaveBeenCalledWith(
+      "connected",
+      expect.objectContaining({
+        username: "Guest",
+        socketId: mockSocketA.id,
+        message: "Connected to chess server",
+      })
+    );
+
+    //verify player B got connected message (not game state)
+    expect(mockSocketB.emit).toHaveBeenCalledWith(
+      "connected",
+      expect.objectContaining({
+        username: "Guest",
+        socketId: mockSocketB.id,
+        message: "Connected to chess server",
+      })
+    );
+
+    //verify neither player is in a game session yet
+    const gameIDA = socketIDtoGameSessionID[mockSocketA.id];
+    const gameIDB = socketIDtoGameSessionID[mockSocketB.id];
+    expect(gameIDA).toBeUndefined();
+    expect(gameIDB).toBeUndefined();
+  });
+
+  test("getAvailableGames event returns list of available games", () => {
+    //player A creates a new game
+    mockSocketA.simulateIncoming("createNewChessGame");
+
+    //create a third socket
+    const mockSocketC = createMockSocket(rooms);
+    connectionHandler(mockSocketC);
+
+    //clear previous emits to focus on the getAvailableGames response
+    mockSocketC.emit.mockClear();
+
+    //third player requests available games
+    mockSocketC.simulateIncoming("getAvailableGames");
+
+    //verify server responded with available games list
+    expect(mockSocketC.emit).toHaveBeenCalledWith(
+      "availableGamesList",
+      expect.arrayContaining([
+        expect.objectContaining({
+          gameSessionID: expect.any(String),
+          waitingPlayer: expect.objectContaining({
+            username: "Guest",
+            colour: expect.any(String),
+          }),
+          playersConnected: 1,
+          maxPlayers: 2,
+        }),
+      ])
+    );
+  });
+
+  test("getAvailableGames returns empty array when no games available", () => {
+    //create a third socket without any games created
+    const mockSocketC = createMockSocket(rooms);
+    connectionHandler(mockSocketC);
+
+    //clear previous emits to focus on the getAvailableGames response
+    mockSocketC.emit.mockClear();
+
+    //third player requests available games
+    mockSocketC.simulateIncoming("getAvailableGames");
+
+    //verify server responded with empty array
+    expect(mockSocketC.emit).toHaveBeenCalledWith("availableGamesList", []);
   });
 });

@@ -4,7 +4,13 @@
 
 - Follow existing project formatting and naming conventions
 - Avoid ternary operators – use explicit if/else statements
-- Write unit tests for all new functions and modified logic
+- You must write a unit test for every new function or logic change. This is not optional.
+  - If a test is not included, clearly explain _why it cannot or should not be tested_
+  - Place the test in a dedicated `__tests__` or `*.test.js` file, following the existing test structure
+  - Use `jest` syntax for all test code
+  - If modifying existing logic, update or extend the relevant test
+  - Tests must run independently and use mock data or mocks where needed
+  - Never omit this unless explicitly told to skip tests for this task
 - Run all tests before committing changes
 - Follow TDD approach: write failing test, implement code, refactor
 - Prioritize code readability over performance optimization
@@ -34,9 +40,11 @@ After making any code change, output a commit message the user can copy and past
 
 Use the following structure:
 
+```
 <type>: <short summary>
 
 <detailed explanation, if needed>
+```
 
 ### Guidelines
 
@@ -47,6 +55,6 @@ Use the following structure:
   - `test:` for test updates or additions
   - `docs:` for documentation updates
   - `chore:` for non-code updates like configs or scripts
-- Use bullet points () for multiple changes in the body
+- Use bullet points (`-`) for multiple changes in the body
 - Be concise but clear — like you're explaining it to future you or a teammate
 - Only generate **one commit message** per logical change

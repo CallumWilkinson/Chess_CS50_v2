@@ -27,25 +27,27 @@ export function launchServer(io) {
     //add this player to connectedPlayers object
     connectedPlayers[socket.id] = newPlayer;
 
-    //filter games to only show ones with space for more players (less than 2)
-    const availableGames = Object.keys(gameSessions).filter(gameSessionID => {
-      //get players object for this game session
-      const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
-      //only include games that aren't full yet
-      return Object.keys(players).length < 2;
+    //send welcome message to newly connected client
+    socket.emit("connected", {
+      username,
+      socketId: socket.id,
+      message: "Connected to chess server",
     });
 
-    //when a player connects to the server send them a list of available game ID's so they can choose a lobby to join
-    socket.emit("availableGames", availableGames);
+    //request list of available games to join
+    socket.on("getAvailableGames", () => {
+      const availableGames = getAvailableGamesForListing(gameSessions);
+      //send all available games and data about each game back to the client
+      //client can then display a list of all current games you can join
+      socket.emit("availableGamesList", availableGames);
+    });
 
-    //when client chooses to create a new game
+    //create a new game session
     socket.on("createNewChessGame", () => {
       createNewSession(gameSessions, socketIDtoGameSessionID, socket, username);
     });
 
-    //OR
-    //when the player selects an existing game to join, run this function on the receipt of a "join game" event fom the client
-    //join the game, add new player's socketid to the gamesession object and send back the board initial state to the player
+    //join a specific existing game session
     socket.on("joinExistingGame", (gameSessionID) => {
       joinExistingSession(
         gameSessionID,
@@ -71,7 +73,12 @@ export function launchServer(io) {
 
     //handle disconnects
     socket.on("disconnect", () => {
-      handleDisconnect(gameSessions, socketIDtoGameSessionID, socket);
+      handleDisconnect(
+        gameSessions,
+        socketIDtoGameSessionID,
+        socket,
+        connectedPlayers
+      );
     });
   });
 
@@ -190,9 +197,17 @@ function joinExistingSession(
   console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
-function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
+function handleDisconnect(
+  gameSessions,
+  socketIDtoGameSessionID,
+  socket,
+  connectedPlayers
+) {
   //find what session the player is in
   const gameSessionID = socketIDtoGameSessionID[socket.id];
+
+  //remove from connected players
+  delete connectedPlayers[socket.id];
 
   //get session data for the player
   const sessionData = gameSessions[gameSessionID];
@@ -202,18 +217,68 @@ function handleDisconnect(gameSessions, socketIDtoGameSessionID, socket) {
     const playerDataStoredInsideSession =
       sessionData.connectedPlayersSocketIDs.players[socket.id];
 
-    //get the username of the person disconnecting
-    const playerUsername = playerDataStoredInsideSession.username;
+    if (playerDataStoredInsideSession) {
+      //get the username of the person disconnecting
+      const playerUsername = playerDataStoredInsideSession.username;
 
-    //delete the key
-    delete sessionData.connectedPlayersSocketIDs.players[socket.id];
+      //delete the player from the session
+      delete sessionData.connectedPlayersSocketIDs.players[socket.id];
 
-    //remove stale mapping so reconnects work correctly
-    delete socketIDtoGameSessionID[socket.id];
+      //check if session is now empty and clean it up to prevent memory leak
+      const remainingPlayers = Object.keys(
+        sessionData.connectedPlayersSocketIDs.players
+      );
+      if (remainingPlayers.length === 0) {
+        //no players left, delete the entire game session to free memory
+        delete gameSessions[gameSessionID];
+        console.log(
+          `Game session ${gameSessionID} deleted - no players remaining`
+        );
+      }
 
-    //log disconnection to terminal and delete player username and color
-    console.log(
-      `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameSessionID ${gameSessionID}`
-    );
+      //remove stale mapping so reconnects work correctly
+      delete socketIDtoGameSessionID[socket.id];
+
+      //log disconnection to terminal
+      console.log(
+        `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameSessionID ${gameSessionID}`
+      );
+    }
   }
+}
+
+//get list of available games that have exactly 1 player waiting
+//returns array of game objects with session info for frontend display
+function getAvailableGamesForListing(gameSessions) {
+  const availableGames = [];
+
+  //iterate through all game sessions
+  for (const gameSessionID in gameSessions) {
+    const gameSession = gameSessions[gameSessionID];
+    const players = gameSession.connectedPlayersSocketIDs.players;
+    const playerCount = Object.keys(players).length;
+
+    //only include games with exactly 1 player waiting
+    if (playerCount === 1) {
+      //get the waiting player's info
+      const waitingPlayer = Object.values(players)[0];
+
+      //create game listing object
+      //this is the data i can send back to the client, so the client can list stuff about each game currently going
+      //so for example the client will see who is in each game and if it is full or not
+      const gameInfo = {
+        gameSessionID: gameSessionID,
+        waitingPlayer: {
+          username: waitingPlayer.username,
+          colour: waitingPlayer.colour,
+        },
+        playersConnected: playerCount,
+        maxPlayers: 2,
+      };
+
+      availableGames.push(gameInfo);
+    }
+  }
+
+  return availableGames;
 }
