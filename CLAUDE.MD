@@ -46,11 +46,9 @@ After making any code change, output a commit message the user can copy and past
 Use the following structure:
 
 ```
-
 <type>: <short summary>
 
 <detailed explanation, if needed>
-
 ```
 
 ### Guidelines
@@ -66,18 +64,30 @@ Use the following structure:
 - Be concise but clear — like you're explaining it to future you or a teammate
 - Only generate **one commit message** per logical change
 
-### Commit Breakdown for Complex Tasks
+### Commit Workflow for Complex Tasks
 
-- If the task is **non-trivial or involves multiple steps** (e.g. modifying logic, adding a feature, writing tests, refactoring, updating docs), **split the work into small, focused commits**
-- Each commit must:
-  - Do only **one logical change**
-  - Include a **clear Conventional Commit message** explaining _only that change_
-  - Be easy to review and revert if needed
-- When in doubt, use the rule: **1 commit per change, per file or function**
-- Examples of commit separation:
-  - `feat: add validation for pawn movement`
-  - `test: add unit tests for pawn move validation`
-  - `refactor: move piece logic into separate class`
-  - `docs: comment each line in pawn.js`
-- Never squash large tasks into one commit unless explicitly told to
-- **Do not automatically commit the changes. Just stage them and show me the commit message you would use. I will decide whether or not to commit.**
+- If a task requires **multiple changes**, **split the work into small, focused commits**
+
+  - Each commit must do **only one logical change**
+  - Use a clear [Conventional Commit](https://www.conventionalcommits.org/) message for each
+
+- Instead of committing immediately:
+
+  - **Make only the first change**
+  - **Stage only the files involved in that single change**
+  - Output:
+    - The filenames that were staged
+    - The commit message you would use
+    - A short summary of what changed
+  - Then **pause and wait for feedback**
+
+- I will manually review the change, give feedback, and run:
+  ```bash
+  git add .
+  git commit -m "your commit message"
+  git push
+  ```
+- Only after I confirm that the change is accepted, you can continue with the **next small change**, and repeat the process.
+
+- Never bundle multiple unrelated changes into one commit.
+- Never move on to the next task without confirmation.
