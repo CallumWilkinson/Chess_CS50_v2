@@ -107,6 +107,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
   let mockIOServer;
   let socketIDtoGameSessionID;
   let rooms;
+  let connectionHandler;
 
   //this beforeEach block does pretty much everything that server.js does so it works like an entry point
   beforeEach(() => {
@@ -127,6 +128,8 @@ describe("Testing that the server is sending and receiving data over sockets as 
       //mock the .on() method
       on(event, callback) {
         if (event === "connection") {
+          //store callback so we can create additional sockets in tests
+          connectionHandler = callback;
           //simulate each client connecting to the server
           callback(mockSocketA);
           callback(mockSocketB);
@@ -163,6 +166,8 @@ describe("Testing that the server is sending and receiving data over sockets as 
   //ensures a clean spy state before each test, not sure if needed but may aswell
   afterEach(() => {
     jest.clearAllMocks();
+    //clean up connection handler
+    connectionHandler = undefined;
   });
 
   test("PlayerA chooses to make a new game session, asserting that the client sends createnewgame event to server and server sends back the initial board state", () => {
@@ -244,5 +249,30 @@ describe("Testing that the server is sending and receiving data over sockets as 
       "newGameState",
       expect.any(Object)
     );
+  });
+
+  test("server prevents more than two players from joining the same session", () => {
+    //player A creates a new game
+    mockSocketA.simulateIncoming("createNewChessGame");
+    
+    //get the game ID from the mapping
+    const gameID = socketIDtoGameSessionID[mockSocketA.id];
+    
+    //player B joins the game (should work fine)
+    mockSocketB.simulateIncoming("joinExistingGame", gameID);
+    
+    //create a third socket for the third player
+    const mockSocketC = createMockSocket(rooms);
+    //register it with the server
+    connectionHandler(mockSocketC);
+    
+    //clear previous emits so we only see the join attempt response
+    mockSocketC.emit.mockClear();
+    
+    //third player tries to join the same game (should be rejected)
+    mockSocketC.simulateIncoming("joinExistingGame", gameID);
+    
+    //verify the server sent back an error message
+    expect(mockSocketC.emit).toHaveBeenCalledWith("error", "Game session is full");
   });
 });

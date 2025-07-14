@@ -27,8 +27,16 @@ export function launchServer(io) {
     //add this player to connectedPlayers object
     connectedPlayers[socket.id] = newPlayer;
 
+    //filter games to only show ones with space for more players (less than 2)
+    const availableGames = Object.keys(gameSessions).filter(gameSessionID => {
+      //get players object for this game session
+      const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
+      //only include games that aren't full yet
+      return Object.keys(players).length < 2;
+    });
+
     //when a player connects to the server send them a list of available game ID's so they can choose a lobby to join
-    socket.emit("availableGames", Object.keys(gameSessions));
+    socket.emit("availableGames", availableGames);
 
     //when client chooses to create a new game
     socket.on("createNewChessGame", () => {
@@ -134,12 +142,24 @@ function joinExistingSession(
   socket,
   username
 ) {
-  //assign this user's socket id and the game they selected to the mapping
-  //this allows us in future to associate this user with this gameSession they are about to join
-  socketIDtoGameSessionID[socket.id] = gameSessionID;
+  //check if game session actually exists first
+  if (!gameSessions[gameSessionID]) {
+    socket.emit("error", "Game session not found");
+    return;
+  }
 
   //get the players array so we know if anyone has already connected, this is needed as the second player to join is always white and the first is black
   const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
+
+  //check if game is already full (chess only supports 2 players max)
+  if (Object.keys(players).length >= 2) {
+    socket.emit("error", "Game session is full");
+    return;
+  }
+
+  //assign this user's socket id and the game they selected to the mapping
+  //this allows us in future to associate this user with this gameSession they are about to join
+  socketIDtoGameSessionID[socket.id] = gameSessionID;
 
   //get the gamesession object so we can assign a colour to the player
   const selectedGameSession = gameSessions[gameSessionID];

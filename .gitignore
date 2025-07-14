@@ -134,3 +134,7 @@ dist
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+
+# VS Code Chrome debug profile (ignore browser session data)
+.vscode/chrome/
