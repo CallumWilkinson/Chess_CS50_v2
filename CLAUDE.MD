@@ -3,18 +3,23 @@
 ## Development Guidelines
 
 - Follow existing project formatting and naming conventions
-- Avoid ternary operators – use explicit if/else statements
+- Use ES6 `class` syntax and organize logic using object-oriented principles
+- Use ECMAScript modules (`import` / `export`) only — do not use CommonJS (`require`)
+- Avoid ternary operators – use explicit `if/else` statements for clarity
+- Use `await` with `try/catch` blocks instead of `.then()` for async JavaScript
+- Write clean, modular code where each file or class has a single responsibility
+- Never rely on “magic” behavior — everything should be traceable and explicit
 - You must write a unit test for every new function or logic change. This is not optional.
   - If a test is not included, clearly explain _why it cannot or should not be tested_
   - Place the test in a dedicated `__tests__` or `*.test.js` file, following the existing test structure
   - Use `jest` syntax for all test code
   - If modifying existing logic, update or extend the relevant test
   - Tests must run independently and use mock data or mocks where needed
+  - Tests must follow the DRY principle
   - Never omit this unless explicitly told to skip tests for this task
 - Run all tests before committing changes
 - Follow TDD approach: write failing test, implement code, refactor
 - Prioritize code readability over performance optimization
-- Use `await` with `try/catch` blocks instead of `.then()` for async JavaScript
 - Environment: Windows 11, PowerShell, VS Code
 
 ## Code Documentation Guidelines
@@ -41,9 +46,11 @@ After making any code change, output a commit message the user can copy and past
 Use the following structure:
 
 ```
+
 <type>: <short summary>
 
 <detailed explanation, if needed>
+
 ```
 
 ### Guidelines
@@ -58,3 +65,19 @@ Use the following structure:
 - Use bullet points (`-`) for multiple changes in the body
 - Be concise but clear — like you're explaining it to future you or a teammate
 - Only generate **one commit message** per logical change
+
+### Commit Breakdown for Complex Tasks
+
+- If the task is **non-trivial or involves multiple steps** (e.g. modifying logic, adding a feature, writing tests, refactoring, updating docs), **split the work into small, focused commits**
+- Each commit must:
+  - Do only **one logical change**
+  - Include a **clear Conventional Commit message** explaining _only that change_
+  - Be easy to review and revert if needed
+- When in doubt, use the rule: **1 commit per change, per file or function**
+- Examples of commit separation:
+  - `feat: add validation for pawn movement`
+  - `test: add unit tests for pawn move validation`
+  - `refactor: move piece logic into separate class`
+  - `docs: comment each line in pawn.js`
+- Never squash large tasks into one commit unless explicitly told to
+- **Do not automatically commit the changes. Just stage them and show me the commit message you would use. I will decide whether or not to commit.**
