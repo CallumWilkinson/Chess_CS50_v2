@@ -7,7 +7,8 @@
       "Bash(npm run test:filter:*)",
       "Bash(git add:*)",
       "Bash(mkdir:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npm audit:*)"
     ],
     "deny": []
   }

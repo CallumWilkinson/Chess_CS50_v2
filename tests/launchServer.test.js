@@ -169,7 +169,7 @@ describe("launchServer utility functions", () => {
       mockSocket.simulateIncoming("getAvailableGames");
       
       //verify the server responded with available games list (empty in this case)
-      expect(mockSocket.emit).toHaveBeenCalledWith("availableGamesList", []);
+      expect(mockSocket.emit).toHaveBeenCalledWith("availableGames", []);
     });
   });
 

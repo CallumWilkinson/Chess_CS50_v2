@@ -73,7 +73,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //get gameID from available games
     mockSocketB.simulateIncoming("getAvailableGames");
-    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGames");
     expect(availableGamesCall).toBeDefined();
     expect(availableGamesCall[1]).toHaveLength(1);
     
@@ -111,7 +111,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     //player B joins the game - get gameID from the available games or use a known pattern
     //since we can't access socketIDtoGameSessionID, we'll simulate joining the first available game
     mockSocketB.simulateIncoming("getAvailableGames");
-    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGames");
     expect(availableGamesCall).toBeDefined();
     expect(availableGamesCall[1]).toHaveLength(1); //should have 1 available game
     
@@ -167,7 +167,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //get gameID from available games
     mockSocketB.simulateIncoming("getAvailableGames");
-    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGames");
     expect(availableGamesCall).toBeDefined();
     expect(availableGamesCall[1]).toHaveLength(1);
     
@@ -222,7 +222,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //verify that no games are available since neither player created one
     mockSocketA.simulateIncoming("getAvailableGames");
-    const availableGamesCall = mockSocketA.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    const availableGamesCall = mockSocketA.emit.mock.calls.find(call => call[0] === "availableGames");
     expect(availableGamesCall[1]).toEqual([]); //should be empty array
   });
 
@@ -246,7 +246,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
     //verify server responded with available games list
     expect(mockSocketC.emit).toHaveBeenCalledWith(
-      "availableGamesList",
+      "availableGames",
       expect.arrayContaining([
         expect.objectContaining({
           gameSessionID: expect.any(String),
@@ -274,6 +274,6 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockSocketC.simulateIncoming("getAvailableGames");
 
     //verify server responded with empty array
-    expect(mockSocketC.emit).toHaveBeenCalledWith("availableGamesList", []);
+    expect(mockSocketC.emit).toHaveBeenCalledWith("availableGames", []);
   });
 });

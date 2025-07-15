@@ -99,7 +99,7 @@ Client requests game list
     ↓ emit("getAvailableGames")
 Server
     ↓ filters games with 1 player waiting
-    ↓ emit("availableGamesList", gamesArray)
+    ↓ emit("availableGames", gamesArray)
 Client receives available games
 ```
 
@@ -186,7 +186,7 @@ Memory cleanup prevents leaks
 | Event                           | Payload                 | Purpose                  |
 | ------------------------------- | ----------------------- | ------------------------ |
 | `welcome`                       | `{message}`             | Connection confirmation  |
-| `availableGamesList`            | `{games[]}`             | List of joinable games   |
+| `availableGames`            | `{games[]}`             | List of joinable games   |
 | `playerInfoAndInitialGameState` | `{color, gameInstance}` | Game setup data          |
 | `newGameState`                  | `{gameInstance}`        | Updated board after move |
 | `notYourTurn`                   | `{message}`             | Invalid turn attempt     |

@@ -39,7 +39,7 @@ export function launchServer(io) {
       const availableGames = getAvailableGamesForListing(gameSessions);
       //send all available games and data about each game back to the client
       //client can then display a list of all current games you can join
-      socket.emit("availableGamesList", availableGames);
+      socket.emit("availableGames", availableGames);
     });
 
     //create a new game session

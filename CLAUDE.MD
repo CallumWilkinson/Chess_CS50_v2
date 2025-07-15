@@ -94,3 +94,4 @@ Use the following structure:
 - Never bundle multiple unrelated changes into one commit.
 - Never move on to the next task without confirmation.
 - In each reply to me you must also give me a seperate analysis of all yor changes explaining the reasoning and thought process behind each change
+- In your responses, do NOT write 🤖 Generated with [Claude Code](https://claude.ai/code) Co-Authored-By: Claude <noreply@anthropic.com>
