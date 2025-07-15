@@ -197,7 +197,7 @@ function joinExistingSession(
   console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
-function handleDisconnect(
+export function handleDisconnect(
   gameSessions,
   socketIDtoGameSessionID,
   socket,

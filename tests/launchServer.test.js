@@ -25,7 +25,7 @@ jest.unstable_mockModule("../backend/gameSetup/player.js", () => ({
 
 //we import launchServer AFTER setting up the mocks
 //this ensures launchServer gets the mocked versions of its dependencies
-const { launchServer, getAvailableGamesForListing } = await import("../backend/gameSetup/launchServer.js");
+const { launchServer, getAvailableGamesForListing, handleDisconnect } = await import("../backend/gameSetup/launchServer.js");
 
 //describe groups related tests together
 //this is testing the helper functions inside launchServer.js
@@ -184,28 +184,7 @@ describe("launchServer utility functions", () => {
       const connectedPlayers = {"socket1": {username: "player1"}}; //list of all connected players
       const mockSocket = createMockSocket("socket1"); //the disconnecting player
       
-      //recreate the handleDisconnect logic to test it
-      const handleDisconnect = (gameSessions, socketIDtoGameSessionID, socket, connectedPlayers) => {
-        const gameSessionID = socketIDtoGameSessionID[socket.id]; //find which game the player was in
-        delete connectedPlayers[socket.id]; //remove from global player list
-        
-        const sessionData = gameSessions[gameSessionID]; //get the game session data
-        if (sessionData != null) {
-          const playerData = sessionData.connectedPlayersSocketIDs.players[socket.id];
-          if (playerData) {
-            delete sessionData.connectedPlayersSocketIDs.players[socket.id]; //remove from game
-            delete socketIDtoGameSessionID[socket.id]; //remove mapping
-            
-            //check if game is now empty
-            const remainingPlayers = Object.keys(sessionData.connectedPlayersSocketIDs.players);
-            if (remainingPlayers.length === 0) {
-              delete gameSessions[gameSessionID]; //delete empty game to save memory
-            }
-          }
-        }
-      };
-      
-      //simulate the player disconnecting
+      //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
       
       //verify the player was removed from the connected players list
@@ -221,27 +200,7 @@ describe("launchServer utility functions", () => {
       const connectedPlayers = {"socket1": {username: "player1"}};
       const mockSocket = createMockSocket("socket1");
       
-      //recreate the handleDisconnect logic
-      const handleDisconnect = (gameSessions, socketIDtoGameSessionID, socket, connectedPlayers) => {
-        const gameSessionID = socketIDtoGameSessionID[socket.id];
-        delete connectedPlayers[socket.id];
-        
-        const sessionData = gameSessions[gameSessionID];
-        if (sessionData != null) {
-          const playerData = sessionData.connectedPlayersSocketIDs.players[socket.id];
-          if (playerData) {
-            delete sessionData.connectedPlayersSocketIDs.players[socket.id];
-            delete socketIDtoGameSessionID[socket.id];
-            
-            const remainingPlayers = Object.keys(sessionData.connectedPlayersSocketIDs.players);
-            if (remainingPlayers.length === 0) {
-              delete gameSessions[gameSessionID];
-            }
-          }
-        }
-      };
-      
-      //simulate the last player disconnecting
+      //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
       
       //verify the empty game session was deleted (memory cleanup)
@@ -268,27 +227,7 @@ describe("launchServer utility functions", () => {
       };
       const mockSocket = createMockSocket("socket1"); //player1 disconnects
       
-      //recreate the handleDisconnect logic
-      const handleDisconnect = (gameSessions, socketIDtoGameSessionID, socket, connectedPlayers) => {
-        const gameSessionID = socketIDtoGameSessionID[socket.id];
-        delete connectedPlayers[socket.id];
-        
-        const sessionData = gameSessions[gameSessionID];
-        if (sessionData != null) {
-          const playerData = sessionData.connectedPlayersSocketIDs.players[socket.id];
-          if (playerData) {
-            delete sessionData.connectedPlayersSocketIDs.players[socket.id];
-            delete socketIDtoGameSessionID[socket.id];
-            
-            const remainingPlayers = Object.keys(sessionData.connectedPlayersSocketIDs.players);
-            if (remainingPlayers.length === 0) {
-              delete gameSessions[gameSessionID];
-            }
-          }
-        }
-      };
-      
-      //simulate player1 disconnecting
+      //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
       
       //verify the game session still exists (because player2 is still there)
@@ -307,26 +246,6 @@ describe("launchServer utility functions", () => {
       const socketIDtoGameSessionID = {"socket1": "nonexistent-session"}; //but mapping points to non-existent game
       const connectedPlayers = {"socket1": {username: "player1"}};
       const mockSocket = createMockSocket("socket1");
-      
-      //recreate the handleDisconnect logic
-      const handleDisconnect = (gameSessions, socketIDtoGameSessionID, socket, connectedPlayers) => {
-        const gameSessionID = socketIDtoGameSessionID[socket.id];
-        delete connectedPlayers[socket.id];
-        
-        const sessionData = gameSessions[gameSessionID];
-        if (sessionData != null) {
-          const playerData = sessionData.connectedPlayersSocketIDs.players[socket.id];
-          if (playerData) {
-            delete sessionData.connectedPlayersSocketIDs.players[socket.id];
-            delete socketIDtoGameSessionID[socket.id];
-            
-            const remainingPlayers = Object.keys(sessionData.connectedPlayersSocketIDs.players);
-            if (remainingPlayers.length === 0) {
-              delete gameSessions[gameSessionID];
-            }
-          }
-        }
-      };
       
       //the function should handle this gracefully without crashing
       expect(() => {
