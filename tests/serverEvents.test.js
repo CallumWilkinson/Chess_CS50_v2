@@ -126,7 +126,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     mockSocketB.emit.mockClear();
     mockIOServer.__toEmitMock.mockClear();
 
-    //playerA moves pawn at a7 to a6
+    //playerA moves black pawn at a7 to a6 (playerA is black and goes first)
     const a7 = new Position("a7");
     const blackPawn = new Pawn("black", a7);
     const a6 = new Position("a6");

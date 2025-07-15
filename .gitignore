@@ -138,3 +138,6 @@ dist
 
 # VS Code Chrome debug profile (ignore browser session data)
 .vscode/chrome/
+
+# Chrome debug profiles
+.vscode/chromeUserData/

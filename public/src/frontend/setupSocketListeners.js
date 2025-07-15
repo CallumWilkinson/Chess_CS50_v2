@@ -24,9 +24,10 @@ export function getPlayerColourAndInitialBoardState(socket, callback) {
 
 /**
  * @param {CanvasRenderingContext2D} ctx
+ * @param {Object} currentGameState - shared reference to current game state
  */
 
-export function updateUIWithNewGameState(ctx, socket) {
+export function updateUIWithNewGameState(ctx, socket, currentGameState) {
   //when a SUCCESSFULL MOVE IS RECEIVED
   //extract the gamestatemanger from json object received
   if (socket) {
@@ -35,6 +36,12 @@ export function updateUIWithNewGameState(ctx, socket) {
         "client recived this new gamestatemanager",
         currentGameStateManager
       );
+      
+      //update the shared reference with the new game state
+      //this ensures that event listeners always have access to the current game state
+      currentGameState.board = currentGameStateManager.board;
+      currentGameState.gameStateManager = currentGameStateManager;
+      
       //update local UI to show the new game state
       updateUI(ctx, currentGameStateManager.board, currentGameStateManager);
     });

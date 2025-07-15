@@ -3,14 +3,12 @@ import { sendMoveData } from "./sendMoveData.js";
 
 /**
  * @param {HTMLCanvasElement} canvas - selected piece to be moved
- * @param {GameStateManager} gameStateManager - to run makeMove() function when clicking on a piece
- * @param {Board} board
+ * @param {Object} currentGameState - shared reference to current game state with board and gameStateManager
  */
 export function setupMovementEventListeners(
   socket,
   canvas,
-  board,
-  gameStateManager
+  currentGameState
 ) {
   //set firstclick to null to start in a neutral state, waiting for the first click
   let firstClick = false;
@@ -32,13 +30,13 @@ export function setupMovementEventListeners(
       firstClickedSquareName = getClickedSquareName(event, canvas);
 
       //get the chess peice object at given key
-      selectedPiece = board.grid[firstClickedSquareName];
+      selectedPiece = currentGameState.board.grid[firstClickedSquareName];
 
       //only run get possible moves if player selects their colored piece AND its their turn
       if (
         //if square is empty OR its not your colour then reset click state
         selectedPiece == null ||
-        selectedPiece.colour !== gameStateManager.currentPlayerColour ||
+        selectedPiece.colour !== currentGameState.gameStateManager.currentPlayerColour ||
         selectedPiece.colour !== window.playerColour
       ) {
         //reset click state as it is an invalid click/invalid selection
@@ -59,10 +57,10 @@ export function setupMovementEventListeners(
       }
 
       //check if the second click is on another of the player's own pieces and its their turn
-      const newSelectedPiece = board.grid[secondClickSquareName];
+      const newSelectedPiece = currentGameState.board.grid[secondClickSquareName];
       if (
         newSelectedPiece != null &&
-        newSelectedPiece.colour === gameStateManager.currentPlayerColour &&
+        newSelectedPiece.colour === currentGameState.gameStateManager.currentPlayerColour &&
         newSelectedPiece.colour === window.playerColour
       ) {
         //treat this second click as a new selection

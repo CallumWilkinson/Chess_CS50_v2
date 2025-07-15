@@ -33,4 +33,31 @@ describe("tests for gameSession class", () => {
     expect(board).toBeInstanceOf(Board);
     expect(gameStateManager).toBeInstanceOf(GameStateManager);
   });
+
+  test("chess game initializes with black as the current player", () => {
+    const newGameSession = new GameSession();
+    const newGameInstance = newGameSession.createGameInstance();
+    newGameInstance.createNewChessGame();
+    const gameStateManager = newGameInstance.gameStateManager;
+
+    //verify that the game initializes with black as the current player
+    expect(gameStateManager.currentPlayerColour).toBe("black");
+    expect(gameStateManager.turnManager.currentPlayerColour).toBe("black");
+  });
+
+  test("player color assignment works correctly for two players", () => {
+    const newGameSession = new GameSession();
+    const players = {};
+
+    //first player gets black
+    const firstPlayerColor = newGameSession.getPlayerColour(players);
+    expect(firstPlayerColor).toBe("black");
+
+    //simulate first player joining
+    players["socket1"] = { username: "player1", colour: "black" };
+
+    //second player gets white
+    const secondPlayerColor = newGameSession.getPlayerColour(players);
+    expect(secondPlayerColor).toBe("white");
+  });
 });

@@ -23,20 +23,26 @@ window.onload = () => {
   //this should be a fresh game
   //runs a callback function so that the game is only loaded when the data is received from the server and lets me access the gameinstance from the server
   getPlayerColourAndInitialBoardState(socket, ({ gameInstance }) => {
-    updateUI(ctx, gameInstance.board, gameInstance.gameStateManager);
+    //create a shared reference object that will hold the current game state
+    //this allows the event listeners to always access the most up-to-date game state
+    const currentGameState = {
+      board: gameInstance.board,
+      gameStateManager: gameInstance.gameStateManager
+    };
+
+    updateUI(ctx, currentGameState.board, currentGameState.gameStateManager);
 
     //setup eventlisteners make ui respond to player input
     //clicking on a chesspeice and then on an empty, legal square, will send json data to the server with details of the player's intended move
     setupMovementEventListeners(
       socket,
       canvas,
-      gameInstance.board,
-      gameInstance.gameStateManager,
-      ctx
+      currentGameState
     );
 
     //update ui when a new game state object is received from server
-    updateUIWithNewGameState(ctx, socket);
+    //pass the currentGameState reference so it can be updated when new states arrive
+    updateUIWithNewGameState(ctx, socket, currentGameState);
   });
 
   //manually connect to the socket after all socket listeners have been registered
