@@ -44,6 +44,14 @@ export default class GameStateManager {
       );
     }
 
+    //stop if target square holds a friendly piece, this stops friendly fire so you cant capture your own peice
+    if (
+      this.board.grid[targetSquareName] &&
+      this.board.grid[targetSquareName].colour === this.currentPlayerColour
+    ) {
+      throw new Error("Invalid move: cannot capture your own piece.");
+    }
+
     //if target square contains an enemy peice, capture it
     if (this.board.grid[targetSquareName] != null) {
       const enemyPeice = this.board.grid[targetSquareName];

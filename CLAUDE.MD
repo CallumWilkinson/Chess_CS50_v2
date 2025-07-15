@@ -2,6 +2,7 @@
 
 ## Development Guidelines
 
+- Environment: Windows 11, PowerShell, VS Code
 - Follow existing project formatting and naming conventions
 - Use ES6 `class` syntax and organize logic using object-oriented principles
 - Use ECMAScript modules (`import` / `export`) only — do not use CommonJS (`require`)
@@ -18,11 +19,14 @@
   - Tests must follow the DRY principle
   - Tests must test the real code, not reimplemented logic
   - Never omit this unless explicitly told to skip tests for this task
-- Run all tests before suggesting changes
-- All new code must not break previous tests
-- Follow TDD approach: write failing test, implement code, refactor
-- Prioritize code readability over performance optimization
-- Environment: Windows 11, PowerShell, VS Code
+  - Prioritize code readability over performance optimization
+  - Run all tests before suggesting changes
+  - All new code must not break previous tests
+  - I want you to follow Test-Driven Development (TDD) strictly, in a Red-Green-Refactor loop.
+    - Red: Write a failing unit test for a small piece of functionality.
+    - Green: Write the minimal code needed to make that test pass.
+    - Refactor: Clean up both the test and the implementation, improving readability, removing duplication, etc., without changing behavior.
+      After you finish one cycle, repeat for the next bit of functionality.
 
 ## Code Documentation Guidelines
 
