@@ -8,8 +8,13 @@ export default function joinExistingGameOrCreateNewChessGame(socket) {
     return;
   }
 
-  //the server should send this event as soon as a new client connects
-  //so when the front end recieves it, this function runs
+  //listen for when the socket connects to the server
+  socket.on("connect", () => {
+    //request the list of available games from the server
+    socket.emit("getAvailableGames");
+  });
+
+  //when the server responds with available games, decide what to do
   socket.on("availableGames", (availableGames) => {
     //check if the list has a game in it already
     if (availableGames.length > 0) {
