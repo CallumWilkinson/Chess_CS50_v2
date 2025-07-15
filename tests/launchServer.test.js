@@ -1,4 +1,5 @@
 import { jest } from "@jest/globals";
+import { createMockSocket, createMockGameSession, createMockIOServer, createMockGameSessions } from "./testUtils.js";
 
 //these are mock functions that replace the real functions during testing
 //this allows us to test launchServer.js without depending on other modules
@@ -24,53 +25,7 @@ jest.unstable_mockModule("../backend/gameSetup/player.js", () => ({
 
 //we import launchServer AFTER setting up the mocks
 //this ensures launchServer gets the mocked versions of its dependencies
-const { launchServer } = await import("../backend/gameSetup/launchServer.js");
-
-//this function creates fake game session objects that look like real ones
-//we use this in tests instead of creating real game sessions
-//the 'players' parameter lets us control how many players are in the session
-function createMockGameSession(players) {
-  return {
-    gameSessionID: "test-session-id",
-    connectedPlayersSocketIDs: {
-      players: players || {}, //if no players passed, use empty object
-    },
-    gameInstance: {
-      board: {},
-      gameStateManager: {},
-    },
-  };
-}
-
-//this creates a fake socket that behaves like a real websocket connection
-//in real life, socket.io creates these when clients connect
-//we make fake ones for testing so we don't need real client connections
-function createMockSocket(id) {
-  return {
-    id: id || "mock-socket-id", //unique identifier for this fake socket
-    emit: jest.fn(), //jest.fn() tracks when/how this function is called
-    join: jest.fn(), //tracks when socket joins a room
-    on: jest.fn(), //tracks when socket registers event listeners
-    handshake: {
-      auth: {
-        username: "testuser", //simulates authenticated user data
-      },
-    },
-  };
-}
-
-//this creates a fake socket.io server that behaves like the real one
-//the real server manages all client connections and broadcasts messages
-//we make a fake one for testing so we don't need a real server running
-function createMockIOServer() {
-  return {
-    on: jest.fn(), //tracks when server registers event listeners (like 'connection')
-    emit: jest.fn(), //tracks when server broadcasts to all clients
-    to: jest.fn(() => ({ //simulates sending messages to specific rooms
-      emit: jest.fn(), //tracks messages sent to room members
-    })),
-  };
-}
+const { launchServer, getAvailableGamesForListing } = await import("../backend/gameSetup/launchServer.js");
 
 //describe groups related tests together
 //this is testing the helper functions inside launchServer.js
@@ -88,40 +43,7 @@ describe("launchServer utility functions", () => {
       //create empty gameSessions object (no games exist)
       const gameSessions = {};
       
-      //since the real function is inside launchServer.js and not exported,
-      //we recreate the same logic here to test it
-      const getAvailableGamesForListing = (gameSessions) => {
-        const availableGames = []; //array to store games that can be joined
-        
-        //loop through all game sessions
-        for (const gameSessionID in gameSessions) {
-          const gameSession = gameSessions[gameSessionID];
-          const players = gameSession.connectedPlayersSocketIDs.players;
-          const playerCount = Object.keys(players).length; //count how many players in game
-          
-          //only show games with exactly 1 player (waiting for a second player)
-          if (playerCount === 1) {
-            const waitingPlayer = Object.values(players)[0]; //get the waiting player's info
-            
-            //create info object about this game for the frontend
-            const gameInfo = {
-              gameSessionID: gameSessionID,
-              waitingPlayer: {
-                username: waitingPlayer.username,
-                colour: waitingPlayer.colour
-              },
-              playersConnected: playerCount,
-              maxPlayers: 2
-            };
-            
-            availableGames.push(gameInfo); //add to list
-          }
-        }
-        
-        return availableGames;
-      };
-      
-      //call the function with empty gameSessions
+      //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
       //expect it to return empty array since no games exist
       expect(result).toEqual([]);
@@ -130,41 +52,12 @@ describe("launchServer utility functions", () => {
     test("returns empty array when no games have exactly 1 player", () => {
       //create test data with games that have 0 players and 2 players
       //but no games with exactly 1 player waiting
-      const gameSessions = {
-        "session1": createMockGameSession({}), //0 players - new empty game
-        "session2": createMockGameSession({"player1": {username: "user1", colour: "black"}, "player2": {username: "user2", colour: "white"}}), //2 players - full game
-      };
+      const gameSessions = createMockGameSessions({
+        emptySession: true,
+        twoPlayerSession: true
+      });
       
-      //recreate the function logic
-      const getAvailableGamesForListing = (gameSessions) => {
-        const availableGames = [];
-        
-        for (const gameSessionID in gameSessions) {
-          const gameSession = gameSessions[gameSessionID];
-          const players = gameSession.connectedPlayersSocketIDs.players;
-          const playerCount = Object.keys(players).length;
-          
-          if (playerCount === 1) {
-            const waitingPlayer = Object.values(players)[0];
-            
-            const gameInfo = {
-              gameSessionID: gameSessionID,
-              waitingPlayer: {
-                username: waitingPlayer.username,
-                colour: waitingPlayer.colour
-              },
-              playersConnected: playerCount,
-              maxPlayers: 2
-            };
-            
-            availableGames.push(gameInfo);
-          }
-        }
-        
-        return availableGames;
-      };
-      
-      //call the function with games that have 0 and 2 players
+      //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
       //expect empty array since no games have exactly 1 player waiting
       expect(result).toEqual([]);
@@ -178,36 +71,7 @@ describe("launchServer utility functions", () => {
         "session3": createMockGameSession({"player1": {username: "user1", colour: "black"}, "player2": {username: "user2", colour: "white"}}), //2 players - full game
       };
       
-      //recreate the function logic
-      const getAvailableGamesForListing = (gameSessions) => {
-        const availableGames = [];
-        
-        for (const gameSessionID in gameSessions) {
-          const gameSession = gameSessions[gameSessionID];
-          const players = gameSession.connectedPlayersSocketIDs.players;
-          const playerCount = Object.keys(players).length;
-          
-          if (playerCount === 1) {
-            const waitingPlayer = Object.values(players)[0];
-            
-            const gameInfo = {
-              gameSessionID: gameSessionID,
-              waitingPlayer: {
-                username: waitingPlayer.username,
-                colour: waitingPlayer.colour
-              },
-              playersConnected: playerCount,
-              maxPlayers: 2
-            };
-            
-            availableGames.push(gameInfo);
-          }
-        }
-        
-        return availableGames;
-      };
-      
-      //call the function
+      //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
       //expect it to return info about session2 (the only game with 1 player)
       expect(result).toEqual([{
@@ -228,36 +92,7 @@ describe("launchServer utility functions", () => {
         "session2": createMockGameSession({"player1": {username: "user2", colour: "black"}}), //1 player waiting
       };
       
-      //recreate the function logic
-      const getAvailableGamesForListing = (gameSessions) => {
-        const availableGames = [];
-        
-        for (const gameSessionID in gameSessions) {
-          const gameSession = gameSessions[gameSessionID];
-          const players = gameSession.connectedPlayersSocketIDs.players;
-          const playerCount = Object.keys(players).length;
-          
-          if (playerCount === 1) {
-            const waitingPlayer = Object.values(players)[0];
-            
-            const gameInfo = {
-              gameSessionID: gameSessionID,
-              waitingPlayer: {
-                username: waitingPlayer.username,
-                colour: waitingPlayer.colour
-              },
-              playersConnected: playerCount,
-              maxPlayers: 2
-            };
-            
-            availableGames.push(gameInfo);
-          }
-        }
-        
-        return availableGames;
-      };
-      
-      //call the function
+      //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
       //expect it to return both games since both have 1 player waiting
       expect(result).toHaveLength(2);
@@ -315,53 +150,26 @@ describe("launchServer utility functions", () => {
       });
     });
 
-    test("handles getAvailableGames event", () => {
+    test("handles getAvailableGames event with real function", () => {
       //create fake server and socket
       const mockIO = createMockIOServer();
       const mockSocket = createMockSocket();
       
-      //create fake game session data with 1 player waiting
-      const gameSessions = {
-        "session1": createMockGameSession({"player1": {username: "user1", colour: "black"}}),
-      };
+      //call launchServer which sets up all the event handlers
+      launchServer(mockIO);
       
-      //manually test the getAvailableGamesForListing logic
-      //this simulates what happens when client requests available games
-      const availableGames = [];
-      for (const gameSessionID in gameSessions) {
-        const gameSession = gameSessions[gameSessionID];
-        const players = gameSession.connectedPlayersSocketIDs.players;
-        const playerCount = Object.keys(players).length;
-        
-        //only include games with 1 player (available to join)
-        if (playerCount === 1) {
-          const waitingPlayer = Object.values(players)[0];
-          
-          //create game info for the frontend
-          const gameInfo = {
-            gameSessionID: gameSessionID,
-            waitingPlayer: {
-              username: waitingPlayer.username,
-              colour: waitingPlayer.colour
-            },
-            playersConnected: playerCount,
-            maxPlayers: 2
-          };
-          
-          availableGames.push(gameInfo);
-        }
-      }
+      //get the connection handler and simulate connection
+      const connectionHandler = mockIO.on.mock.calls.find(call => call[0] === "connection")[1];
+      connectionHandler(mockSocket);
       
-      //verify the function returns the expected game info
-      expect(availableGames).toEqual([{
-        gameSessionID: "session1",
-        waitingPlayer: {
-          username: "user1",
-          colour: "black"
-        },
-        playersConnected: 1,
-        maxPlayers: 2
-      }]);
+      //clear previous emits to focus on the getAvailableGames response
+      mockSocket.emit.mockClear();
+      
+      //simulate the getAvailableGames event
+      mockSocket.simulateIncoming("getAvailableGames");
+      
+      //verify the server responded with available games list (empty in this case)
+      expect(mockSocket.emit).toHaveBeenCalledWith("availableGamesList", []);
     });
   });
 

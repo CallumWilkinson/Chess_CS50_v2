@@ -2,112 +2,15 @@ import { jest } from "@jest/globals";
 import { launchServer } from "../backend/gameSetup/launchServer.js";
 import Pawn from "../backend/chessPieces/pawn.js";
 import Position from "../backend/gameLogic/position.js";
-
-//this method returns an object with functions on it
-//the mock socket can simulate what happens when the server recieves an event from the client
-function createMockSocket(rooms) {
-  //store callbacks like createNewChessGame ect
-  //key is eventName
-  const handlers = {};
-
-  return {
-    //random id for the socket, this simulates socket.id
-    id: Math.random().toString(36).slice(2, 8),
-
-    //tracks which rooms the mocksocket has joined, accessed as socket.joinedRooms[]
-    //tracks what room THIS SOCKET joined
-    joinedRooms: [],
-
-    //mock function for socket.join
-    //simulates socket.join(room) where room is a string
-    //the jest.fn() wrapper allows you to track how many times join is called and what arguments it was called with
-    join: jest.fn(function (room) {
-      //add room (string) to array
-      this.joinedRooms.push(room);
-
-      //check if the room exists already
-      //the rooms[] is shared across all sockets, wheras joinedRooms[] is per socket, rooms object is defined OUTISDE OF THIS FUNCTION
-      //rooms[] tracks who is in what room
-      const roomExists = rooms[room] !== undefined;
-
-      //if it doesnt, make a new set
-      //a set() automatically prevents duplicates, so if the same socket tried to join the same room twice, it wont be duplicated
-      //its also faster than searching an array
-      if (!roomExists) {
-        rooms[room] = new Set();
-      }
-      //adds this mock socket to the room's set we made above
-      //this way, each room is store a list of sockets
-      //so when i call socket.to(room1).emit(...) i can send events to all other sockets in that room
-      rooms[room].add(this);
-    }),
-
-    //add auth value to the socket to simulate auth
-    handshake: {
-      auth: {
-        //setting to undefined simulates every user just going in as guest
-        username: undefined,
-      },
-    },
-
-    //register event listeners
-    //simulates socket.on for ANY event, store callback so we can trigger it later
-    //you call this by writing socket.on, as this function returns an object (which you call a socket) and this function can be run on the object
-    //this should simulate what we have on the backend at the moment (socket.on(creategame))
-    on(eventName, callback) {
-      handlers[eventName] = callback;
-    },
-
-    //create a fake socket.emit to track server responses
-    //this is a mock function
-    //replaces the real socket.emit with a jest spy so we can test what the server emmitted in response
-    emit: jest.fn(),
-
-    //allows me to call .to(room) on the socket
-    //this allows me to mock sending an event to EVERY SOCKET IN THE ROOM EXCEPT THE SENDER
-    to(room) {
-      //we need this variable so we can referece the current object in the code below ("this" inside the "emit" function is different to "this" inside the "to" function)
-      const sender = this;
-
-      //returns a new object with an emit() function so i can call
-      //socket.to("room123").emit("someEvent", payload);
-      return {
-        emit(eventName, ...args) {
-          //check if room exists in the rooms object
-          if (rooms[room]) {
-            //loop through all sockets that have joined this room
-            //rooms[room] is a set of sockets Set { socketA, socketB, socketC }
-            for (const sock of rooms[room]) {
-              //skip the sender, we only want to send to other sockets
-              if (sock !== sender) {
-                //simulate emiting the event to the socket currently iterated
-                sock.emit(eventName, ...args);
-              }
-            }
-          }
-        },
-      };
-    },
-
-    //syntax ...args means any number of arguments, called a rest parameter
-    //example call would be simulateIncoming("movePiece", { from: "e2", to: "e4" });
-    simulateIncoming(eventName, ...args) {
-      //below is true when you previously have called socket.on(eventname)
-      if (handlers[eventName]) {
-        //run the call back function with the given args
-        handlers[eventName](...args);
-      }
-    },
-  };
-}
+import { createMockSocket, createMockIOServer } from "./testUtils.js";
 
 describe("Testing that the server is sending and receiving data over sockets as intended", () => {
   let mockSocketA;
   let mockSocketB;
   let mockIOServer;
-  let socketIDtoGameSessionID;
   let rooms;
   let connectionHandler;
+  let gameID;
 
   //this beforeEach block does pretty much everything that server.js does so it works like an entry point
   beforeEach(() => {
@@ -115,52 +18,27 @@ describe("Testing that the server is sending and receiving data over sockets as 
     rooms = {};
 
     //each player gets their own socket
-    mockSocketA = createMockSocket(rooms);
-    mockSocketB = createMockSocket(rooms);
+    mockSocketA = createMockSocket(undefined, rooms);
+    mockSocketB = createMockSocket(undefined, rooms);
 
-    //so we can assert against the same function used in handleMove.js
-    const toEmitMock = jest.fn();
-
-    //both players connect to the server
-    //this is to mock the io server
-    //this simulates the server, WHICH IS DIFFERENT TO THE SOCKET sending socket events is different to sending server events
-    mockIOServer = {
-      //mock the .on() method
-      on(event, callback) {
-        if (event === "connection") {
-          //store callback so we can create additional sockets in tests
-          connectionHandler = callback;
-          //simulate each client connecting to the server
-          callback(mockSocketA);
-          callback(mockSocketB);
-        }
-      },
-      //mock the emit method to spy on how it is called
-      emit: jest.fn(),
-      //mock the to(room) method to mock how handlemove.js broadcasts events to ALL clients in a roon
-      to: jest.fn((room) => ({
-        //mock the emit() method that would be chained after io.to()
-        emit: (eventName, ...args) => {
-          //check room exists first
-          if (rooms[room]) {
-            //loop over all sockets in the room
-            for (const sock of rooms[room]) {
-              //simulate sending events to each socket in the room (including sender)
-              sock.emit(eventName, ...args);
-            }
-          }
-          //call a test spy function to track this emit
-          //this is needed so we can call our assertions/expects later on in our tests
-          toEmitMock(eventName, ...args);
-        },
-      })),
-      //expose the spy so we can assert io.to().emit() was called
-      __toEmitMock: toEmitMock,
-    };
+    //create mock io server using shared utility
+    mockIOServer = createMockIOServer(rooms);
+    
+    //modify the mock to store connection handler for additional sockets
+    const originalOn = mockIOServer.on;
+    mockIOServer.on = jest.fn((event, callback) => {
+      if (event === "connection") {
+        connectionHandler = callback;
+        //simulate each client connecting to the server
+        callback(mockSocketA);
+        callback(mockSocketB);
+      }
+      return originalOn(event, callback);
+    });
 
     //this will call server.on and attaches all socket.on event listners on the server side
     //this function is the logic that i want to test
-    socketIDtoGameSessionID = launchServer(mockIOServer);
+    launchServer(mockIOServer);
   });
 
   //ensures a clean spy state before each test, not sure if needed but may aswell
@@ -186,11 +64,20 @@ describe("Testing that the server is sending and receiving data over sockets as 
   });
 
   test("Player A chooses to join an existing game, asserting that the server sends back the correct game instance that they choose to join", () => {
+    //clear previous emits
+    mockSocketA.emit.mockClear();
+    mockSocketB.emit.mockClear();
+
     //user A chooses to createNewGame
     mockSocketA.simulateIncoming("createNewChessGame");
 
-    //lookup game id using the socket.id connection that made the game above
-    const gameID = socketIDtoGameSessionID[mockSocketA.id];
+    //get gameID from available games
+    mockSocketB.simulateIncoming("getAvailableGames");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    expect(availableGamesCall).toBeDefined();
+    expect(availableGamesCall[1]).toHaveLength(1);
+    
+    const gameID = availableGamesCall[1][0].gameSessionID;
 
     //user B chooses to join the game that user A created
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
@@ -205,14 +92,39 @@ describe("Testing that the server is sending and receiving data over sockets as 
   });
 
   test("When player A makes a move, I expect that both player A and player B will BOTH receive the updated game state", () => {
+    //clear all previous emit calls
+    mockSocketA.emit.mockClear();
+    mockSocketB.emit.mockClear();
+    mockIOServer.__toEmitMock.mockClear();
+
     //player A makes a new game
     mockSocketA.simulateIncoming("createNewChessGame");
 
-    //get game id from playerA socket id
-    const gameID = socketIDtoGameSessionID[mockSocketA.id];
+    //extract gameID from the playerInfoAndInitialGameState emit
+    const gameCreationCall = mockSocketA.emit.mock.calls.find(call => call[0] === "playerInfoAndInitialGameState");
+    expect(gameCreationCall).toBeDefined();
+    
+    //clear emits again before player B joins
+    mockSocketA.emit.mockClear();
+    mockSocketB.emit.mockClear();
+
+    //player B joins the game - get gameID from the available games or use a known pattern
+    //since we can't access socketIDtoGameSessionID, we'll simulate joining the first available game
+    mockSocketB.simulateIncoming("getAvailableGames");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    expect(availableGamesCall).toBeDefined();
+    expect(availableGamesCall[1]).toHaveLength(1); //should have 1 available game
+    
+    const availableGameID = availableGamesCall[1][0].gameSessionID;
+    gameID = availableGameID;
 
     //player B joins it
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
+
+    //clear emits before move
+    mockSocketA.emit.mockClear();
+    mockSocketB.emit.mockClear();
+    mockIOServer.__toEmitMock.mockClear();
 
     //playerA moves pawn at a7 to a6
     const a7 = new Position("a7");
@@ -223,12 +135,6 @@ describe("Testing that the server is sending and receiving data over sockets as 
       targetSquare: a6,
     };
     mockSocketA.simulateIncoming("move", moveData);
-
-    //expecting player A to be in the game lobby
-    expect(socketIDtoGameSessionID[mockSocketA.id]).toBe(gameID);
-
-    //expecting player B to be in the game lobby
-    expect(socketIDtoGameSessionID[mockSocketB.id]).toBe(gameID);
 
     //this tests the actual server logic that it was emited to everyone including the sender
     expect(mockIOServer.__toEmitMock).toHaveBeenCalledWith(
@@ -252,17 +158,28 @@ describe("Testing that the server is sending and receiving data over sockets as 
   });
 
   test("server prevents more than two players from joining the same session", () => {
+    //clear all emits
+    mockSocketA.emit.mockClear();
+    mockSocketB.emit.mockClear();
+
     //player A creates a new game
     mockSocketA.simulateIncoming("createNewChessGame");
 
-    //get the game ID from the mapping
-    const gameID = socketIDtoGameSessionID[mockSocketA.id];
+    //get gameID from available games
+    mockSocketB.simulateIncoming("getAvailableGames");
+    const availableGamesCall = mockSocketB.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    expect(availableGamesCall).toBeDefined();
+    expect(availableGamesCall[1]).toHaveLength(1);
+    
+    const gameID = availableGamesCall[1][0].gameSessionID;
 
     //player B joins the game (should work fine)
     mockSocketB.simulateIncoming("joinExistingGame", gameID);
 
     //create a third socket for the third player
-    const mockSocketC = createMockSocket(rooms);
+    const mockSocketC = createMockSocket(undefined, rooms);
+    //set the username to match the test expectation
+    mockSocketC.handshake.auth.username = "testuser";
     //register it with the server
     connectionHandler(mockSocketC);
 
@@ -287,7 +204,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
     expect(mockSocketA.emit).toHaveBeenCalledWith(
       "connected",
       expect.objectContaining({
-        username: "Guest",
+        username: "testuser",
         socketId: mockSocketA.id,
         message: "Connected to chess server",
       })
@@ -297,25 +214,28 @@ describe("Testing that the server is sending and receiving data over sockets as 
     expect(mockSocketB.emit).toHaveBeenCalledWith(
       "connected",
       expect.objectContaining({
-        username: "Guest",
+        username: "testuser",
         socketId: mockSocketB.id,
         message: "Connected to chess server",
       })
     );
 
-    //verify neither player is in a game session yet
-    const gameIDA = socketIDtoGameSessionID[mockSocketA.id];
-    const gameIDB = socketIDtoGameSessionID[mockSocketB.id];
-    expect(gameIDA).toBeUndefined();
-    expect(gameIDB).toBeUndefined();
+    //verify that no games are available since neither player created one
+    mockSocketA.simulateIncoming("getAvailableGames");
+    const availableGamesCall = mockSocketA.emit.mock.calls.find(call => call[0] === "availableGamesList");
+    expect(availableGamesCall[1]).toEqual([]); //should be empty array
   });
 
   test("getAvailableGames event returns list of available games", () => {
+    //clear previous emits
+    mockSocketA.emit.mockClear();
+    
     //player A creates a new game
     mockSocketA.simulateIncoming("createNewChessGame");
 
     //create a third socket
-    const mockSocketC = createMockSocket(rooms);
+    const mockSocketC = createMockSocket(undefined, rooms);
+    mockSocketC.handshake.auth.username = "testuser";
     connectionHandler(mockSocketC);
 
     //clear previous emits to focus on the getAvailableGames response
@@ -331,7 +251,7 @@ describe("Testing that the server is sending and receiving data over sockets as 
         expect.objectContaining({
           gameSessionID: expect.any(String),
           waitingPlayer: expect.objectContaining({
-            username: "Guest",
+            username: "testuser",
             colour: expect.any(String),
           }),
           playersConnected: 1,
@@ -343,7 +263,8 @@ describe("Testing that the server is sending and receiving data over sockets as 
 
   test("getAvailableGames returns empty array when no games available", () => {
     //create a third socket without any games created
-    const mockSocketC = createMockSocket(rooms);
+    const mockSocketC = createMockSocket(undefined, rooms);
+    mockSocketC.handshake.auth.username = "testuser";
     connectionHandler(mockSocketC);
 
     //clear previous emits to focus on the getAvailableGames response

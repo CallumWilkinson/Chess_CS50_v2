@@ -16,8 +16,10 @@
   - If modifying existing logic, update or extend the relevant test
   - Tests must run independently and use mock data or mocks where needed
   - Tests must follow the DRY principle
+  - Tests must test the real code, not reimplemented logic
   - Never omit this unless explicitly told to skip tests for this task
-- Run all tests before committing changes
+- Run all tests before suggesting changes
+- All new code must not break previous tests
 - Follow TDD approach: write failing test, implement code, refactor
 - Prioritize code readability over performance optimization
 - Environment: Windows 11, PowerShell, VS Code
@@ -91,3 +93,4 @@ Use the following structure:
 
 - Never bundle multiple unrelated changes into one commit.
 - Never move on to the next task without confirmation.
+- In each reply to me you must also give me a seperate analysis of all yor changes explaining the reasoning and thought process behind each change

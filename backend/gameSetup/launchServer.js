@@ -249,7 +249,7 @@ function handleDisconnect(
 
 //get list of available games that have exactly 1 player waiting
 //returns array of game objects with session info for frontend display
-function getAvailableGamesForListing(gameSessions) {
+export function getAvailableGamesForListing(gameSessions) {
   const availableGames = [];
 
   //iterate through all game sessions
