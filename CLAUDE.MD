@@ -9,13 +9,25 @@
 - Avoid ternary operators – use explicit `if/else` statements for clarity
 - Use `await` with `try/catch` blocks instead of `.then()` for async JavaScript
 - Write clean, modular code where each file or class has a single responsibility
-- Never rely on “magic” behavior — everything should be traceable and explicit
+- Never rely on "magic" behavior — everything should be traceable and explicit
+- **CRITICAL**: When you encounter code that expects properties or methods that don't exist in the actual class definitions:
+  - This is a red flag indicating architectural inconsistency
+  - Always investigate the actual class structure vs. usage patterns
+  - Fix the architectural problem rather than accommodating it
+  - If classes need additional properties, add them to the class constructor or create proper methods
 - You must write a unit test for every new function or logic change. This is not optional.
   - If a test is not included, clearly explain _why it cannot or should not be tested_
   - Place the test in a dedicated `__tests__` or `*.test.js` file, following the existing test structure
   - Use `jest` syntax for all test code
   - If modifying existing logic, update or extend the relevant test
-  - Tests must run independently and use mock data or mocks where needed
+  - Tests must run independently and use actual class instances (Player, GameSession, etc.) instead of mock objects whenever possible
+  - Only use mock objects when testing external dependencies (APIs, databases, file systems) or when testing error conditions that are difficult to reproduce with real objects
+  - **CRITICAL**: Before writing tests, analyze the actual class definitions and how they're used in the codebase:
+    - Read the actual class files to understand their real structure and properties
+    - Search for how objects are created and used throughout the codebase
+    - Never assume a class has properties that aren't in its constructor unless you verify they're added dynamically
+    - If you find a mismatch between class definitions and usage, fix the code that has the architectural problem, not the tests
+  - When a class expects certain properties that don't exist in the class definition, this indicates a design issue that should be resolved rather than worked around in tests
   - Tests must follow the DRY principle
   - Tests must test the real code, not reimplemented logic
   - Never omit this unless explicitly told to skip tests for this task
