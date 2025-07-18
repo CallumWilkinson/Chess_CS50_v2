@@ -2,6 +2,7 @@ import GameSession from "../backend/gameSetup/gameSession.js";
 import GameInstance from "../backend/gameSetup/GameInstance.js";
 import Board from "../backend/gameLogic/board.js";
 import GameStateManager from "../backend/gameLogic/GameStateManager.js";
+import Player from "../backend/gameSetup/Player.js";
 
 describe("tests for gameSession class", () => {
   test("constructor generates a gameSession id and a gamesession has a function to create a gameInstance inside of it", () => {
@@ -53,8 +54,9 @@ describe("tests for gameSession class", () => {
     const firstPlayerColor = newGameSession.getPlayerColour(players);
     expect(firstPlayerColor).toBe("black");
 
-    //simulate first player joining
-    players["socket1"] = { username: "player1", colour: "black" };
+    //simulate first player joining using actual Player instance
+    const firstPlayer = new Player("player1", "socket1", "black");
+    players["socket1"] = firstPlayer;
 
     //second player gets white
     const secondPlayerColor = newGameSession.getPlayerColour(players);

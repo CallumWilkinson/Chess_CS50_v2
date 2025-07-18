@@ -30,7 +30,13 @@ export default class GameInstance {
     this.board.initialisePieces();
   }
 
-  addPlayersToInstance(connectedUsers) {
+  addPlayersToInstance(connectedUsers, database = null) {
+    //if database instance is provided, use the unified color assignment logic
+    if (database && database.assignPlayerColor) {
+      return database.assignPlayerColor(connectedUsers);
+    }
+
+    //fallback to legacy logic for backwards compatibility
     //assign new player a colour based on the currently connected players
     const colours = Object.values(connectedUsers).map((p) => p.colour);
 

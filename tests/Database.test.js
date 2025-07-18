@@ -250,4 +250,61 @@ describe("Database class", () => {
       ]));
     });
   });
+
+  //test unified player color assignment functionality
+  describe("player color assignment", () => {
+    test("assignPlayerColor returns black when no players exist", () => {
+      const players = {};
+      
+      const result = database.assignPlayerColor(players);
+      
+      expect(result).toBe("black");
+    });
+
+    test("assignPlayerColor returns white when black player already exists", () => {
+      const blackPlayer = new Player("player1", "socket1", "black");
+      const players = {
+        socket1: blackPlayer
+      };
+      
+      const result = database.assignPlayerColor(players);
+      
+      expect(result).toBe("white");
+    });
+
+    test("assignPlayerColor returns black when only white player exists", () => {
+      const whitePlayer = new Player("player1", "socket1", "white");
+      const players = {
+        socket1: whitePlayer
+      };
+      
+      const result = database.assignPlayerColor(players);
+      
+      expect(result).toBe("black");
+    });
+
+    test("assignPlayerColor returns white when both colors exist but black is first", () => {
+      const blackPlayer = new Player("player1", "socket1", "black");
+      const whitePlayer = new Player("player2", "socket2", "white");
+      const players = {
+        socket1: blackPlayer,
+        socket2: whitePlayer
+      };
+      
+      const result = database.assignPlayerColor(players);
+      
+      expect(result).toBe("white");
+    });
+
+    test("assignPlayerColor handles empty players object", () => {
+      const result = database.assignPlayerColor({});
+      
+      expect(result).toBe("black");
+    });
+
+    test("assignPlayerColor handles null/undefined players gracefully", () => {
+      expect(database.assignPlayerColor(null)).toBe("black");
+      expect(database.assignPlayerColor(undefined)).toBe("black");
+    });
+  });
 });

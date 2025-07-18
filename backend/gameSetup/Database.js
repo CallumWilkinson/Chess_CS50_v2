@@ -120,4 +120,24 @@ export default class Database {
     }
     return playerCount;
   }
+
+  //assign a color to a new player based on existing players
+  //takes a players object and returns either "black" or "white"
+  //black is assigned first, then white if black is already taken
+  assignPlayerColor(players) {
+    //handle null or undefined players gracefully
+    if (!players) {
+      return "black";
+    }
+
+    //extract existing player colors from the players object
+    const existingColors = Object.values(players).map((player) => player.colour);
+
+    //assign white if black already exists, otherwise assign black
+    if (existingColors.includes("black")) {
+      return "white";
+    } else {
+      return "black";
+    }
+  }
 }

@@ -29,7 +29,13 @@ export default class GameSession {
 
   disconnectFromGameSession() {}
 
-  getPlayerColour(players) {
+  getPlayerColour(players, database = null) {
+    //if database instance is provided, use the unified color assignment logic
+    if (database && database.assignPlayerColor) {
+      return database.assignPlayerColor(players);
+    }
+
+    //fallback to legacy logic for backwards compatibility
     const connectedPlayers = Object.values(players).map((p) => p.colour);
 
     //assigns black to the player, or if black exists then assign white
