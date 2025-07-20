@@ -9,7 +9,9 @@
       "Bash(mkdir:*)",
       "mcp__ide__getDiagnostics",
       "Bash(npm audit:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(findstr:*)"
     ],
     "deny": []
   }

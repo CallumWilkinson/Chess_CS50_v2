@@ -1,8 +1,13 @@
 import { handleMove } from "../helpers/handleMove.js";
 import GameSession from "./gameSession.js";
 import Player from "./player.js";
+import Database from "./Database.js";
 
 export function launchServer(io) {
+  //create database instance to manage game sessions and players
+  //this will gradually replace the global objects below as we migrate the codebase
+  const database = new Database();
+
   //holds all game sessions, key is gameSessionID, contains game session objects that have the following values:
   //GameSessionID
   //connectedPlayersSocketIDs.players[{ username, colour }]
@@ -26,6 +31,9 @@ export function launchServer(io) {
 
     //add this player to connectedPlayers object
     connectedPlayers[socket.id] = newPlayer;
+    
+    //also add to database for new move handling system
+    database.addPlayer(socket.id, newPlayer);
 
     //send welcome message to newly connected client
     socket.emit("connected", {
@@ -44,7 +52,7 @@ export function launchServer(io) {
 
     //create a new game session
     socket.on("createNewChessGame", () => {
-      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username);
+      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username, database);
     });
 
     //join a specific existing game session
@@ -54,19 +62,19 @@ export function launchServer(io) {
         gameSessions,
         socketIDtoGameSessionID,
         socket,
-        username
+        username,
+        database
       );
     });
 
     //listen for a 'move' event from this client
-    //i feel like its wrong to pass the whole server object here jsut so i can called server.to(roomID).emit()?
-    //i think this function should belong to the session class?
+    //using database API instead of directly accessing global objects
+    //this decouples socket handling from game state manipulation
     socket.on("move", (jsonMoveData) => {
       handleMove(
         socket,
         jsonMoveData,
-        gameSessions,
-        socketIDtoGameSessionID,
+        database,
         io
       );
     });
@@ -90,7 +98,8 @@ function createNewSession(
   gameSessions,
   socketIDtoGameSessionID,
   socket,
-  username
+  username,
+  database
 ) {
   //create a new gameSession, which as a gameSession ID, knows which players are connected and has a fuction to make a gameInstance
   const newGameSession = new GameSession();
@@ -125,6 +134,16 @@ function createNewSession(
   //add game session object to the sessions dictionary
   gameSessions[gameSessionID] = newGameSession;
 
+  //also update database for new move handling system
+  database.createSession(gameSessionID, newGameSession);
+  database.mapSocketToSession(socket.id, gameSessionID);
+  
+  //update the player with the assigned colour
+  const player = database.getPlayerBySocketId(socket.id);
+  if (player) {
+    player.setColour(assignedColour);
+  }
+
   //create a new "room" which is a group of sockets, and connect to it
   //the name of the room becomes the gameSessionID
   //the socket room is essentially the game lobby that the player joins
@@ -147,7 +166,8 @@ function joinExistingSession(
   gameSessions,
   socketIDtoGameSessionID,
   socket,
-  username
+  username,
+  database
 ) {
   //check if game session actually exists first
   if (!gameSessions[gameSessionID]) {
@@ -179,6 +199,15 @@ function joinExistingSession(
     username: username,
     colour: assignedColour,
   };
+
+  //also update database for new move handling system
+  database.mapSocketToSession(socket.id, gameSessionID);
+  
+  //update the player with the assigned colour
+  const player = database.getPlayerBySocketId(socket.id);
+  if (player) {
+    player.setColour(assignedColour);
+  }
 
   //join an exisiting "socket room"
   socket.join(gameSessionID);

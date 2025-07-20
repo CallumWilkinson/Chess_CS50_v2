@@ -1,43 +1,52 @@
 import { getNewGameState } from "../gameLogic/getNewGameState.js";
 
-export function handleMove(
-  socket,
-  jsonMoveData,
-  gameSessions,
-  socketIDtoGameSessionID,
-  io
-) {
-  //get gameID from socketid of the player
-  const gameSessionID = socketIDtoGameSessionID[socket.id];
+export function handleMove(socket, jsonMoveData, database, io) {
+  //get the game instance for this socket
+  const gameInstance = database.getGameInstanceBySocket(socket.id);
+  if (!gameInstance) {
+    socket.emit("error", "Game session not found");
+    return;
+  }
 
-  //get session data of the game the player is connected to
-  const currentSessionData = gameSessions[gameSessionID];
+  //get the player for this socket
+  const player = database.getPlayerBySocketId(socket.id);
+  if (!player) {
+    socket.emit("error", "Player not found");
+    return;
+  }
 
-  //check if the move is from the current player
-  const currentPlayerColour =
-    currentSessionData.gameInstance.gameStateManager.turnManager
-      .currentPlayerColour;
+  //validate that it is this player's turn to move using game-specific logic
+  if (!gameInstance.gameStateManager || !gameInstance.gameStateManager.turnManager) {
+    socket.emit("error", "Game not properly initialized");
+    return;
+  }
 
-  //get all players in this current session
-  const players = currentSessionData.connectedPlayersSocketIDs.players;
-
-  //send error to client if player tried to move when its not their turn
-  if (players[socket.id].colour !== currentPlayerColour) {
+  const currentPlayerColour = gameInstance.gameStateManager.turnManager.currentPlayerColour;
+  if (player.colour !== currentPlayerColour) {
     socket.emit("notYourTurn");
     return;
   }
+
   //console log in terminal move data received
   console.log("Server has received a move");
 
   try {
+
     //when you receive a move from the opponent, run the make move function
     //return gamestatemanager and board to send to the client
     //this function will run the gamestatemnager.makemove() and return json objects of board and gamestate to send back to client
     const newGameState = getNewGameState(
       jsonMoveData,
-      currentSessionData.gameInstance.gameStateManager,
-      currentSessionData.gameInstance.board
+      gameInstance.gameStateManager,
+      gameInstance.board
     );
+
+    //get the session id to emit to the correct room
+    const gameSessionID = database.getSessionIdBySocket(socket.id);
+    if (!gameSessionID) {
+      socket.emit("error", "Session mapping not found");
+      return;
+    }
 
     //send the move to everyone in the socket room, so it sends to player A and player B
     //remember that in launchServer.js I called socket.join(gameSessionID), this created a "socket room" and gave it the same name as it's corresponding gameSessionID

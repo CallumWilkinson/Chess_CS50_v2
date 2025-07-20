@@ -4,13 +4,36 @@
 
 ---
 
+# Multiplayer Game Platform
+
+## Vision
+
+**Core Philosophy**: Extensible multiplayer game platform with modular game engine architecture
+
+This project is designed as a **multiplayer game platform** that can support various turn-based games, starting with chess as the first implementation. The architecture separates networking concerns from game-specific logic, making it easy to add new games like checkers, tic-tac-toe, or any custom board game.
+
+### **Platform Features**
+- **🎮 Multi-Game Support**: Extensible architecture for different game types
+- **🔗 Real-Time Multiplayer**: WebSocket-based real-time communication
+- **🛡️ Server Authority**: Anti-cheat protection with server-side validation
+- **🎯 Session Management**: Robust player and game session handling
+- **📈 Scalable Design**: Support for multiple concurrent games
+
+### **Current Games**
+- ✅ **Chess**: Full implementation with complete rule validation
+- 🔄 **Checkers**: Planned next implementation
+- 🔄 **Custom Games**: Framework ready for new game types
+
+---
+
 ## Architecture Overview
 
-**Core Philosophy**: Server-authoritative chess game with real-time multiplayer communication
+**Core Philosophy**: Server-authoritative game platform with clean separation of concerns
 
-- **Server**: Full chess validation, game state management, and session control
-- **Client**: UI rendering and input handling
-- **Communication**: [Socket.IO](http://Socket.IO) with room-based broadcasting
+- **Networking Layer**: Socket.IO with Database API for session management
+- **Game Logic Layer**: Modular game engines (chess, future checkers, etc.)
+- **Client Layer**: UI rendering and input handling
+- **Communication**: Room-based broadcasting for isolated game sessions
 
 ---
 
@@ -29,15 +52,21 @@
 
 ### **3. Game Logic Layer**
 
-- Custom chess engine with move validation
-- Chess rules enforcement (legal moves, check, checkmate)
-- Turn management and game state tracking
+- **Modular Game Engines**: Independent game implementations
+  - **Chess Engine**: Complete chess rules and validation
+  - **Future Games**: Checkers, tic-tac-toe, custom games
+- **Game-Specific Logic**: Move validation, rule enforcement, win conditions
+- **Turn Management**: Game-specific turn handling and state tracking
 
-### **4. Session Management**
+### **4. Session Management (Database Layer)**
 
-- In-memory game session tracking
-- Automatic cleanup of empty sessions
-- Player connection management
+- **Networking-Focused**: Pure session and connection management
+- **Game-Agnostic**: Works with any game type without modification
+- **Features**:
+  - Player/session mapping and tracking
+  - Game instance retrieval and management
+  - Socket connection management
+  - Automatic cleanup of empty sessions
 
 ---
 
@@ -69,11 +98,18 @@ socketIDtoGameSessionID = {
 }
 ```
 
-### **Class Architecture**
+### **Platform Class Architecture**
 
-- **GameSession**: Contains game instance and player management
-- **GameInstance**: Chess board state, piece positions, turn tracking
-- **Player**: User data and socket connection info
+**Networking Layer (Game-Agnostic)**:
+- **Database**: Session management, player tracking, socket mapping
+- **GameSession**: Session coordination and player management
+- **Player**: User data and connection info
+
+**Game Logic Layer (Game-Specific)**:
+- **GameInstance**: Game-specific state and rules engine
+  - **Chess**: `ChessInstance` with chess board, pieces, rules
+  - **Future**: `CheckersInstance`, `TicTacToeInstance`, etc.
+- **Game Components**: Pieces, boards, rules specific to each game type
 
 ---
 
@@ -107,13 +143,13 @@ Client receives available games
 
 ```
 Client creates new game
-    ↓ emit("createNewChessGame")
+    ↓ emit("createNewChessGame") // Future: "createNewCheckersGame", etc.
 Server
     ↓ creates new GameSession
-    ↓ creates new GameInstance
-    ↓ assigns player color (black)
+    ↓ creates new GameInstance (chess/checkers/other)
+    ↓ assigns player color using game-specific logic
     ↓ socket.join(gameSessionID)
-    ↓ maps socketID → gameSessionID
+    ↓ Database maps socketID → gameSessionID
     ↓ emit("playerInfoAndInitialGameState", gameData)
 Client receives game setup
 ```
@@ -137,12 +173,13 @@ Both clients receive updated game info
 
 ```
 Client attempts move
-    ↓ emit("move", {chessPiece, targetPosition})
-Server Validation
-    ↓ validates turn order (correct player)
-    ↓ validates chess rules (legal move)
-    ↓ updates server game state
-    ↓ calculates new board state
+    ↓ emit("move", {gameSpecificMoveData})
+Server Validation (Layered Architecture)
+    ↓ Database layer: retrieves game instance and player info
+    ↓ Game layer: validates turn order using game instance
+    ↓ Game layer: validates game-specific rules (chess/checkers/etc.)
+    ↓ Game layer: updates game state
+    ↓ Networking layer: broadcasts to room
     ↓ [io.to](http://io.to)(gameSessionID).emit("newGameState", boardState)
 Both clients receive synchronized board update
 
@@ -172,14 +209,15 @@ Memory cleanup prevents leaks
 
 ### **Client → Server Events**
 
-| Event                | Payload                        | Purpose                |
-| -------------------- | ------------------------------ | ---------------------- |
-| `connection`         | `{username}`                   | Initial connection     |
-| `getAvailableGames`  | `{}`                           | Request game list      |
-| `createNewChessGame` | `{}`                           | Start new game session |
-| `joinExistingGame`   | `{gameID}`                     | Join existing session  |
-| `move`               | `{chessPiece, targetPosition}` | Attempt chess move     |
-| `disconnect`         | `{}`                           | Player disconnection   |
+| Event                   | Payload                        | Purpose                      |
+| ----------------------- | ------------------------------ | ---------------------------- |
+| `connection`            | `{username}`                   | Initial connection           |
+| `getAvailableGames`     | `{}`                           | Request game list            |
+| `createNewChessGame`    | `{}`                           | Start new chess session     |
+| `createNewCheckersGame` | `{}`                           | Start new checkers session  |
+| `joinExistingGame`      | `{gameID}`                     | Join existing session       |
+| `move`                  | `{gameSpecificMoveData}`       | Attempt game move            |
+| `disconnect`            | `{}`                           | Player disconnection         |
 
 ### **Server → Client Events**
 
@@ -195,38 +233,85 @@ Memory cleanup prevents leaks
 
 ---
 
-## Server Authority & Validation
+## Platform Architecture & Extensibility
 
-### **Turn Validation**
+### **Separation of Concerns**
 
 ```
-// Server enforces turn order
-if (currentPlayer.socketID !== gameInstance.currentTurn) {
-  socket.emit('notYourTurn', 'Wait for your turn');
+┌─────────────────────────────────────────────────────────────┐
+│                 NETWORKING LAYER                            │
+│  (Game-Agnostic - Works with any game type)                │
+│                                                             │
+│  Database API:                                              │
+│  - getGameInstanceBySocket()                                │
+│  - getPlayerBySocketId()                                    │
+│  - getSessionIdBySocket()                                   │
+│                                                             │
+│  handleMove() - Orchestrates between layers                 │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  GAME LOGIC LAYER                           │
+│   (Game-Specific - Each game implements its own rules)     │
+│                                                             │
+│   Chess:     gameInstance.gameStateManager.turnManager     │
+│   Checkers:  gameInstance.checkersStateManager.turnManager │
+│   Custom:    gameInstance.customStateManager.turnManager   │
+│                                                             │
+│   Each game validates its own:                              │
+│   - Turn order and player validation                       │
+│   - Game-specific move rules                               │
+│   - Win/lose conditions                                    │
+│   - State transitions                                      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### **Adding New Games**
+
+To add a new game type (e.g., Checkers):
+
+1. **Create Game Instance Class**:
+   ```javascript
+   class CheckersInstance {
+     constructor() {
+       this.board = new CheckersBoard();
+       this.gameStateManager = new CheckersStateManager();
+     }
+     
+     createNewCheckersGame() {
+       // Checkers-specific setup
+     }
+   }
+   ```
+
+2. **Add Socket Event Handler**:
+   ```javascript
+   socket.on("createNewCheckersGame", () => {
+     createNewSession(database, "checkers");
+   });
+   ```
+
+3. **No Database Changes Required**: The networking layer works with any game type
+
+### **Game-Specific Validation Examples**
+
+**Chess Turn Validation**:
+```javascript
+const currentPlayerColour = gameInstance.gameStateManager.turnManager.currentPlayerColour;
+if (player.colour !== currentPlayerColour) {
+  socket.emit("notYourTurn");
   return;
 }
 ```
 
-### **Chess Rules Validation**
-
-```
-// Server validates legal moves
-if (!gameInstance.isValidMove(chessPiece, targetPosition)) {
-  socket.emit('error', 'Invalid chess move');
+**Future Checkers Turn Validation**:
+```javascript
+const currentPlayerColour = gameInstance.checkersStateManager.turnManager.currentPlayerColour;
+if (player.colour !== currentPlayerColour) {
+  socket.emit("notYourTurn");
   return;
 }
-```
-
-### **Game State Management**
-
-```
-// Server maintains authoritative state
-gameInstance.updateBoard(chessPiece, targetPosition);
-gameInstance.switchTurn();
-const newGameState = gameInstance.getGameState();
-
-// Broadcast to room
-[io.to](http://io.to)(gameSessionID).emit('newGameState', newGameState);
 ```
 
 ---
@@ -285,28 +370,36 @@ if (session.playerCount === 0) {
 
 ---
 
-## Architecture Benefits
+## Platform Benefits
+
+### **Extensibility & Modularity**
+
+- ✅ **Game-Agnostic Networking**: Database layer works with any game type
+- ✅ **Clean Separation**: Networking logic separate from game logic
+- ✅ **Easy Game Addition**: Add new games without changing core platform
+- ✅ **Modular Architecture**: Each game implements its own rules independently
 
 ### **Security & Integrity**
 
-- ✅ **Server-side validation** prevents cheating
-- ✅ **Authoritative game state** ensures consistency
-- ✅ **Turn enforcement** prevents out-of-order moves
-- ✅ **Chess rule validation** ensures legal gameplay
+- ✅ **Server-side validation** prevents cheating across all game types
+- ✅ **Authoritative game state** ensures consistency for any game
+- ✅ **Turn enforcement** prevents out-of-order moves per game rules
+- ✅ **Game-specific rule validation** ensures legal gameplay
 
 ### **Scalability & Performance**
 
-- ✅ **Room isolation** supports multiple games
-- ✅ **Efficient broadcasting** only to relevant players
-- ✅ **Memory management** prevents server crashes
-- ✅ **Event-driven** architecture scales well
+- ✅ **Multi-game support** - chess, checkers, custom games simultaneously
+- ✅ **Room isolation** supports multiple concurrent games of different types
+- ✅ **Efficient broadcasting** only to relevant players per game
+- ✅ **Memory management** prevents server crashes regardless of game type
+- ✅ **Event-driven** architecture scales well with game complexity
 
-### **User Experience**
+### **Developer Experience**
 
-- ✅ **Real-time sync** between all players
-- ✅ **Invalid move feedback** guides players
-- ✅ **Game discovery** via available games list
-- ✅ **Clean disconnection** handling
+- ✅ **Clean APIs**: Database provides clear networking interface
+- ✅ **Testing**: Game logic and networking can be tested independently
+- ✅ **Maintainability**: Changes to one game don't affect others
+- ✅ **Documentation**: Clear patterns for adding new game types
 
 ---
 
@@ -356,20 +449,32 @@ if (session.playerCount === 0) {
 
 ## Implementation Status
 
-### **✅ Completed Features**
+### **✅ Platform Foundation Complete**
 
-- Server-side chess validation
-- Game session management
-- Room-based broadcasting
-- Turn enforcement
-- Memory cleanup
-- Multi-game support
+- ✅ **Modular Architecture**: Clean separation between networking and game logic
+- ✅ **Database Layer**: Game-agnostic session and player management
+- ✅ **Chess Implementation**: Full chess game with complete rule validation
+- ✅ **Real-time Multiplayer**: WebSocket communication with room isolation
+- ✅ **Server Authority**: Anti-cheat protection and state validation
+- ✅ **Memory Management**: Automatic cleanup and leak prevention
+- ✅ **Extensible Design**: Framework ready for new game types
 
-### **🚧 Current Development Focus**
+### **🎮 Game Implementations**
 
-- Refining game discovery UX
-- Enhanced error handling
-- Performance optimization
-- Testing multiplayer scenarios
+- ✅ **Chess**: Complete implementation with full rule validation
+- 🔄 **Checkers**: Next planned game implementation
+- 🔄 **Tic-Tac-Toe**: Simple game for testing rapid development
+- 🔄 **Custom Games**: Framework supports any turn-based game
 
-This server-side refactor represents a significant architectural improvement, moving from a simple relay to a full-featured, secure, multiplayer chess server with proper state management and validation.
+### **🚧 Platform Development Focus**
+
+- **Game Discovery UX**: Enhanced browsing and filtering of available games
+- **Game Type Selection**: UI for choosing between chess, checkers, etc.
+- **Spectator Mode**: Allow users to watch ongoing games
+- **Game History**: Replay and analysis features
+- **Performance Optimization**: Handling many concurrent games
+- **Advanced Features**: Tournaments, rankings, matchmaking
+
+### **🎯 Project Vision**
+
+This project has evolved from a chess application into a **comprehensive multiplayer game platform**. The modular architecture enables rapid development of new game types while maintaining robust networking, security, and performance. The goal is to create a platform where developers can easily add new turn-based games and players can enjoy a variety of real-time multiplayer experiences.

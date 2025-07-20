@@ -307,4 +307,62 @@ describe("Database class", () => {
       expect(database.assignPlayerColor(undefined)).toBe("black");
     });
   });
+
+  //test move handling support methods
+  describe("move handling operations", () => {
+    test("getGameInstanceBySocket returns game instance for valid socket", () => {
+      const testSession = new GameSession();
+      const testInstance = testSession.createGameInstance();
+      testSession.gameSessionID = "session123";
+      
+      database.createSession("session123", testSession);
+      database.mapSocketToSession("socket1", "session123");
+      
+      const result = database.getGameInstanceBySocket("socket1");
+      
+      expect(result).toBe(testInstance);
+    });
+
+    test("getGameInstanceBySocket returns null for unmapped socket", () => {
+      const result = database.getGameInstanceBySocket("nonexistent");
+      
+      expect(result).toBeNull();
+    });
+
+    test("getGameInstanceBySocket returns null for socket in non-existent session", () => {
+      database.mapSocketToSession("socket1", "nonexistent");
+      
+      const result = database.getGameInstanceBySocket("socket1");
+      
+      expect(result).toBeNull();
+    });
+
+
+    test("getPlayersInSession returns players object for valid session", () => {
+      const testSession = new GameSession();
+      testSession.gameSessionID = "session123";
+      testSession.connectedPlayersSocketIDs = { players: {} };
+      
+      const blackPlayer = new Player("player1", "socket1", "black");
+      const whitePlayer = new Player("player2", "socket2", "white");
+      
+      testSession.connectedPlayersSocketIDs.players["socket1"] = blackPlayer;
+      testSession.connectedPlayersSocketIDs.players["socket2"] = whitePlayer;
+      
+      database.createSession("session123", testSession);
+      
+      const result = database.getPlayersInSession("session123");
+      
+      expect(result).toEqual({
+        socket1: blackPlayer,
+        socket2: whitePlayer
+      });
+    });
+
+    test("getPlayersInSession returns null for non-existent session", () => {
+      const result = database.getPlayersInSession("nonexistent");
+      
+      expect(result).toBeNull();
+    });
+  });
 });

@@ -140,4 +140,35 @@ export default class Database {
       return "black";
     }
   }
+
+  //get game instance for a specific socket id
+  //returns the game instance if socket is mapped to a valid session, null otherwise
+  getGameInstanceBySocket(socketId) {
+    //get the session id for this socket
+    const sessionId = this.getSessionIdBySocket(socketId);
+    if (!sessionId) {
+      return null;
+    }
+
+    //get the session object
+    const session = this.getSessionById(sessionId);
+    if (!session || !session.gameInstance) {
+      return null;
+    }
+
+    return session.gameInstance;
+  }
+
+
+  //get the players object for a specific session
+  //returns the players object if session exists, null otherwise
+  getPlayersInSession(sessionId) {
+    //get the session object
+    const session = this.getSessionById(sessionId);
+    if (!session || !session.connectedPlayersSocketIDs || !session.connectedPlayersSocketIDs.players) {
+      return null;
+    }
+
+    return session.connectedPlayersSocketIDs.players;
+  }
 }
