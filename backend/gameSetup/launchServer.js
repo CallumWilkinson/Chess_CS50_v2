@@ -1,12 +1,12 @@
 import { handleMove } from "../helpers/handleMove.js";
 import GameSession from "./gameSession.js";
 import Player from "./player.js";
-import Database from "./Database.js";
+import SessionManager from "./SessionManager.js";
 
 export function launchServer(io) {
-  //create database instance to manage game sessions and players
+  //create session manager instance to manage game sessions and players
   //this will gradually replace the global objects below as we migrate the codebase
-  const database = new Database();
+  const sessionManager = new SessionManager();
 
   //holds all game sessions, key is gameSessionID, contains game session objects that have the following values:
   //GameSessionID
@@ -32,8 +32,8 @@ export function launchServer(io) {
     //add this player to connectedPlayers object
     connectedPlayers[socket.id] = newPlayer;
     
-    //also add to database for new move handling system
-    database.addPlayer(socket.id, newPlayer);
+    //also add to session manager for new move handling system
+    sessionManager.addPlayer(socket.id, newPlayer);
 
     //send welcome message to newly connected client
     socket.emit("connected", {
@@ -52,7 +52,7 @@ export function launchServer(io) {
 
     //create a new game session
     socket.on("createNewChessGame", () => {
-      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username, database);
+      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username, sessionManager);
     });
 
     //join a specific existing game session
@@ -63,7 +63,7 @@ export function launchServer(io) {
         socketIDtoGameSessionID,
         socket,
         username,
-        database
+        sessionManager
       );
     });
 
@@ -74,7 +74,7 @@ export function launchServer(io) {
       handleMove(
         socket,
         jsonMoveData,
-        database,
+        sessionManager,
         io
       );
     });
@@ -99,7 +99,7 @@ function createNewSession(
   socketIDtoGameSessionID,
   socket,
   username,
-  database
+  sessionManager
 ) {
   //create a new gameSession, which as a gameSession ID, knows which players are connected and has a fuction to make a gameInstance
   const newGameSession = new GameSession();
@@ -112,11 +112,9 @@ function createNewSession(
   newGameInstance.createNewChessGame();
 
   //track players connected to this session
-  //do i need this? cant i just use the connectedPlayers object?
-  const players = {};
-
-  //assign colour to the first player joining this session, players should be blank before passing object to this function as its a new game
-  const assignedColour = newGameSession.getPlayerColour(players);
+  //assign colour to the first player joining this session
+  //connectedUsers is initially empty for new sessions, so first player gets black
+  const assignedColour = newGameSession.getPlayerColour();
 
   //get gameSessionID
   const gameSessionID = newGameSession.gameSessionID;
@@ -125,7 +123,7 @@ function createNewSession(
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
   //attach player info to the session object
-  newGameSession.connectedPlayersSocketIDs = { players };
+  newGameSession.connectedPlayersSocketIDs = { players: {} };
   newGameSession.connectedPlayersSocketIDs.players[socket.id] = {
     username,
     colour: assignedColour,
@@ -134,14 +132,15 @@ function createNewSession(
   //add game session object to the sessions dictionary
   gameSessions[gameSessionID] = newGameSession;
 
-  //also update database for new move handling system
-  database.createSession(gameSessionID, newGameSession);
-  database.mapSocketToSession(socket.id, gameSessionID);
+  //also update session manager for new move handling system
+  sessionManager.addSession(gameSessionID, newGameSession);
+  sessionManager.mapSocketToSession(socket.id, gameSessionID);
   
-  //update the player with the assigned colour
-  const player = database.getPlayerBySocketId(socket.id);
+  //update the player with the assigned colour and add to session
+  const player = sessionManager.getPlayerBySocketId(socket.id);
   if (player) {
     player.setColour(assignedColour);
+    newGameSession.addPlayerToSession(player);
   }
 
   //create a new "room" which is a group of sockets, and connect to it
@@ -167,7 +166,7 @@ function joinExistingSession(
   socketIDtoGameSessionID,
   socket,
   username,
-  database
+  sessionManager
 ) {
   //check if game session actually exists first
   if (!gameSessions[gameSessionID]) {
@@ -191,8 +190,8 @@ function joinExistingSession(
   //get the gamesession object so we can assign a colour to the player
   const selectedGameSession = gameSessions[gameSessionID];
 
-  //determines color for the joining player
-  const assignedColour = selectedGameSession.getPlayerColour(players);
+  //determines color for the joining player based on existing connected users
+  const assignedColour = selectedGameSession.getPlayerColour();
 
   //assign username and colour to the player's socket.id in the gamesession
   players[socket.id] = {
@@ -200,13 +199,14 @@ function joinExistingSession(
     colour: assignedColour,
   };
 
-  //also update database for new move handling system
-  database.mapSocketToSession(socket.id, gameSessionID);
+  //also update session manager for new move handling system
+  sessionManager.mapSocketToSession(socket.id, gameSessionID);
   
-  //update the player with the assigned colour
-  const player = database.getPlayerBySocketId(socket.id);
+  //update the player with the assigned colour and add to session
+  const player = sessionManager.getPlayerBySocketId(socket.id);
   if (player) {
     player.setColour(assignedColour);
+    selectedGameSession.addPlayerToSession(player);
   }
 
   //join an exisiting "socket room"

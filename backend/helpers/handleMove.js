@@ -1,15 +1,15 @@
 import { getNewGameState } from "../gameLogic/getNewGameState.js";
 
-export function handleMove(socket, jsonMoveData, database, io) {
+export function handleMove(socket, jsonMoveData, sessionManager, io) {
   //get the game instance for this socket
-  const gameInstance = database.getGameInstanceBySocket(socket.id);
+  const gameInstance = sessionManager.getGameInstanceBySocket(socket.id);
   if (!gameInstance) {
     socket.emit("error", "Game session not found");
     return;
   }
 
   //get the player for this socket
-  const player = database.getPlayerBySocketId(socket.id);
+  const player = sessionManager.getPlayerBySocketId(socket.id);
   if (!player) {
     socket.emit("error", "Player not found");
     return;
@@ -42,7 +42,7 @@ export function handleMove(socket, jsonMoveData, database, io) {
     );
 
     //get the session id to emit to the correct room
-    const gameSessionID = database.getSessionIdBySocket(socket.id);
+    const gameSessionID = sessionManager.getSessionIdBySocket(socket.id);
     if (!gameSessionID) {
       socket.emit("error", "Session mapping not found");
       return;

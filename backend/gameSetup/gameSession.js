@@ -1,4 +1,5 @@
 import GameInstance from "./GameInstance.js";
+import { assignChessColor } from "../gameLogic/chessColorAssignment.js";
 
 export default class GameSession {
   constructor() {
@@ -25,24 +26,24 @@ export default class GameSession {
     return gameInstance;
   }
 
-  addPlayerToSession() {}
+  addPlayerToSession(player) {
+    //add player to connectedUsers to maintain single source of truth
+    this.connectedUsers.push(player);
+  }
 
-  disconnectFromGameSession() {}
-
-  getPlayerColour(players, database = null) {
-    //if database instance is provided, use the unified color assignment logic
-    if (database && database.assignPlayerColor) {
-      return database.assignPlayerColor(players);
+  removePlayerFromSession(player) {
+    //remove player from connectedUsers when they disconnect
+    const index = this.connectedUsers.findIndex(p => p.socketID === player.socketID);
+    if (index !== -1) {
+      this.connectedUsers.splice(index, 1);
     }
+  }
 
-    //fallback to legacy logic for backwards compatibility
-    const connectedPlayers = Object.values(players).map((p) => p.colour);
-
-    //assigns black to the player, or if black exists then assign white
-    if (connectedPlayers.includes("black")) {
-      return "white";
-    } else {
-      return "black";
-    }
+  //abstraction layer for color assignment - uses internal connectedUsers as single source of truth
+  //delegates to chess-specific logic but could be extended for other game types
+  //this keeps networking/session code separate from game-specific rules
+  //uses chess rules: first player black, second player white
+  getPlayerColour() {
+    return assignChessColor(this.connectedUsers);
   }
 }
