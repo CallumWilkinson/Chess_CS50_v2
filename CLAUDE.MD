@@ -116,13 +116,13 @@ feat: add SessionManager and chess color assignment module
 
 Replace Database with better-named SessionManager and extract color logic
 
-## SessionManager.js (replaces Database.js)
+SessionManager.js (replaces Database.js)
 - Renamed "Database" to "SessionManager" for clearer purpose (it's not actually a database)
 - Cleaner method names: addSession() vs createSession(), removeSession() vs deleteSession()
 - Removed game-specific logic - now focused purely on session/player management
 - Same core functionality: manages gameSessions, connectedPlayers, and socketIDtoGameSessionID mappings
 
-## chessColorAssignment.js (extracted logic)
+chessColorAssignment.js (extracted logic)
 - Extracts color assignment logic that was previously duplicated across multiple classes
 - Follows chess convention: first player gets black, second gets white
 - Handles edge cases (null/undefined players gracefully)
@@ -130,7 +130,7 @@ Replace Database with better-named SessionManager and extract color logic
 - Makes color logic reusable and easily testable in isolation
 - Sets foundation for future games to have their own team assignment modules
 
-## Why this refactor?
+Why this refactor?
 Before: Color assignment logic duplicated in Database.js, GameSession.js, and GameInstance.js
 After: Clean separation — SessionManager handles networking, chessColorAssignment handles game rules
 

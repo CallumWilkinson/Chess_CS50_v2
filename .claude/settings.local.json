@@ -13,7 +13,9 @@
       "Bash(grep:*)",
       "Bash(findstr:*)",
       "Bash(git commit:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(git reset:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }
