@@ -48,18 +48,17 @@ describe("tests for gameSession class", () => {
 
   test("player color assignment works correctly for two players", () => {
     const newGameSession = new GameSession();
-    const players = {};
 
-    //first player gets black
-    const firstPlayerColor = newGameSession.getPlayerColour(players);
+    //first player gets black (connectedUsers is initially empty)
+    const firstPlayerColor = newGameSession.getPlayerColour();
     expect(firstPlayerColor).toBe("black");
 
     //simulate first player joining using actual Player instance
     const firstPlayer = new Player("player1", "socket1", "black");
-    players["socket1"] = firstPlayer;
+    newGameSession.addPlayerToSession(firstPlayer);
 
     //second player gets white
-    const secondPlayerColor = newGameSession.getPlayerColour(players);
+    const secondPlayerColor = newGameSession.getPlayerColour();
     expect(secondPlayerColor).toBe("white");
   });
 });

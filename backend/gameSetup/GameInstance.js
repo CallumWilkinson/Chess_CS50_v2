@@ -31,10 +31,8 @@ export default class GameInstance {
   }
 
   addPlayersToInstance(connectedUsers, database = null) {
-    //if database instance is provided, use the unified color assignment logic
-    if (database && database.assignPlayerColor) {
-      return database.assignPlayerColor(connectedUsers);
-    }
+    //database color assignment is no longer supported - color assignment moved to GameSession
+    //this method now only handles the legacy fallback logic
 
     //fallback to legacy logic for backwards compatibility
     //assign new player a colour based on the currently connected players

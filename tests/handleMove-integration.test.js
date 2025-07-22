@@ -1,22 +1,22 @@
 import { jest } from "@jest/globals";
 import { handleMove } from "../backend/helpers/handleMove.js";
-import Database from "../backend/gameSetup/Database.js";
+import SessionManager from "../backend/gameSetup/SessionManager.js";
 import GameSession from "../backend/gameSetup/gameSession.js";
 import Player from "../backend/gameSetup/Player.js";
 import Position from "../backend/gameLogic/position.js";
 import Pawn from "../backend/chessPieces/pawn.js";
 
 //integration tests for refactored handleMove function using Database API
-describe("HandleMove Integration with Database", () => {
-  let database;
+describe("HandleMove Integration with SessionManager", () => {
+  let sessionManager;
   let mockSocket;
   let mockIo;
   let gameSession;
   let gameInstance;
 
   beforeEach(() => {
-    //create database and mock objects
-    database = new Database();
+    //create sessionManager and mock objects
+    sessionManager = new SessionManager();
     
     mockSocket = {
       id: "socket1",
@@ -38,14 +38,14 @@ describe("HandleMove Integration with Database", () => {
     const blackPlayer = new Player("player1", "socket1", "black");
     const whitePlayer = new Player("player2", "socket2", "white");
     
-    //add players to database
-    database.addPlayer("socket1", blackPlayer);
-    database.addPlayer("socket2", whitePlayer);
+    //add players to sessionManager
+    sessionManager.addPlayer("socket1", blackPlayer);
+    sessionManager.addPlayer("socket2", whitePlayer);
     
-    //create session in database
-    database.createSession(gameSession.gameSessionID, gameSession);
-    database.mapSocketToSession("socket1", gameSession.gameSessionID);
-    database.mapSocketToSession("socket2", gameSession.gameSessionID);
+    //create session in sessionManager
+    sessionManager.addSession(gameSession.gameSessionID, gameSession);
+    sessionManager.mapSocketToSession("socket1", gameSession.gameSessionID);
+    sessionManager.mapSocketToSession("socket2", gameSession.gameSessionID);
     
     //setup session players structure (legacy format for compatibility)
     gameSession.connectedPlayersSocketIDs = {
@@ -67,7 +67,7 @@ describe("HandleMove Integration with Database", () => {
       targetSquare: a6,
     };
     
-    handleMove(mockSocket, validMoveData, database, mockIo);
+    handleMove(mockSocket, validMoveData, sessionManager, mockIo);
     
     //should not emit "notYourTurn" error
     expect(mockSocket.emit).not.toHaveBeenCalledWith("notYourTurn");
@@ -92,7 +92,7 @@ describe("HandleMove Integration with Database", () => {
       targetSquare: e4,
     };
     
-    handleMove(whitePlayerSocket, moveData, database, mockIo);
+    handleMove(whitePlayerSocket, moveData, sessionManager, mockIo);
     
     //should emit "notYourTurn" error
     expect(whitePlayerSocket.emit).toHaveBeenCalledWith("notYourTurn");
@@ -115,7 +115,7 @@ describe("HandleMove Integration with Database", () => {
       targetSquare: e4,
     };
     
-    handleMove(unmappedSocket, moveData, database, mockIo);
+    handleMove(unmappedSocket, moveData, sessionManager, mockIo);
     
     //should emit "Game session not found" error since socket is not mapped to any session
     expect(unmappedSocket.emit).toHaveBeenCalledWith("error", "Game session not found");
@@ -126,11 +126,11 @@ describe("HandleMove Integration with Database", () => {
     const brokenSession = new GameSession();
     brokenSession.gameInstance = null;
     
-    database.createSession("broken123", brokenSession);
-    database.mapSocketToSession("socket3", "broken123");
+    sessionManager.addSession("broken123", brokenSession);
+    sessionManager.mapSocketToSession("socket3", "broken123");
     
     const playerWithBrokenSession = new Player("player3", "socket3", "black");
-    database.addPlayer("socket3", playerWithBrokenSession);
+    sessionManager.addPlayer("socket3", playerWithBrokenSession);
     
     const brokenSocket = {
       id: "socket3",
@@ -145,7 +145,7 @@ describe("HandleMove Integration with Database", () => {
       targetSquare: e4,
     };
     
-    handleMove(brokenSocket, moveData, database, mockIo);
+    handleMove(brokenSocket, moveData, sessionManager, mockIo);
     
     //should emit "Game session not found" error because game instance is null
     expect(brokenSocket.emit).toHaveBeenCalledWith("error", "Game session not found");
@@ -163,27 +163,27 @@ describe("HandleMove Integration with Database", () => {
       targetSquare: a6,
     };
     
-    //call handleMove with only database - no global objects passed
-    handleMove(mockSocket, validMoveData, database, mockIo);
+    //call handleMove with only sessionManager - no global objects passed
+    handleMove(mockSocket, validMoveData, sessionManager, mockIo);
     
     //verify it worked by checking the game state was emitted
     expect(mockIo.to).toHaveBeenCalledWith(gameSession.gameSessionID);
     expect(mockIo.to().emit).toHaveBeenCalledWith("newGameState", expect.any(Object));
   });
 
-  test("database methods work correctly for networking purposes", () => {
+  test("sessionManager methods work correctly for networking purposes", () => {
     //test the specific Database methods used by handleMove for networking/session management
     
     //getGameInstanceBySocket should return correct instance
-    const retrievedInstance = database.getGameInstanceBySocket("socket1");
+    const retrievedInstance = sessionManager.getGameInstanceBySocket("socket1");
     expect(retrievedInstance).toBe(gameInstance);
     
     //getSessionIdBySocket should return correct session ID
-    const sessionId = database.getSessionIdBySocket("socket1");
+    const sessionId = sessionManager.getSessionIdBySocket("socket1");
     expect(sessionId).toBe(gameSession.gameSessionID);
     
     //getPlayerBySocketId should return correct player
-    const retrievedPlayer = database.getPlayerBySocketId("socket1");
+    const retrievedPlayer = sessionManager.getPlayerBySocketId("socket1");
     expect(retrievedPlayer.colour).toBe("black");
     expect(retrievedPlayer.username).toBe("player1");
   });
