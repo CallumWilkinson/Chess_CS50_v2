@@ -11,7 +11,9 @@
       "Bash(npm audit:*)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(git commit:*)",
+      "Bash(git rebase:*)"
     ],
     "deny": []
   }
