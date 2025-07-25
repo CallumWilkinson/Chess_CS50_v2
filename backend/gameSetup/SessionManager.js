@@ -68,21 +68,13 @@ export default class SessionManager {
 
     //iterate through all game sessions
     for (const gameSessionID in this.gameSessions) {
-      const playerCount = this.getPlayerCountInSession(gameSessionID);
+      const session = this.gameSessions[gameSessionID];
+      const playerCount = session.connectedUsers.length;
 
       //only include games with exactly 1 player waiting
       if (playerCount === 1) {
-        //find the waiting player's socket id
-        let waitingPlayerSocketId = null;
-        for (const socketId in this.socketIDtoGameSessionID) {
-          if (this.socketIDtoGameSessionID[socketId] === gameSessionID) {
-            waitingPlayerSocketId = socketId;
-            break;
-          }
-        }
-
-        //get the waiting player's info from connectedPlayers
-        const waitingPlayer = this.connectedPlayers[waitingPlayerSocketId];
+        //get the waiting player's info from connectedUsers (single source of truth)
+        const waitingPlayer = session.connectedUsers[0];
         
         //create game listing object
         //this is the data sent back to the client for displaying available games
@@ -90,7 +82,7 @@ export default class SessionManager {
           gameSessionID: gameSessionID,
           waitingPlayer: {
             username: waitingPlayer.username,
-            colour: "black", //first player always gets black
+            colour: waitingPlayer.colour,
           },
           playersConnected: playerCount,
           maxPlayers: 2,
@@ -108,19 +100,13 @@ export default class SessionManager {
     return this.gameSessions[gameSessionId] !== undefined;
   }
 
-  //get the number of players in a specific session
+  //get the number of players in a specific session using connectedUsers as single source of truth
   getPlayerCountInSession(gameSessionId) {
-    if (!this.sessionExists(gameSessionId)) {
+    const session = this.getSessionById(gameSessionId);
+    if (!session || !session.connectedUsers) {
       return 0;
     }
-    //count how many sockets are mapped to this session
-    let playerCount = 0;
-    for (const socketId in this.socketIDtoGameSessionID) {
-      if (this.socketIDtoGameSessionID[socketId] === gameSessionId) {
-        playerCount++;
-      }
-    }
-    return playerCount;
+    return session.connectedUsers.length;
   }
 
 
@@ -143,15 +129,15 @@ export default class SessionManager {
   }
 
 
-  //get the players object for a specific session
-  //returns the players object if session exists, null otherwise
+  //get the players array for a specific session using connectedUsers as single source of truth
+  //returns the connectedUsers array if session exists, null otherwise
   getPlayersInSession(sessionId) {
     //get the session object
     const session = this.getSessionById(sessionId);
-    if (!session || !session.connectedPlayersSocketIDs || !session.connectedPlayersSocketIDs.players) {
+    if (!session || !session.connectedUsers) {
       return null;
     }
 
-    return session.connectedPlayersSocketIDs.players;
+    return session.connectedUsers;
   }
 }

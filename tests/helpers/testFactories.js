@@ -21,7 +21,12 @@ export function createGameSessionWithPlayers(players = []) {
   players.forEach((playerConfig, index) => {
     const { username, socketId, colour } = playerConfig;
     const player = createTestPlayer(username, socketId, colour);
+    
+    //add to legacy structure for backwards compatibility
     session.connectedPlayersSocketIDs.players[socketId] = player;
+    
+    //add to connectedUsers (single source of truth)
+    session.addPlayerToSession(player);
   });
   
   //create game instance if players exist

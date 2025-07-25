@@ -3,15 +3,35 @@ import { jest } from "@jest/globals";
 //creates a fake game session object for testing
 //the 'players' parameter lets us control how many players are in the session
 export function createMockGameSession(players) {
+  //convert players object to connectedUsers array for single source of truth
+  const connectedUsers = [];
+  if (players) {
+    for (const [socketId, playerData] of Object.entries(players)) {
+      connectedUsers.push({
+        username: playerData.username,
+        socketID: socketId,
+        colour: playerData.colour
+      });
+    }
+  }
+  
   return {
     gameSessionID: "test-session-id",
     connectedPlayersSocketIDs: {
-      players: players || {}, //if no players passed, use empty object
+      players: players || {}, //legacy compatibility
     },
+    connectedUsers: connectedUsers, //single source of truth
     gameInstance: {
       board: {},
       gameStateManager: {},
     },
+    //mock methods needed by refactored disconnect handler
+    removePlayerFromSession(player) {
+      const index = this.connectedUsers.findIndex(p => p.socketID === player.socketID);
+      if (index !== -1) {
+        this.connectedUsers.splice(index, 1);
+      }
+    }
   };
 }
 

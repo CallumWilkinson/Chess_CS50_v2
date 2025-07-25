@@ -122,7 +122,8 @@ function createNewSession(
   //store mapping between this socket and the new session
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
-  //attach player info to the session object
+  //legacy compatibility: maintain connectedPlayersSocketIDs for backwards compatibility
+  //TODO: remove this once all consumers migrate to connectedUsers
   newGameSession.connectedPlayersSocketIDs = { players: {} };
   newGameSession.connectedPlayersSocketIDs.players[socket.id] = {
     username,
@@ -174,26 +175,25 @@ function joinExistingSession(
     return;
   }
 
-  //get the players array so we know if anyone has already connected, this is needed as the second player to join is always white and the first is black
-  const players = gameSessions[gameSessionID].connectedPlayersSocketIDs.players;
-
-  //check if game is already full (chess only supports 2 players max)
-  if (Object.keys(players).length >= 2) {
+  //check if game is already full using connectedUsers as single source of truth
+  const selectedGameSession = gameSessions[gameSessionID];
+  if (selectedGameSession.connectedUsers.length >= 2) {
     socket.emit("error", "Game session is full");
     return;
   }
+
+  //get the legacy players array for backwards compatibility
+  const players = selectedGameSession.connectedPlayersSocketIDs.players;
 
   //assign this user's socket id and the game they selected to the mapping
   //this allows us in future to associate this user with this gameSession they are about to join
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
-  //get the gamesession object so we can assign a colour to the player
-  const selectedGameSession = gameSessions[gameSessionID];
-
   //determines color for the joining player based on existing connected users
   const assignedColour = selectedGameSession.getPlayerColour();
 
-  //assign username and colour to the player's socket.id in the gamesession
+  //legacy compatibility: assign username and colour to the player's socket.id in the gamesession
+  //TODO: remove this once all consumers migrate to connectedUsers
   players[socket.id] = {
     username: username,
     colour: assignedColour,
@@ -242,22 +242,23 @@ export function handleDisconnect(
   const sessionData = gameSessions[gameSessionID];
 
   if (sessionData != null) {
-    //var for readability, this stores username and colour
-    const playerDataStoredInsideSession =
-      sessionData.connectedPlayersSocketIDs.players[socket.id];
-
-    if (playerDataStoredInsideSession) {
+    //find the player object in connectedUsers (single source of truth)
+    const disconnectingPlayer = sessionData.connectedUsers.find(p => p.socketID === socket.id);
+    
+    if (disconnectingPlayer) {
       //get the username of the person disconnecting
-      const playerUsername = playerDataStoredInsideSession.username;
+      const playerUsername = disconnectingPlayer.username;
 
-      //delete the player from the session
-      delete sessionData.connectedPlayersSocketIDs.players[socket.id];
+      //remove player from connectedUsers (single source of truth)
+      sessionData.removePlayerFromSession(disconnectingPlayer);
 
-      //check if session is now empty and clean it up to prevent memory leak
-      const remainingPlayers = Object.keys(
-        sessionData.connectedPlayersSocketIDs.players
-      );
-      if (remainingPlayers.length === 0) {
+      //legacy compatibility: also remove from old tracking system
+      if (sessionData.connectedPlayersSocketIDs && sessionData.connectedPlayersSocketIDs.players) {
+        delete sessionData.connectedPlayersSocketIDs.players[socket.id];
+      }
+
+      //check if session is now empty using connectedUsers and clean it up to prevent memory leak
+      if (sessionData.connectedUsers.length === 0) {
         //no players left, delete the entire game session to free memory
         delete gameSessions[gameSessionID];
         console.log(
@@ -284,13 +285,12 @@ export function getAvailableGamesForListing(gameSessions) {
   //iterate through all game sessions
   for (const gameSessionID in gameSessions) {
     const gameSession = gameSessions[gameSessionID];
-    const players = gameSession.connectedPlayersSocketIDs.players;
-    const playerCount = Object.keys(players).length;
+    const playerCount = gameSession.connectedUsers.length;
 
     //only include games with exactly 1 player waiting
     if (playerCount === 1) {
-      //get the waiting player's info
-      const waitingPlayer = Object.values(players)[0];
+      //get the waiting player's info from connectedUsers (single source of truth)
+      const waitingPlayer = gameSession.connectedUsers[0];
 
       //create game listing object
       //this is the data i can send back to the client, so the client can list stuff about each game currently going
