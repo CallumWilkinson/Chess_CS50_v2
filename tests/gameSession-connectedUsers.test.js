@@ -104,7 +104,7 @@ describe("GameSession connectedUsers architecture", () => {
     const blackPlayer = new Player("player2", "socket2", "black");
     gameSession.addPlayerToSession(blackPlayer);
 
-    //when both colors exist, next player gets white (following chess priority)
-    expect(gameSession.getPlayerColour()).toBe("white");
+    //when both colors exist, game is full - no more colors available
+    expect(gameSession.getPlayerColour()).toBe(null);
   });
 });

@@ -143,11 +143,14 @@ describe("SessionManager class", () => {
     test("getPlayerCountInSession returns correct count for session with players", () => {
       const testSession = new GameSession();
       const sessionId = testSession.gameSessionID;
-      sessionManager.addSession(sessionId, testSession);
       
-      //add players to the session via socket mapping
-      sessionManager.mapSocketToSession("socket1", sessionId);
-      sessionManager.mapSocketToSession("socket2", sessionId);
+      //add players to connectedUsers (single source of truth)
+      const player1 = new Player("player1", "socket1", "black");
+      const player2 = new Player("player2", "socket2", "white");
+      testSession.addPlayerToSession(player1);
+      testSession.addPlayerToSession(player2);
+      
+      sessionManager.addSession(sessionId, testSession);
       
       const result = sessionManager.getPlayerCountInSession(sessionId);
       
@@ -179,12 +182,14 @@ describe("SessionManager class", () => {
       const emptySessionId = emptySession.gameSessionID;
       sessionManager.addSession(emptySessionId, emptySession);
       
-      //create session with 2 players  
+      //create session with 2 players using connectedUsers
       const fullSession = new GameSession();
       const fullSessionId = fullSession.gameSessionID;
+      const player1 = new Player("player1", "socket1", "black");
+      const player2 = new Player("player2", "socket2", "white");
+      fullSession.addPlayerToSession(player1);
+      fullSession.addPlayerToSession(player2);
       sessionManager.addSession(fullSessionId, fullSession);
-      sessionManager.mapSocketToSession("socket1", fullSessionId);
-      sessionManager.mapSocketToSession("socket2", fullSessionId);
       
       const result = sessionManager.getAvailableGames();
       
@@ -196,10 +201,9 @@ describe("SessionManager class", () => {
       const sessionId = waitingSession.gameSessionID;
       sessionManager.addSession(sessionId, waitingSession);
       
-      //add one player to the session
-      const testPlayer = new Player("waitingplayer", "socket1");
-      sessionManager.addPlayer("socket1", testPlayer);
-      sessionManager.mapSocketToSession("socket1", sessionId);
+      //add one player to the session using connectedUsers
+      const testPlayer = new Player("waitingplayer", "socket1", "black");
+      waitingSession.addPlayerToSession(testPlayer);
       
       const result = sessionManager.getAvailableGames();
       
@@ -223,13 +227,11 @@ describe("SessionManager class", () => {
       const sessionId2 = session2.gameSessionID;
       sessionManager.addSession(sessionId2, session2);
       
-      //add one player to each session
-      const testPlayer1 = new Player("player1", "socket1");
-      const testPlayer2 = new Player("player2", "socket2");
-      sessionManager.addPlayer("socket1", testPlayer1);
-      sessionManager.addPlayer("socket2", testPlayer2);
-      sessionManager.mapSocketToSession("socket1", sessionId1);
-      sessionManager.mapSocketToSession("socket2", sessionId2);
+      //add one player to each session using connectedUsers
+      const testPlayer1 = new Player("player1", "socket1", "black");
+      const testPlayer2 = new Player("player2", "socket2", "black");
+      session1.addPlayerToSession(testPlayer1);
+      session2.addPlayerToSession(testPlayer2);
       
       const result = sessionManager.getAvailableGames();
       
@@ -283,25 +285,22 @@ describe("SessionManager class", () => {
     });
 
 
-    test("getPlayersInSession returns players object for valid session", () => {
+    test("getPlayersInSession returns connectedUsers array for valid session", () => {
       const testSession = new GameSession();
       const sessionId = testSession.gameSessionID;
-      testSession.connectedPlayersSocketIDs = { players: {} };
       
       const blackPlayer = new Player("player1", "socket1", "black");
       const whitePlayer = new Player("player2", "socket2", "white");
       
-      testSession.connectedPlayersSocketIDs.players["socket1"] = blackPlayer;
-      testSession.connectedPlayersSocketIDs.players["socket2"] = whitePlayer;
+      //add players to connectedUsers (single source of truth)
+      testSession.addPlayerToSession(blackPlayer);
+      testSession.addPlayerToSession(whitePlayer);
       
       sessionManager.addSession(sessionId, testSession);
       
       const result = sessionManager.getPlayersInSession(sessionId);
       
-      expect(result).toEqual({
-        socket1: blackPlayer,
-        socket2: whitePlayer
-      });
+      expect(result).toEqual([blackPlayer, whitePlayer]);
     });
 
     test("getPlayersInSession returns null for non-existent session", () => {
