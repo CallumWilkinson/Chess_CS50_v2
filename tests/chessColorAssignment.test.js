@@ -34,7 +34,7 @@ describe("assignChessColor function", () => {
       expect(result).toBe("black");
     });
 
-    test("returns white when both colors exist but black came first", () => {
+    test("returns null when both colors exist (game is full)", () => {
       const players = {
         socket1: { colour: "black" },
         socket2: { colour: "white" }
@@ -42,7 +42,7 @@ describe("assignChessColor function", () => {
       
       const result = assignChessColor(players);
       
-      expect(result).toBe("white");
+      expect(result).toBe(null);
     });
   });
 
@@ -64,6 +64,32 @@ describe("assignChessColor function", () => {
       const result = assignChessColor(undefined);
       
       expect(result).toBe("black");
+    });
+  });
+
+  //test game full detection
+  describe("full game detection", () => {
+    test("returns null when game has maximum players (2)", () => {
+      const players = {
+        socket1: { colour: "black" },
+        socket2: { colour: "white" }
+      };
+      
+      const result = assignChessColor(players);
+      
+      expect(result).toBe(null);
+    });
+
+    test("returns null regardless of color order when both exist", () => {
+      //test with white first, black second
+      const players = {
+        socket1: { colour: "white" },
+        socket2: { colour: "black" }
+      };
+      
+      const result = assignChessColor(players);
+      
+      expect(result).toBe(null);
     });
   });
 
