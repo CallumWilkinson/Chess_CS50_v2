@@ -15,7 +15,8 @@
       "Bash(git commit:*)",
       "Bash(git rebase:*)",
       "Bash(git reset:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }

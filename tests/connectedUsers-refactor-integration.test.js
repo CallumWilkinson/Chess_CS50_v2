@@ -9,6 +9,7 @@ import {
   getAvailableGamesForListing,
 } from "../backend/gameSetup/launchServer.js";
 import { createMockSocket } from "./testUtils.js";
+import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "./helpers/testFactories.js";
 
 describe("ConnectedUsers refactor integration", () => {
   let gameSession;
@@ -20,18 +21,13 @@ describe("ConnectedUsers refactor integration", () => {
   });
 
   test("join flow maintains connectedUsers as single source of truth", () => {
-    //create two players joining a session
-    const player1 = new Player("alice", "socket1", "black");
-    const player2 = new Player("bob", "socket2", "white");
-
-    //simulate join flow - players are added to connectedUsers
-    gameSession.addPlayerToSession(player1);
-    gameSession.addPlayerToSession(player2);
+    //create session with full game using factory
+    const gameSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_FULL_GAME);
 
     //verify connectedUsers has both players
     expect(gameSession.connectedUsers).toHaveLength(2);
-    expect(gameSession.connectedUsers[0]).toBe(player1);
-    expect(gameSession.connectedUsers[1]).toBe(player2);
+    expect(gameSession.connectedUsers[0].username).toBe("blackplayer");
+    expect(gameSession.connectedUsers[1].username).toBe("whiteplayer");
 
     //verify color assignment uses connectedUsers
     //when session is full, getPlayerColour should return null (no more spots)
@@ -40,43 +36,36 @@ describe("ConnectedUsers refactor integration", () => {
   });
 
   test("sessionManager methods use connectedUsers for player counting", () => {
-    //add players directly to connectedUsers
-    const player1 = new Player("alice", "socket1", "black");
-    const player2 = new Player("bob", "socket2", "white");
-    gameSession.addPlayerToSession(player1);
-    gameSession.addPlayerToSession(player2);
-
-    //add session to manager
-    sessionManager.addSession(gameSession.gameSessionID, gameSession);
-
-    //verify player count uses connectedUsers
-    const playerCount = sessionManager.getPlayerCountInSession(
-      gameSession.gameSessionID
-    );
-    expect(playerCount).toBe(2);
+    //create complete test scenario using factory
+    const { sessionManager, session } = createTestScenario([
+      { username: "alice", socketId: "socket1", colour: "black" },
+      { username: "bob", socketId: "socket2", colour: "white" }
+    ]);
 
     //verify getPlayersInSession returns connectedUsers array
-    const players = sessionManager.getPlayersInSession(
-      gameSession.gameSessionID
-    );
-    expect(players).toEqual([player1, player2]);
+    const players = sessionManager.getPlayersInSession(session.gameSessionID);
+    expect(players).toHaveLength(2);
+    expect(players[0].username).toBe("alice");
+    expect(players[1].username).toBe("bob");
+    
+    //verify player count uses connectedUsers
+    const playerCount = sessionManager.getPlayerCountInSession(session.gameSessionID);
+    expect(playerCount).toBe(2);
   });
 
   test("getAvailableGames uses connectedUsers for game listing", () => {
-    //create session with one player (should appear in available games)
-    const waitingSession = new GameSession();
-    const player1 = new Player("alice", "socket1", "black");
-    waitingSession.addPlayerToSession(player1);
+    //create sessions using factories for consistency
+    const waitingSession = createGameSessionWithPlayers([
+      { username: "alice", socketId: "socket1", colour: "black" }
+    ]);
 
-    //create session with two players (should not appear - game is full)
-    const fullSession = new GameSession();
-    const player2 = new Player("bob", "socket2", "black");
-    const player3 = new Player("charlie", "socket3", "white");
-    fullSession.addPlayerToSession(player2);
-    fullSession.addPlayerToSession(player3);
+    const fullSession = createGameSessionWithPlayers([
+      { username: "bob", socketId: "socket2", colour: "black" },
+      { username: "charlie", socketId: "socket3", colour: "white" }
+    ]);
 
     //create session with no players (should not appear - no waiting player)
-    const emptySession = new GameSession();
+    const emptySession = createGameSessionWithPlayers([]);
 
     const gameSessions = {
       [waitingSession.gameSessionID]: waitingSession,
@@ -100,9 +89,9 @@ describe("ConnectedUsers refactor integration", () => {
   });
 
   test("disconnect flow removes from connectedUsers and cleans up properly", () => {
-    //set up session with two players
-    const player1 = new Player("alice", "socket1", "black");
-    const player2 = new Player("bob", "socket2", "white");
+    //set up session with two players using factories
+    const player1 = createTestPlayer("alice", "socket1", "black");
+    const player2 = createTestPlayer("bob", "socket2", "white");
     gameSession.addPlayerToSession(player1);
     gameSession.addPlayerToSession(player2);
 
@@ -149,8 +138,8 @@ describe("ConnectedUsers refactor integration", () => {
 
   test("color assignment consistency between sessions and players", () => {
     //test that connectedUsers maintains consistent color assignment
-    const session1 = new GameSession();
-    const session2 = new GameSession();
+    const session1 = createGameSessionWithPlayers([]);
+    const session2 = createGameSessionWithPlayers([]);
 
     //first players in each session should get black
     const firstColor1 = session1.getPlayerColour();
@@ -158,9 +147,9 @@ describe("ConnectedUsers refactor integration", () => {
     expect(firstColor1).toBe("black");
     expect(firstColor2).toBe("black");
 
-    //add first players
-    const player1a = new Player("alice", "socket1", firstColor1);
-    const player2a = new Player("bob", "socket2", firstColor2);
+    //add first players using factory
+    const player1a = createTestPlayer("alice", "socket1", firstColor1);
+    const player2a = createTestPlayer("bob", "socket2", firstColor2);
     session1.addPlayerToSession(player1a);
     session2.addPlayerToSession(player2a);
 
@@ -170,9 +159,9 @@ describe("ConnectedUsers refactor integration", () => {
     expect(secondColor1).toBe("white");
     expect(secondColor2).toBe("white");
 
-    //add second players
-    const player1b = new Player("charlie", "socket3", secondColor1);
-    const player2b = new Player("diana", "socket4", secondColor2);
+    //add second players using factory
+    const player1b = createTestPlayer("charlie", "socket3", secondColor1);
+    const player2b = createTestPlayer("diana", "socket4", secondColor2);
     session1.addPlayerToSession(player1b);
     session2.addPlayerToSession(player2b);
 
@@ -182,8 +171,8 @@ describe("ConnectedUsers refactor integration", () => {
   });
 
   test("sessionManager available games uses connectedUsers correctly", () => {
-    //create session with one player
-    const waitingPlayer = new Player("alice", "socket1", "black");
+    //create session with one player using factory
+    const waitingPlayer = createTestPlayer("alice", "socket1", "black");
     gameSession.addPlayerToSession(waitingPlayer);
     sessionManager.addSession(gameSession.gameSessionID, gameSession);
 
@@ -202,7 +191,7 @@ describe("ConnectedUsers refactor integration", () => {
     });
 
     //add second player - game should no longer be available
-    const secondPlayer = new Player("bob", "socket2", "white");
+    const secondPlayer = createTestPlayer("bob", "socket2", "white");
     gameSession.addPlayerToSession(secondPlayer);
 
     const availableGamesAfterFull = sessionManager.getAvailableGames();

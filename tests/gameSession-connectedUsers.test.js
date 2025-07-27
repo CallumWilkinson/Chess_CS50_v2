@@ -2,7 +2,7 @@
 //tests the new single source of truth pattern for player tracking
 
 import GameSession from "../backend/gameSetup/gameSession.js";
-import Player from "../backend/gameSetup/Player.js";
+import { createTestPlayer, createGameSessionWithPlayers } from "./helpers/testFactories.js";
 
 describe("GameSession connectedUsers architecture", () => {
   let gameSession;
@@ -16,8 +16,8 @@ describe("GameSession connectedUsers architecture", () => {
     const firstColor = gameSession.getPlayerColour();
     expect(firstColor).toBe("black");
 
-    //add first player to connectedUsers
-    const firstPlayer = new Player("player1", "socket1", "black");
+    //add first player to connectedUsers using factory
+    const firstPlayer = createTestPlayer("player1", "socket1", "black");
     gameSession.addPlayerToSession(firstPlayer);
 
     //second player should get white based on connectedUsers state
@@ -26,8 +26,8 @@ describe("GameSession connectedUsers architecture", () => {
   });
 
   test("addPlayerToSession maintains connectedUsers as single source of truth", () => {
-    const player1 = new Player("alice", "socket1", "black");
-    const player2 = new Player("bob", "socket2", "white");
+    const player1 = createTestPlayer("alice", "socket1", "black");
+    const player2 = createTestPlayer("bob", "socket2", "white");
 
     //initially empty
     expect(gameSession.connectedUsers).toHaveLength(0);
@@ -44,8 +44,8 @@ describe("GameSession connectedUsers architecture", () => {
   });
 
   test("removePlayerFromSession correctly removes players by socketID", () => {
-    const player1 = new Player("alice", "socket1", "black");
-    const player2 = new Player("bob", "socket2", "white");
+    const player1 = createTestPlayer("alice", "socket1", "black");
+    const player2 = createTestPlayer("bob", "socket2", "white");
 
     //add both players
     gameSession.addPlayerToSession(player1);
@@ -63,8 +63,8 @@ describe("GameSession connectedUsers architecture", () => {
   });
 
   test("removePlayerFromSession handles non-existent players gracefully", () => {
-    const existingPlayer = new Player("alice", "socket1", "black");
-    const nonExistentPlayer = new Player("bob", "socket2", "white");
+    const existingPlayer = createTestPlayer("alice", "socket1", "black");
+    const nonExistentPlayer = createTestPlayer("bob", "socket2", "white");
 
     gameSession.addPlayerToSession(existingPlayer);
     expect(gameSession.connectedUsers).toHaveLength(1);
@@ -79,8 +79,8 @@ describe("GameSession connectedUsers architecture", () => {
     //empty session - first player gets black
     expect(gameSession.getPlayerColour()).toBe("black");
 
-    //add black player
-    const blackPlayer = new Player("player1", "socket1", "black");
+    //add black player using factory
+    const blackPlayer = createTestPlayer("player1", "socket1", "black");
     gameSession.addPlayerToSession(blackPlayer);
 
     //second player gets white
@@ -95,13 +95,13 @@ describe("GameSession connectedUsers architecture", () => {
 
   test("connectedUsers integrates with assignChessColor logic", () => {
     //this test ensures the architecture change preserves existing chess color logic
-    const whitePlayer = new Player("player1", "socket1", "white");
+    const whitePlayer = createTestPlayer("player1", "socket1", "white");
     gameSession.addPlayerToSession(whitePlayer);
 
     //when only white exists, next player should get black
     expect(gameSession.getPlayerColour()).toBe("black");
 
-    const blackPlayer = new Player("player2", "socket2", "black");
+    const blackPlayer = createTestPlayer("player2", "socket2", "black");
     gameSession.addPlayerToSession(blackPlayer);
 
     //when both colors exist, game is full - no more colors available

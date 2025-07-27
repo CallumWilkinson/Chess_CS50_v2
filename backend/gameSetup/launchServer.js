@@ -1,6 +1,6 @@
 import { handleMove } from "../helpers/handleMove.js";
 import GameSession from "./gameSession.js";
-import Player from "./player.js";
+import Player from "./Player.js";
 import SessionManager from "./SessionManager.js";
 
 export function launchServer(io) {
@@ -31,7 +31,7 @@ export function launchServer(io) {
 
     //add this player to connectedPlayers object
     connectedPlayers[socket.id] = newPlayer;
-    
+
     //also add to session manager for new move handling system
     sessionManager.addPlayer(socket.id, newPlayer);
 
@@ -52,7 +52,13 @@ export function launchServer(io) {
 
     //create a new game session
     socket.on("createNewChessGame", () => {
-      createNewSession(gameSessions, socketIDtoGameSessionID, socket, username, sessionManager);
+      createNewSession(
+        gameSessions,
+        socketIDtoGameSessionID,
+        socket,
+        username,
+        sessionManager
+      );
     });
 
     //join a specific existing game session
@@ -71,12 +77,7 @@ export function launchServer(io) {
     //using database API instead of directly accessing global objects
     //this decouples socket handling from game state manipulation
     socket.on("move", (jsonMoveData) => {
-      handleMove(
-        socket,
-        jsonMoveData,
-        sessionManager,
-        io
-      );
+      handleMove(socket, jsonMoveData, sessionManager, io);
     });
 
     //handle disconnects
@@ -136,7 +137,7 @@ function createNewSession(
   //also update session manager for new move handling system
   sessionManager.addSession(gameSessionID, newGameSession);
   sessionManager.mapSocketToSession(socket.id, gameSessionID);
-  
+
   //update the player with the assigned colour and add to session
   const player = sessionManager.getPlayerBySocketId(socket.id);
   if (player) {
@@ -201,7 +202,7 @@ function joinExistingSession(
 
   //also update session manager for new move handling system
   sessionManager.mapSocketToSession(socket.id, gameSessionID);
-  
+
   //update the player with the assigned colour and add to session
   const player = sessionManager.getPlayerBySocketId(socket.id);
   if (player) {
@@ -243,8 +244,10 @@ export function handleDisconnect(
 
   if (sessionData != null) {
     //find the player object in connectedUsers (single source of truth)
-    const disconnectingPlayer = sessionData.connectedUsers.find(p => p.socketID === socket.id);
-    
+    const disconnectingPlayer = sessionData.connectedUsers.find(
+      (p) => p.socketID === socket.id
+    );
+
     if (disconnectingPlayer) {
       //get the username of the person disconnecting
       const playerUsername = disconnectingPlayer.username;
@@ -253,7 +256,10 @@ export function handleDisconnect(
       sessionData.removePlayerFromSession(disconnectingPlayer);
 
       //legacy compatibility: also remove from old tracking system
-      if (sessionData.connectedPlayersSocketIDs && sessionData.connectedPlayersSocketIDs.players) {
+      if (
+        sessionData.connectedPlayersSocketIDs &&
+        sessionData.connectedPlayersSocketIDs.players
+      ) {
         delete sessionData.connectedPlayersSocketIDs.players[socket.id];
       }
 

@@ -1,5 +1,6 @@
 import { jest } from "@jest/globals";
-import { createMockSocket, createMockGameSession, createMockIOServer, createMockGameSessions } from "./testUtils.js";
+import { createMockSocket, createMockIOServer } from "./testUtils.js";
+import { createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "./helpers/testFactories.js";
 
 //these are mock functions that replace the real functions during testing
 //this allows us to test launchServer.js without depending on other modules
@@ -50,12 +51,14 @@ describe("launchServer utility functions", () => {
     });
 
     test("returns empty array when no games have exactly 1 player", () => {
-      //create test data with games that have 0 players and 2 players
-      //but no games with exactly 1 player waiting
-      const gameSessions = createMockGameSessions({
-        emptySession: true,
-        twoPlayerSession: true
-      });
+      //create test data with games that have 0 players and 2 players using factories
+      const emptySession = createGameSessionWithPlayers(TEST_PLAYERS.EMPTY_GAME);
+      const fullSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_FULL_GAME);
+      
+      const gameSessions = {
+        [emptySession.gameSessionID]: emptySession,
+        [fullSession.gameSessionID]: fullSession
+      };
       
       //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
@@ -64,20 +67,24 @@ describe("launchServer utility functions", () => {
     });
 
     test("returns game info when a game has exactly 1 player", () => {
-      //create test data with mixed game states
+      //create test data with mixed game states using factories
+      const emptySession = createGameSessionWithPlayers(TEST_PLAYERS.EMPTY_GAME);
+      const waitingSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_WAITING_GAME);
+      const fullSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_FULL_GAME);
+      
       const gameSessions = {
-        "session1": createMockGameSession({}), //0 players - empty game
-        "session2": createMockGameSession({"player1": {username: "testuser", colour: "black"}}), //1 player - available to join!
-        "session3": createMockGameSession({"player1": {username: "user1", colour: "black"}, "player2": {username: "user2", colour: "white"}}), //2 players - full game
+        [emptySession.gameSessionID]: emptySession,
+        [waitingSession.gameSessionID]: waitingSession,
+        [fullSession.gameSessionID]: fullSession,
       };
       
       //call the actual exported function
       const result = getAvailableGamesForListing(gameSessions);
       //expect it to return info about session2 (the only game with 1 player)
       expect(result).toEqual([{
-        gameSessionID: "session2",
+        gameSessionID: waitingSession.gameSessionID,
         waitingPlayer: {
-          username: "testuser",
+          username: "waitingplayer",
           colour: "black"
         },
         playersConnected: 1,
@@ -86,10 +93,13 @@ describe("launchServer utility functions", () => {
     });
 
     test("returns multiple games when multiple games have 1 player", () => {
-      //create test data with two games that both have 1 player waiting
+      //create test data with two games that both have 1 player waiting using factories
+      const waitingSession1 = createGameSessionWithPlayers([{username: "user1", socketId: "socket1", colour: "black"}]);
+      const waitingSession2 = createGameSessionWithPlayers([{username: "user2", socketId: "socket2", colour: "black"}]);
+      
       const gameSessions = {
-        "session1": createMockGameSession({"player1": {username: "user1", colour: "black"}}), //1 player waiting
-        "session2": createMockGameSession({"player1": {username: "user2", colour: "black"}}), //1 player waiting
+        [waitingSession1.gameSessionID]: waitingSession1,
+        [waitingSession2.gameSessionID]: waitingSession2,
       };
       
       //call the actual exported function
@@ -99,7 +109,7 @@ describe("launchServer utility functions", () => {
       //expect.arrayContaining checks that the array contains these items (order doesn't matter)
       expect(result).toEqual(expect.arrayContaining([
         {
-          gameSessionID: "session1",
+          gameSessionID: waitingSession1.gameSessionID,
           waitingPlayer: {
             username: "user1",
             colour: "black"
@@ -108,7 +118,7 @@ describe("launchServer utility functions", () => {
           maxPlayers: 2
         },
         {
-          gameSessionID: "session2",
+          gameSessionID: waitingSession2.gameSessionID,
           waitingPlayer: {
             username: "user2",
             colour: "black"
@@ -176,13 +186,15 @@ describe("launchServer utility functions", () => {
   //this tests what happens when players disconnect from the server
   describe("handleDisconnect cleanup functionality", () => {
     test("removes player from connectedPlayers when socket disconnects", () => {
-      //set up test data with 1 player in a game session
-      const gameSessions = {
-        "session1": createMockGameSession({"socket1": {username: "player1"}}),
-      };
-      const socketIDtoGameSessionID = {"socket1": "session1"}; //mapping socket to game
-      const connectedPlayers = {"socket1": {username: "player1"}}; //list of all connected players
-      const mockSocket = createMockSocket("socket1"); //the disconnecting player
+      //set up test data using factory with proper session structure
+      const { sessionManager, session } = createTestScenario([
+        { username: "player1", socketId: "socket1", colour: "black" }
+      ]);
+      
+      const gameSessions = { [session.gameSessionID]: session };
+      const socketIDtoGameSessionID = sessionManager.socketIDtoGameSessionID;
+      const connectedPlayers = sessionManager.connectedPlayers;
+      const mockSocket = createMockSocket("socket1");
       
       //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
@@ -192,56 +204,52 @@ describe("launchServer utility functions", () => {
     });
 
     test("cleans up empty game session when last player disconnects", () => {
-      //set up test data with 1 player in a game (will become empty after disconnect)
-      const gameSessions = {
-        "session1": createMockGameSession({"socket1": {username: "player1"}}),
-      };
-      const socketIDtoGameSessionID = {"socket1": "session1"};
-      const connectedPlayers = {"socket1": {username: "player1"}};
+      //set up test data using factory with proper session structure
+      const { sessionManager, session } = createTestScenario([
+        { username: "player1", socketId: "socket1", colour: "black" }
+      ]);
+      
+      const gameSessions = { [session.gameSessionID]: session };
+      const socketIDtoGameSessionID = sessionManager.socketIDtoGameSessionID;
+      const connectedPlayers = sessionManager.connectedPlayers;
       const mockSocket = createMockSocket("socket1");
       
       //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
       
       //verify the empty game session was deleted (memory cleanup)
-      expect(gameSessions["session1"]).toBeUndefined();
+      expect(gameSessions[session.gameSessionID]).toBeUndefined();
       //verify the socket-to-game mapping was removed
       expect(socketIDtoGameSessionID["socket1"]).toBeUndefined();
     });
 
     test("keeps game session when other players remain after disconnect", () => {
-      //set up test data with 2 players in the same game
-      const gameSessions = {
-        "session1": createMockGameSession({
-          "socket1": {username: "player1"}, //this player will disconnect
-          "socket2": {username: "player2"}, //this player will remain
-        }),
-      };
-      const socketIDtoGameSessionID = {
-        "socket1": "session1", //both players in same game
-        "socket2": "session1",
-      };
-      const connectedPlayers = {
-        "socket1": {username: "player1"},
-        "socket2": {username: "player2"},
-      };
+      //set up test data using factory with 2 players
+      const { sessionManager, session } = createTestScenario([
+        { username: "player1", socketId: "socket1", colour: "black" },
+        { username: "player2", socketId: "socket2", colour: "white" }
+      ]);
+      
+      const gameSessions = { [session.gameSessionID]: session };
+      const socketIDtoGameSessionID = sessionManager.socketIDtoGameSessionID;
+      const connectedPlayers = sessionManager.connectedPlayers;
       const mockSocket = createMockSocket("socket1"); //player1 disconnects
       
       //call the actual exported function
       handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
       
       //verify the game session still exists (because player2 is still there)
-      expect(gameSessions["session1"]).toBeDefined();
+      expect(gameSessions[session.gameSessionID]).toBeDefined();
       //verify only the disconnected player was removed from the game
-      expect(gameSessions["session1"].connectedPlayersSocketIDs.players["socket1"]).toBeUndefined();
-      expect(gameSessions["session1"].connectedPlayersSocketIDs.players["socket2"]).toBeDefined();
+      expect(gameSessions[session.gameSessionID].connectedPlayersSocketIDs.players["socket1"]).toBeUndefined();
+      expect(gameSessions[session.gameSessionID].connectedPlayersSocketIDs.players["socket2"]).toBeDefined();
       //verify only the disconnected player's mapping was removed
       expect(socketIDtoGameSessionID["socket1"]).toBeUndefined();
-      expect(socketIDtoGameSessionID["socket2"]).toBe("session1");
+      expect(socketIDtoGameSessionID["socket2"]).toBe(session.gameSessionID);
     });
 
     test("handles disconnect gracefully when session data is null", () => {
-      //set up test data where the game session doesn't exist (edge case)
+      //set up edge case test data where session mapping exists but session doesn't
       const gameSessions = {}; //no game sessions exist
       const socketIDtoGameSessionID = {"socket1": "nonexistent-session"}; //but mapping points to non-existent game
       const connectedPlayers = {"socket1": {username: "player1"}};
