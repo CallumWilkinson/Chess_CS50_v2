@@ -1,15 +1,30 @@
 import Board from "../gameLogic/board.js";
 import GameStateManager from "../gameLogic/GameStateManager.js";
 
+/**
+ * Represents a single game instance within a session
+ * Manages the game board, state, and game-specific logic
+ */
 export default class GameInstance {
+  /**
+   * Creates a new game instance
+   * @param {string} gameInstanceID - Unique identifier for this game instance
+   */
   constructor(gameInstanceID) {
     //a gameInstanceID is associated with each GameInstance
     this.gameInstanceID = gameInstanceID;
+    //board instance will be created when game starts
     this.board;
+    //game state manager handles turns, moves, and win conditions
     this.gameStateManager;
+    //legacy array - use GameSession.connectedUsers instead
     this.players = [];
   }
 
+  /**
+   * Initialize a new chess game with board and pieces
+   * Sets up the board state, game manager, and initial piece positions
+   */
   createNewChessGame() {
     //create a board object and assign it to the browser window
     //board contains a dictionary where it's keys are the names of the squares on a chess board
@@ -30,6 +45,15 @@ export default class GameInstance {
     this.board.initialisePieces();
   }
 
+  /**
+   * Legacy method for adding players to instance - now handled by GameSession
+   * Database color assignment is no longer supported - color assignment moved to GameSession
+   * This method now only handles the legacy fallback logic
+   * @param {Object} connectedUsers - Object containing connected user data
+   * @param {Object|null} database - Legacy parameter, no longer used
+   * @returns {string} The assigned color ('black' or 'white')
+   * @deprecated Use GameSession.addPlayerToSession instead
+   */
   addPlayersToInstance(connectedUsers, database = null) {
     //database color assignment is no longer supported - color assignment moved to GameSession
     //this method now only handles the legacy fallback logic
@@ -49,6 +73,11 @@ export default class GameInstance {
     return assignedColour;
   }
 
+  /**
+   * Placeholder for future checkers game implementation
+   * Example of how this GameInstance class can support multiple game types
+   * @todo Implement checkers game logic
+   */
   //im not going to actually make a checkers game yet but this is just an example, like with this gameInstance class i can create games inside it
   createNewCheckersGame() {}
 }
