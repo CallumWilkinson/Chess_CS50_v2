@@ -1,6 +1,6 @@
-import GameStateManager from "../backend/gameLogic/GameStateManager.js";
-import Board from "../backend/gameLogic/board.js";
-import Position from "../backend/gameLogic/position.js";
+import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import Board from "../../../backend/gameLogic/board.js";
+import Position from "../../../backend/gameLogic/position.js";
 
 describe("Game State Manager class tests", () => {
   let board;

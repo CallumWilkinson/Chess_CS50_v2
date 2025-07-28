@@ -1,8 +1,8 @@
 import { jest } from "@jest/globals";
-import SessionManager from "../backend/gameSetup/SessionManager.js";
-import Player from "../backend/gameSetup/Player.js";
-import GameSession from "../backend/gameSetup/gameSession.js";
-import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "./helpers/testFactories.js";
+import SessionManager from "../../../backend/gameSetup/SessionManager.js";
+import Player from "../../../backend/gameSetup/Player.js";
+import GameSession from "../../../backend/gameSetup/gameSession.js";
+import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "../../helpers/testFactories.js";
 
 //test suite for the session manager class that manages game sessions and players
 describe("SessionManager class", () => {

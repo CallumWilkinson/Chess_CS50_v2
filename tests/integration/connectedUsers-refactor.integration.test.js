@@ -1,15 +1,15 @@
 //integration tests to verify gameSession.connectedUsers refactor
 //ensures all flows use connectedUsers as single source of truth
 
-import GameSession from "../backend/gameSetup/gameSession.js";
-import Player from "../backend/gameSetup/Player.js";
-import SessionManager from "../backend/gameSetup/SessionManager.js";
+import GameSession from "../../backend/gameSetup/gameSession.js";
+import Player from "../../backend/gameSetup/Player.js";
+import SessionManager from "../../backend/gameSetup/SessionManager.js";
 import {
   handleDisconnect,
   getAvailableGamesForListing,
-} from "../backend/gameSetup/launchServer.js";
-import { createMockSocket } from "./testUtils.js";
-import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "./helpers/testFactories.js";
+} from "../../backend/gameSetup/launchServer.js";
+import { createMockSocket } from "../helpers/testUtils.js";
+import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "../helpers/testFactories.js";
 
 describe("ConnectedUsers refactor integration", () => {
   let gameSession;

@@ -1,8 +1,8 @@
-import Board from "../backend/gameLogic/board.js";
-import Knight from "../backend/chessPieces/knight.js";
-import Position from "../backend/gameLogic/position.js";
-import GameStateManager from "../backend/gameLogic/GameStateManager.js";
-import Pawn from "../backend/chessPieces/pawn.js";
+import Board from "../../../backend/gameLogic/board.js";
+import Knight from "../../../backend/chessPieces/knight.js";
+import Position from "../../../backend/gameLogic/position.js";
+import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import Pawn from "../../../backend/chessPieces/pawn.js";
 
 describe("knight tests", () => {
   let possibleMovesArray;

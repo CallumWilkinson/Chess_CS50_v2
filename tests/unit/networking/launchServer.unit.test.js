@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
-import { createMockSocket, createMockIOServer } from "./testUtils.js";
-import { createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "./helpers/testFactories.js";
+import { createMockSocket, createMockIOServer } from "../../helpers/testUtils.js";
+import { createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "../../helpers/testFactories.js";
 
 //these are mock functions that replace the real functions during testing
 //this allows us to test launchServer.js without depending on other modules
@@ -12,21 +12,21 @@ const mockPlayer = jest.fn();
 //jest.unstable_mockModule replaces the real modules with fake ones
 //this way when launchServer.js tries to import these modules, it gets our mocks instead
 //we do this to isolate the code we want to test (launchServer.js)
-jest.unstable_mockModule("../backend/helpers/handleMove.js", () => ({
+jest.unstable_mockModule("../../../backend/helpers/handleMove.js", () => ({
   handleMove: mockHandleMove,
 }));
 
-jest.unstable_mockModule("../backend/gameSetup/gameSession.js", () => ({
+jest.unstable_mockModule("../../../backend/gameSetup/gameSession.js", () => ({
   default: mockGameSession,
 }));
 
-jest.unstable_mockModule("../backend/gameSetup/player.js", () => ({
+jest.unstable_mockModule("../../../backend/gameSetup/player.js", () => ({
   default: mockPlayer,
 }));
 
 //we import launchServer AFTER setting up the mocks
 //this ensures launchServer gets the mocked versions of its dependencies
-const { launchServer, getAvailableGamesForListing, handleDisconnect } = await import("../backend/gameSetup/launchServer.js");
+const { launchServer, getAvailableGamesForListing, handleDisconnect } = await import("../../../backend/gameSetup/launchServer.js");
 
 //describe groups related tests together
 //this is testing the helper functions inside launchServer.js

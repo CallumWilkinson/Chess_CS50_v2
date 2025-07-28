@@ -1,10 +1,10 @@
-import Bishop from "../backend/chessPieces/bishop.js";
-import Board from "../backend/gameLogic/board.js";
-import King from "../backend/chessPieces/king.js";
-import Knight from "../backend/chessPieces/knight.js";
-import Pawn from "../backend/chessPieces/pawn.js";
-import Queen from "../backend/chessPieces/queen.js";
-import Rook from "../backend/chessPieces/rook.js";
+import Bishop from "../../../backend/chessPieces/bishop.js";
+import Board from "../../../backend/gameLogic/board.js";
+import King from "../../../backend/chessPieces/king.js";
+import Knight from "../../../backend/chessPieces/knight.js";
+import Pawn from "../../../backend/chessPieces/pawn.js";
+import Queen from "../../../backend/chessPieces/queen.js";
+import Rook from "../../../backend/chessPieces/rook.js";
 
 //describe is a jest function to group related tests together into a test suite called "chess board"
 describe("Chess Board", () => {

@@ -1,4 +1,4 @@
-import { createTestPlayer } from "./helpers/testFactories.js";
+import { createTestPlayer } from "../../helpers/testFactories.js";
 
 describe("Tests for player class", () => {
 

@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { assignChessColor } from "../backend/gameLogic/chessColorAssignment.js";
+import { assignChessColor } from "../../../backend/gameLogic/chessColorAssignment.js";
 
 //test suite for chess-specific color assignment logic
 describe("assignChessColor function", () => {

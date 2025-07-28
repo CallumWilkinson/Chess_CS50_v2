@@ -1,8 +1,8 @@
-import GameSession from "../backend/gameSetup/gameSession.js";
-import GameInstance from "../backend/gameSetup/GameInstance.js";
-import Board from "../backend/gameLogic/board.js";
-import GameStateManager from "../backend/gameLogic/GameStateManager.js";
-import { createTestPlayer, createGameSessionWithPlayers } from "./helpers/testFactories.js";
+import GameSession from "../../../backend/gameSetup/gameSession.js";
+import GameInstance from "../../../backend/gameSetup/GameInstance.js";
+import Board from "../../../backend/gameLogic/board.js";
+import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import { createTestPlayer, createGameSessionWithPlayers } from "../../helpers/testFactories.js";
 
 describe("tests for gameSession class", () => {
   test("constructor generates a gameSession id and a gamesession has a function to create a gameInstance inside of it", () => {

@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import joinExistingGameOrCreateNewChessGame from "../public/src/frontend/joinExistingGameOrCreateNewChessGame.js";
+import joinExistingGameOrCreateNewChessGame from "../../../public/src/frontend/joinExistingGameOrCreateNewChessGame.js";
 
 describe("joinExistingGameOrCreateNewChessGame", () => {
   let mockSocket;

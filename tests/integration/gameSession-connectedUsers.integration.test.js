@@ -1,8 +1,8 @@
 //unit tests for gameSession connectedUsers architecture
 //tests the new single source of truth pattern for player tracking
 
-import GameSession from "../backend/gameSetup/gameSession.js";
-import { createTestPlayer, createGameSessionWithPlayers } from "./helpers/testFactories.js";
+import GameSession from "../../backend/gameSetup/gameSession.js";
+import { createTestPlayer, createGameSessionWithPlayers } from "../helpers/testFactories.js";
 
 describe("GameSession connectedUsers architecture", () => {
   let gameSession;
