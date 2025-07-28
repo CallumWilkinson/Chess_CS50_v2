@@ -2,14 +2,20 @@ import ChessPiece from "./ChessPiece.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
- * @param {string} colour
- * @param {Position} position
+ * Represents a Pawn chess piece
+ * Moves forward one square, captures diagonally forward
+ * Can move two squares on first move, and has special en passant capture rules
  */
-
 export default class Pawn extends ChessPiece {
+  /**
+   * Creates a new Pawn piece
+   * @param {string} colour - The piece color ('white' or 'black')
+   * @param {Position} position - Starting position on the board
+   */
   constructor(colour, position) {
     super("pawn", colour, position);
 
+    //unicode symbols for display
     this.whiteUnicodeLogo = "\u2659";
     this.blackUnicodeLogo = "\u265F";
   }

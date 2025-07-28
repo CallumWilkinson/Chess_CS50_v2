@@ -2,22 +2,30 @@ import ChessPiece from "./ChessPiece.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
- * @param {string} colour
- * @param {Position} position
+ * Represents a Knight chess piece
+ * Moves in an L-shape: 2 squares in one direction, then 1 square perpendicular
+ * The only piece that can jump over other pieces
  */
-
 export default class Knight extends ChessPiece {
+  /**
+   * Creates a new Knight piece
+   * @param {string} colour - The piece color ('white' or 'black')
+   * @param {Position} position - Starting position on the board
+   */
   constructor(colour, position) {
     super("knight", colour, position);
+    //unicode symbols for display
     this.whiteUnicodeLogo = "\u2658";
     this.blackUnicodeLogo = "\u265E";
   }
 
   /**
-   * @param {Board} board
-   * @returns {string[]}
+   * Calculate all valid moves for the knight
+   * Knights move in an L-shape: 2 squares in one direction, then 1 square perpendicular
+   * Can jump over other pieces (no line-of-sight restrictions)
+   * @param {Board} board - Current board state
+   * @returns {string[]} Array of valid square names the knight can move to
    */
-
   getPossibleMoves(board) {
     const validMoves = [];
     const knightPossibleSquareNames = [];
