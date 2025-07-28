@@ -3,6 +3,12 @@ import GameSession from "./gameSession.js";
 import Player from "./Player.js";
 import SessionManager from "./SessionManager.js";
 
+/**
+ * Initialize the Socket.IO server with chess game event handlers
+ * Sets up connection handling, game creation, joining, moves, and disconnections
+ * @param {Object} io - Socket.IO server instance
+ * @returns {Object} Socket ID to game session ID mapping for testing purposes
+ */
 export function launchServer(io) {
   //create session manager instance to manage game sessions and players
   //this will gradually replace the global objects below as we migrate the codebase
@@ -95,6 +101,15 @@ export function launchServer(io) {
   return socketIDtoGameSessionID;
 }
 
+/**
+ * Create a new game session for a player
+ * Sets up the game instance, assigns colors, and initializes the chess board
+ * @param {Object} gameSessions - Global game sessions object
+ * @param {Object} socketIDtoGameSessionID - Socket to session mapping
+ * @param {Object} socket - The socket connection creating the game
+ * @param {string} username - Username of the player creating the game
+ * @param {SessionManager} sessionManager - Session manager instance
+ */
 function createNewSession(
   gameSessions,
   socketIDtoGameSessionID,
@@ -162,6 +177,16 @@ function createNewSession(
   console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
+/**
+ * Join an existing game session
+ * Validates the session exists and isn't full, then adds the player
+ * @param {string} gameSessionID - ID of the session to join
+ * @param {Object} gameSessions - Global game sessions object
+ * @param {Object} socketIDtoGameSessionID - Socket to session mapping
+ * @param {Object} socket - The socket connection joining the game
+ * @param {string} username - Username of the joining player
+ * @param {SessionManager} sessionManager - Session manager instance
+ */
 function joinExistingSession(
   gameSessionID,
   gameSessions,
@@ -227,6 +252,14 @@ function joinExistingSession(
   console.log(`${username} connected to gameSessionID ${gameSessionID}`);
 }
 
+/**
+ * Handle player disconnection from the server
+ * Cleans up session data and removes empty sessions to prevent memory leaks
+ * @param {Object} gameSessions - Global game sessions object
+ * @param {Object} socketIDtoGameSessionID - Socket to session mapping
+ * @param {Object} socket - The disconnecting socket connection
+ * @param {Object} connectedPlayers - Global connected players object
+ */
 export function handleDisconnect(
   gameSessions,
   socketIDtoGameSessionID,
@@ -283,6 +316,12 @@ export function handleDisconnect(
   }
 }
 
+/**
+ * Get list of available games that have exactly 1 player waiting
+ * Returns array of game objects with session info for frontend display
+ * @param {Object} gameSessions - Global game sessions object
+ * @returns {Object[]} Array of available game info objects for client display
+ */
 //get list of available games that have exactly 1 player waiting
 //returns array of game objects with session info for frontend display
 export function getAvailableGamesForListing(gameSessions) {

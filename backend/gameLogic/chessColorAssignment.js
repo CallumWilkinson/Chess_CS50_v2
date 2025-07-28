@@ -1,11 +1,9 @@
-//chess-specific color assignment logic
-//separates game rules from networking layer for better modularity
-
-//assigns chess colors based on existing players in a session
-//first player gets black, second player gets white (traditional chess convention)
-//returns "black", "white", or null based on what's available
 /**
- * @param {Object.<string, {colour: string}>|null} players - object mapping player IDs to player objects with colour property
+ * Chess-specific color assignment logic
+ * Separates game rules from networking layer for better modularity
+ * Assigns chess colors based on existing players in a session
+ * First player gets black, second player gets white (traditional chess convention)
+ * @param {Player[]|Object.<string, {colour: string}>|null} players - Array of player objects or object mapping player IDs to player objects with colour property
  * @returns {string|null} "black", "white", or null if both colors are taken
  */
 export function assignChessColor(players) {

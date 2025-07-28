@@ -1,5 +1,13 @@
 import { getNewGameState } from "../gameLogic/getNewGameState.js";
 
+/**
+ * Handle a chess move request from a client
+ * Validates the move, processes it through game logic, and broadcasts the result
+ * @param {Object} socket - The socket connection from the client making the move
+ * @param {Object} jsonMoveData - Move data containing chessPiece and targetSquare
+ * @param {SessionManager} sessionManager - Session manager instance for player/game lookups
+ * @param {Object} io - Socket.io server instance for broadcasting to rooms
+ */
 export function handleMove(socket, jsonMoveData, sessionManager, io) {
   //get the game instance for this socket
   const gameInstance = sessionManager.getGameInstanceBySocket(socket.id);
