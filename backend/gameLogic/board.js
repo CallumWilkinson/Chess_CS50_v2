@@ -7,12 +7,26 @@ import Bishop from "../chessPieces/bishop.js";
 import Position from "./position.js";
 import { FilesAndRanks } from "../../shared/utilities/constants.js";
 
+/**
+ * Represents a chess board with a grid of squares and pieces
+ * Manages board state through a dictionary where keys are square names (e.g., 'a1', 'e4')
+ * and values are chess piece instances or null for empty squares
+ */
 export default class Board {
+  /**
+   * Creates a new empty board instance
+   */
   constructor() {
     //create a grid PROPERTY for the class, grid is a dictionary
+    //keys are square names (a1, b1, etc), values are chess pieces or null
     this.grid = {};
   }
 
+  /**
+   * Initialize the board with all 64 squares set to null (empty)
+   * Creates position objects for each combination of rank and file
+   * Sets up the grid dictionary with square names as keys
+   */
   //create position objects for each combination of rank and file
   //set the created position object's name (string) to be the names of each key in the dictionary
   //set all values to null in the dictionary as we are creating an empty board
@@ -25,6 +39,11 @@ export default class Board {
       }
     });
   }
+  /**
+   * Initialize all chess pieces in their starting positions
+   * Creates all 32 pieces (16 white, 16 black) and places them on the board
+   * The game state is determined by the current position of each piece in the grid dictionary
+   */
   //create every chess peice required for the game
   //create only the position objects required for the default positions
   //add each peice to its starting postion's in the grid
@@ -121,9 +140,11 @@ export default class Board {
   }
 
   /**
-   * @param {string} square - 'a3', 'e4' ect.
+   * Check if a square exists on the board (valid square name)
+   * Used to ensure we can't access a key that doesn't actually exist in the dictionary
+   * @param {string} square - Square name in algebraic notation (e.g., 'a3', 'e4')
+   * @returns {boolean} True if square exists on board, false otherwise
    */
-
   //used to ensure we cant access a key that doesnt actually exist in the dictionary
   squareExistsOnBoard(square) {
     if (square in this.grid) {
@@ -134,9 +155,10 @@ export default class Board {
   }
 
   /**
-   * @param {string} square - 'a3', 'e4' ect.
+   * Check if a square is empty (contains no piece)
+   * @param {string} square - Square name in algebraic notation (e.g., 'a3', 'e4')
+   * @returns {boolean} True if square is empty (null), false if occupied
    */
-
   //check there is no value at a given key, if no value then that square on the board is empty
   squareIsEmpty(square) {
     if (this.grid[square] == null) {

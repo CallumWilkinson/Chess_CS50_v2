@@ -1,6 +1,11 @@
 import { GameStatus } from "../../shared/utilities/constants.js";
 import { TurnManager } from "./turnManager.js";
 
+/**
+ * Manages the overall state of a chess game
+ * Handles moves, turn switching, game status, and captured pieces
+ * Acts as the main controller for game logic and rule enforcement
+ */
 export default class GameStateManager {
   /**
    * @param {Board} board - An instance of Board class.
@@ -20,12 +25,14 @@ export default class GameStateManager {
     };
   }
   /**
-   * @param {chessPiece} chessPiece - selected piece to be moved
-   * @param {Position} targetSquare - position to move to
-   * @param {Array} possibleMovesArray - ARRAY OF STRINGS return value of chessPiece.possibleMovesArray(), each child class has its own implementation of this function,
-   * @param {Boolean} - returns true if move successful, used to check success status in the UI
+   * Execute a chess move and update game state
+   * Validates the move, handles captures, updates board, and switches turns
+   * @param {ChessPiece} chessPiece - The piece to be moved
+   * @param {Position} targetSquare - The destination square
+   * @param {string[]} possibleMovesArray - Array of valid move squares for this piece
+   * @returns {boolean} True if move successful, used to check success status in the UI
+   * @throws {Error} If move is invalid (not player's turn, illegal move, friendly fire)
    */
-
   //moves a chesspeice around in the dictionary to change the state of the board
   //switches player turn when the board state changes
   makeMove(chessPiece, targetSquare, possibleMovesArray) {
@@ -78,8 +85,13 @@ export default class GameStateManager {
     return true;
   }
 
+  /**
+   * Switch to the next player's turn and update turn counters
+   * Uses TurnManager to handle the color switch logic
+   */
   switchTurn() {
     this.currentPlayerColour = this.turnManager.switchTurn();
+    //increment turn counter for the player who just finished their turn
     if (this.currentPlayerColour == "black") {
       this.whiteTurnCount++;
     } else {
@@ -87,6 +99,10 @@ export default class GameStateManager {
     }
   }
 
+  /**
+   * End the game with a winner (checkmate scenario)
+   * @param {string} winningPlayer - The color of the winning player ('white' or 'black')
+   */
   endGame(winningPlayer) {
     this.winner = winningPlayer;
     this.gameStatus = GameStatus.CHECKMATE;

@@ -2,16 +2,23 @@ import { FilesAndRanks } from "../../shared/utilities/constants.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
- * @param {string} name - name of a position on the chess board 'e5' ect
+ * Represents a position on the chess board
+ * Handles square notation, coordinates, and line-of-sight calculations
  */
-
 export default class Position {
+  /**
+   * Creates a new position instance
+   * @param {string} name - Square name in algebraic notation (e.g., 'e5', 'a1')
+   */
   constructor(name) {
+    //square name in algebraic notation (e.g., 'e4')
     this.name = name;
+    //file letter (a-h)
     this.file = this.name[0];
+    //rank number (1-8)
     this.rank = this.name[1];
 
-    //changes the letter to a number, int type
+    //changes the letter to a number, int type (a=0, b=1, etc.)
     this.fileIndex = this.name.charCodeAt(0) - "a".charCodeAt(0);
 
     //changes the digit in the second position of the string 'name' to a number starting from 0
@@ -23,10 +30,12 @@ export default class Position {
   }
 
   /**
-   * @returns {Array[string]} - returns array of strings
-   * this function is only run once privately each time a new positon is made, so that its result can be saved to a property for faster access
+   * Get the names of all valid squares adjacent to this position
+   * This function is only run once privately each time a new position is made,
+   * so that its result can be saved to a property for faster access
+   * @returns {string[]} Array of square names surrounding this position
+   * @private
    */
-
   _getSurroundingPositionNames() {
     const surroundingSquares = [];
 
@@ -70,11 +79,12 @@ export default class Position {
   }
 
   /**
-   * @param {position} targetSquare - 'a3', 'e4' ect.
-   * @param {board} board
-   * @returns {Bool}
+   * Check if there is a clear line of sight to the target square
+   * Used for pieces that move in straight lines (rook, bishop, queen)
+   * @param {Position} targetSquare - The destination position to check
+   * @param {Board} board - The current board state
+   * @returns {boolean} True if path is clear, false if blocked by pieces
    */
-
   isTraversable(targetSquare, board) {
     //calculate the difference between startFileIndex and targetFileIndex (abs to remove negative)
     const fileIndexDifferential = targetSquare.fileIndex - this.fileIndex;
