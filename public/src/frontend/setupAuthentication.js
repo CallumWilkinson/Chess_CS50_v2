@@ -1,5 +1,11 @@
 import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
 
+/**
+ * Set up Socket.IO connection with user authentication
+ * Prompts user for username and creates socket connection with auth data
+ * Uses manual connection mode to ensure proper listener setup
+ * @returns {Object} Socket.IO client instance with authentication configured
+ */
 export function setupSocketWithAuthentication() {
   //promt player for their username to use for light-weight authentication
   const username = prompt("Enter your username:");

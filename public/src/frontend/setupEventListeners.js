@@ -2,8 +2,12 @@ import getClickedSquareName from "./getClickedSquareName.js";
 import { sendMoveData } from "./sendMoveData.js";
 
 /**
- * @param {HTMLCanvasElement} canvas - selected piece to be moved
- * @param {Object} currentGameState - shared reference to current game state with board and gameStateManager
+ * Set up click event listeners for chess piece movement
+ * Handles two-click movement: first click selects piece, second click moves it
+ * Validates moves against current game state and player permissions
+ * @param {Object} socket - Socket.IO client instance for sending moves
+ * @param {HTMLCanvasElement} canvas - Chess board canvas element
+ * @param {Object} currentGameState - Shared reference to current game state with board and gameStateManager
  */
 export function setupMovementEventListeners(
   socket,

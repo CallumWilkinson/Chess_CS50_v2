@@ -1,7 +1,9 @@
 /**
- * @param {import("socket.io").Socket} socket
+ * Automatically join an existing game or create a new one
+ * Requests available games from server and joins first available, or creates new game
+ * Implements simple matchmaking logic for chess games
+ * @param {Object} socket - Socket.IO client instance
  */
-
 export default function joinExistingGameOrCreateNewChessGame(socket) {
   //if no socket then exit
   if (!socket) {

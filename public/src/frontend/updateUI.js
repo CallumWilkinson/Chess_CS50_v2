@@ -1,13 +1,13 @@
 import { UIConstants, FilesAndRanks } from "./shared/utilities/constants.js";
 
 /**
- * @param {CanvasRenderingContext2D} ctx
- * @param {Board} board
- * @param {GameStateManager} gameStateManager
+ * Update the visual chess board UI with current game state
+ * Redraws the entire board, pieces, coordinates, and turn indicator
+ * Called every time a turn ends or game state changes
+ * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context
+ * @param {Board} board - Current board state with piece positions
+ * @param {GameStateManager} gameStateManager - Game state for turn tracking
  */
-
-//need to write better comments to explain this function more
-//i want to run this function every time a turn ends
 export function updateUI(ctx, board, gameStateManager) {
   //reset board to blank first
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

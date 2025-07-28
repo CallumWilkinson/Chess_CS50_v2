@@ -2,11 +2,12 @@ import { UIConstants } from "./shared/utilities/constants.js";
 import { toSquareNotation } from "./shared/utilities/toSquareNotation.js";
 
 /**
- * @param {MouseEvent} event mouse event
- * @param {HTMLElement} canvas
- * @returns {string} firstClickedSquareName Chess notation square (e.g. "e4").
+ * Convert mouse click coordinates to chess square notation
+ * Takes mouse click position and calculates which chess square was clicked
+ * @param {MouseEvent} event - Mouse click event containing coordinates
+ * @param {HTMLCanvasElement} canvas - Chess board canvas element
+ * @returns {string} Chess notation square name (e.g., "e4", "a1")
  */
-
 export default function getClickedSquareName(event, canvas) {
   //returns position and size of canvas relative to viewport
   const canvasRect = canvas.getBoundingClientRect();

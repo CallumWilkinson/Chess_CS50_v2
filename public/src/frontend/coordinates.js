@@ -1,10 +1,11 @@
 import { UIConstants } from "./shared/utilities/constants.js";
 
 /**
- * @param {string} square - square as a string like e2 ect
- * @returns {{ x: number, y: number }} - the x and y canvas coordinates (center of the square passed through)
+ * Convert chess square notation to canvas pixel coordinates
+ * Used for Playwright tests to simulate clicks on specific squares
+ * @param {string} square - Chess square notation (e.g., "e2", "a1")
+ * @returns {{x: number, y: number}} Canvas coordinates pointing to center of the square
  */
-
 //used for playwrite tests
 export function squareToCanvasCoordinates(square) {
   //file is the letter

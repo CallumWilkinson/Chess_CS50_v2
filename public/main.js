@@ -5,6 +5,11 @@ import { updateUI } from "./src/frontend/updateUI.js";
 import { getPlayerColourAndInitialBoardState } from "./src/frontend/setupSocketListeners.js";
 import joinExistingGameOrCreateNewChessGame from "./src/frontend/joinExistingGameOrCreateNewChessGame.js";
 
+/**
+ * Main entry point for the chess game client
+ * Sets up authentication, canvas, game connection, and UI updates
+ * Runs when the window loads to initialize the entire chess game interface
+ */
 window.onload = () => {
   //get username and pass it as the auth object to the socket
   const socket = setupSocketWithAuthentication();

@@ -1,5 +1,11 @@
 import { updateUI } from "./updateUI.js";
 
+/**
+ * Set up socket listener for initial player info and game state
+ * Waits for server to send player color and initial board state, then executes callback
+ * @param {Object} socket - Socket.IO client instance
+ * @param {Function} callback - Callback function to execute when data is received
+ */
 export function getPlayerColourAndInitialBoardState(socket, callback) {
   //only run if a socket connection exists
   if (socket) {
@@ -23,10 +29,12 @@ export function getPlayerColourAndInitialBoardState(socket, callback) {
 }
 
 /**
- * @param {CanvasRenderingContext2D} ctx
- * @param {Object} currentGameState - shared reference to current game state
+ * Set up socket listener for game state updates from server
+ * Updates the UI and shared game state reference when moves are processed
+ * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context
+ * @param {Object} socket - Socket.IO client instance
+ * @param {Object} currentGameState - Shared reference to current game state
  */
-
 export function updateUIWithNewGameState(ctx, socket, currentGameState) {
   //when a SUCCESSFULL MOVE IS RECEIVED
   //extract the gamestatemanger from json object received
