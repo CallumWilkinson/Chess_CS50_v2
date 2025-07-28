@@ -1,7 +1,11 @@
 import { jest } from "@jest/globals";
 
-//creates a fake game session object for testing
-//the 'players' parameter lets us control how many players are in the session
+/**
+ * Creates a fake game session object for testing
+ * The 'players' parameter lets us control how many players are in the session
+ * @param {Object} players - Object mapping socket IDs to player data
+ * @returns {Object} Mock GameSession object with test-friendly methods
+ */
 export function createMockGameSession(players) {
   //convert players object to connectedUsers array for single source of truth
   const connectedUsers = [];
@@ -35,9 +39,14 @@ export function createMockGameSession(players) {
   };
 }
 
-//creates a fake socket that behaves like a real websocket connection
-//in real life, socket.io creates these when clients connect
-//we make fake ones for testing so we don't need real client connections
+/**
+ * Creates a fake socket that behaves like a real websocket connection
+ * In real life, socket.io creates these when clients connect
+ * We make fake ones for testing so we don't need real client connections
+ * @param {string} id - Socket ID, generates random if not provided
+ * @param {Object} rooms - Rooms object for tracking socket membership
+ * @returns {Object} Mock socket object with jest spy functions
+ */
 export function createMockSocket(id, rooms = {}) {
   //store callbacks for event handlers
   const handlers = {};
@@ -96,9 +105,13 @@ export function createMockSocket(id, rooms = {}) {
   return socket;
 }
 
-//creates a fake socket.io server that behaves like the real one
-//the real server manages all client connections and broadcasts messages
-//we make a fake one for testing so we don't need a real server running
+/**
+ * Creates a fake socket.io server that behaves like the real one
+ * The real server manages all client connections and broadcasts messages
+ * We make a fake one for testing so we don't need a real server running
+ * @param {Object} rooms - Rooms object for tracking socket membership
+ * @returns {Object} Mock IO server object with jest spy functions
+ */
 export function createMockIOServer(rooms = {}) {
   const toEmitMock = jest.fn();
   
@@ -120,7 +133,11 @@ export function createMockIOServer(rooms = {}) {
   };
 }
 
-//creates mock data for testing with specified number of players
+/**
+ * Creates mock data for testing with specified number of players
+ * @param {Object} config - Configuration object specifying which sessions to create
+ * @returns {Object} Object containing mock game sessions
+ */
 export function createMockGameSessions(config = {}) {
   const sessions = {};
   

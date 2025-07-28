@@ -141,3 +141,7 @@ dist
 
 # Chrome debug profiles
 .vscode/chromeUserData/
+
+# JSDoc generated documentation
+jsdoc-output/
+jsdoc.conf.json

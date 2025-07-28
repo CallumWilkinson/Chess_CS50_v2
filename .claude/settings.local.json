@@ -18,7 +18,10 @@
       "Bash(node:*)",
       "Bash(rg:*)",
       "Bash(mv:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm install:*)",
+      "Bash(jsdoc:*)",
+      "Bash(git check-ignore:*)"
     ],
     "deny": []
   }
