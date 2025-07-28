@@ -13,6 +13,7 @@
 This project is designed as a **multiplayer game platform** that can support various turn-based games, starting with chess as the first implementation. The architecture separates networking concerns from game-specific logic, making it easy to add new games like checkers, tic-tac-toe, or any custom board game.
 
 ### **Platform Features**
+
 - **🎮 Multi-Game Support**: Extensible architecture for different game types
 - **🔗 Real-Time Multiplayer**: WebSocket-based real-time communication
 - **🛡️ Server Authority**: Anti-cheat protection with server-side validation
@@ -20,6 +21,7 @@ This project is designed as a **multiplayer game platform** that can support var
 - **📈 Scalable Design**: Support for multiple concurrent games
 
 ### **Current Games**
+
 - ✅ **Chess**: Full implementation with complete rule validation
 - 🔄 **Checkers**: Planned next implementation
 - 🔄 **Custom Games**: Framework ready for new game types
@@ -41,32 +43,45 @@ This project is designed as a **multiplayer game platform** that can support var
 
 ### **1. HTTP Layer**
 
-- **Express.js** serves static files and web requests
-- Basic web server functionality
+- **Express.js** serves static files and web requests (`backend/server.js`)
+- Basic web server functionality for frontend delivery
+- Entry point: `npm start` → runs `backend/server.js`
 
-### **2. WebSocket Layer**
+### **2. WebSocket Layer (Socket.IO)**
 
-- [**Socket.IO**](http://Socket.IO) handles real-time bidirectional communication
-- Room-based broadcasting for game sessions
-- Event-driven architecture
+- **Real-time Communication**: Bidirectional client-server events via Socket.IO
+- **Room-based Broadcasting**: Each game session is isolated in its own room
+- **Event-driven Architecture**: Handles connection, game creation, moves, disconnection
+- **Entry Point**: `backend/gameSetup/launchServer.js` sets up all socket listeners
 
-### **3. Game Logic Layer**
+### **3. Session Management Layer**
 
-- **Modular Game Engines**: Independent game implementations
-  - **Chess Engine**: Complete chess rules and validation
-  - **Future Games**: Checkers, tic-tac-toe, custom games
-- **Game-Specific Logic**: Move validation, rule enforcement, win conditions
-- **Turn Management**: Game-specific turn handling and state tracking
+- **SessionManager** (`backend/gameSetup/SessionManager.js`): Game-agnostic networking layer
+  - Manages `gameSessions`, `connectedPlayers`, `socketIDtoGameSessionID` mappings
+  - Provides clean API for session/player lookup and management
+  - Handles automatic cleanup when players disconnect
+- **GameSession** (`backend/gameSetup/gameSession.js`): Container for individual game instances
+  - Manages `connectedUsers` as single source of truth for players in a session
+  - Delegates color assignment to game-specific logic via `chessColorAssignment.js`
+  - Creates and manages `GameInstance` objects
+- **Player** (`backend/gameSetup/Player.js`): Represents individual connected users
+  - Stores username, socketID, and assigned game color
 
-### **4. Session Management (Database Layer)**
+### **4. Game Logic Layer**
 
-- **Networking-Focused**: Pure session and connection management
-- **Game-Agnostic**: Works with any game type without modification
-- **Features**:
-  - Player/session mapping and tracking
-  - Game instance retrieval and management
-  - Socket connection management
-  - Automatic cleanup of empty sessions
+- **GameInstance** (`backend/gameSetup/GameInstance.js`): Game-specific logic container
+  - Contains `Board` and `GameStateManager` for chess implementation
+  - Extensible design for future games (checkers, tic-tac-toe, etc.)
+- **GameStateManager** (`backend/gameLogic/GameStateManager.js`): Core game controller
+  - Handles move validation, turn switching, game status tracking
+  - Manages captured pieces and game ending conditions
+  - Contains `TurnManager` for player turn logic
+- **Board** (`backend/gameLogic/board.js`): Chess board state and piece management
+- **Chess Pieces** (`backend/chessPieces/`): Individual piece logic with movement rules
+- **Support Modules**:
+  - `chessColorAssignment.js`: Chess-specific color assignment logic
+  - `position.js`: Board position utilities
+  - `constants.js`: Shared game constants and enums
 
 ---
 
@@ -98,18 +113,27 @@ socketIDtoGameSessionID = {
 }
 ```
 
-### **Platform Class Architecture**
+### **Key Abstractions & Responsibilities**
 
-**Networking Layer (Game-Agnostic)**:
-- **Database**: Session management, player tracking, socket mapping
-- **GameSession**: Session coordination and player management
-- **Player**: User data and connection info
+**🌐 Networking Layer (Game-Agnostic)**:
 
-**Game Logic Layer (Game-Specific)**:
-- **GameInstance**: Game-specific state and rules engine
-  - **Chess**: `ChessInstance` with chess board, pieces, rules
-  - **Future**: `CheckersInstance`, `TicTacToeInstance`, etc.
-- **Game Components**: Pieces, boards, rules specific to each game type
+- **SessionManager**: Central hub for all session and player management operations
+  - Replaces the previous "Database" naming for clarity (it's not actually a database)
+  - Methods: `addSession()`, `removeSession()`, `getSessionById()`, `getPlayerBySocketId()`
+  - Handles socket-to-session mapping and automatic cleanup
+- **GameSession**: Manages individual game instances and their connected players
+  - Single source of truth: `connectedUsers` array tracks all players in the session
+  - Delegates game-specific logic to appropriate modules (e.g., chess color assignment)
+- **Player**: Represents a connected user with username, socketID, and game color
+
+**🎮 Game Logic Layer (Game-Specific)**:
+
+- **GameInstance**: Container for game-specific state and rules
+  - Chess implementation: Contains `Board` and `GameStateManager`
+  - Extensible for future games: checkers, tic-tac-toe, custom games
+- **GameStateManager**: Core game controller for moves, turns, and win conditions
+- **TurnManager**: Handles player turn switching and validation
+- **Game Components**: Chess pieces with individual movement rules and validation
 
 ---
 
@@ -209,22 +233,22 @@ Memory cleanup prevents leaks
 
 ### **Client → Server Events**
 
-| Event                   | Payload                        | Purpose                      |
-| ----------------------- | ------------------------------ | ---------------------------- |
-| `connection`            | `{username}`                   | Initial connection           |
-| `getAvailableGames`     | `{}`                           | Request game list            |
-| `createNewChessGame`    | `{}`                           | Start new chess session     |
-| `createNewCheckersGame` | `{}`                           | Start new checkers session  |
-| `joinExistingGame`      | `{gameID}`                     | Join existing session       |
-| `move`                  | `{gameSpecificMoveData}`       | Attempt game move            |
-| `disconnect`            | `{}`                           | Player disconnection         |
+| Event                   | Payload                  | Purpose                    |
+| ----------------------- | ------------------------ | -------------------------- |
+| `connection`            | `{username}`             | Initial connection         |
+| `getAvailableGames`     | `{}`                     | Request game list          |
+| `createNewChessGame`    | `{}`                     | Start new chess session    |
+| `createNewCheckersGame` | `{}`                     | Start new checkers session |
+| `joinExistingGame`      | `{gameID}`               | Join existing session      |
+| `move`                  | `{gameSpecificMoveData}` | Attempt game move          |
+| `disconnect`            | `{}`                     | Player disconnection       |
 
 ### **Server → Client Events**
 
 | Event                           | Payload                 | Purpose                  |
 | ------------------------------- | ----------------------- | ------------------------ |
 | `welcome`                       | `{message}`             | Connection confirmation  |
-| `availableGames`            | `{games[]}`             | List of joinable games   |
+| `availableGames`                | `{games[]}`             | List of joinable games   |
 | `playerInfoAndInitialGameState` | `{color, gameInstance}` | Game setup data          |
 | `newGameState`                  | `{gameInstance}`        | Updated board after move |
 | `notYourTurn`                   | `{message}`             | Invalid turn attempt     |
@@ -235,35 +259,48 @@ Memory cleanup prevents leaks
 
 ## Platform Architecture & Extensibility
 
-### **Separation of Concerns**
+### **Separation of Concerns & Data Flow**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 NETWORKING LAYER                            │
-│  (Game-Agnostic - Works with any game type)                │
+│                🌐 NETWORKING LAYER                          │
+│            (Game-Agnostic Architecture)                     │
 │                                                             │
-│  Database API:                                              │
-│  - getGameInstanceBySocket()                                │
-│  - getPlayerBySocketId()                                    │
-│  - getSessionIdBySocket()                                   │
+│  SessionManager:                                            │
+│  ├── getGameInstanceBySocket()                              │
+│  ├── getPlayerBySocketId()                                  │
+│  ├── getSessionIdBySocket()                                 │
+│  └── Automatic session cleanup                             │
+│                                                             │
+│  GameSession:                                               │
+│  ├── connectedUsers[] (single source of truth)             │
+│  ├── Player management                                      │
+│  └── Delegates to game-specific logic                      │
 │                                                             │
 │  handleMove() - Orchestrates between layers                 │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  GAME LOGIC LAYER                           │
-│   (Game-Specific - Each game implements its own rules)     │
+│                 🎮 GAME LOGIC LAYER                         │
+│            (Game-Specific Implementations)                  │
 │                                                             │
-│   Chess:     gameInstance.gameStateManager.turnManager     │
-│   Checkers:  gameInstance.checkersStateManager.turnManager │
-│   Custom:    gameInstance.customStateManager.turnManager   │
+│   Chess Engine:                                             │
+│   ├── GameInstance → Board + GameStateManager              │
+│   ├── GameStateManager → TurnManager + move validation     │
+│   ├── ChessPieces → Individual piece movement rules        │
+│   └── chessColorAssignment → Player color logic            │
 │                                                             │
-│   Each game validates its own:                              │
-│   - Turn order and player validation                       │
-│   - Game-specific move rules                               │
-│   - Win/lose conditions                                    │
-│   - State transitions                                      │
+│   Future Games:                                             │
+│   ├── CheckersInstance → CheckersBoard + Rules             │
+│   ├── TicTacToeInstance → TicTacToeBoard + Rules           │
+│   └── CustomGameInstance → Custom logic                    │
+│                                                             │
+│   Each game validates:                                      │
+│   ├── Turn order and player validation                     │
+│   ├── Game-specific move rules                             │
+│   ├── Win/lose conditions                                  │
+│   └── State transitions                                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -272,13 +309,14 @@ Memory cleanup prevents leaks
 To add a new game type (e.g., Checkers):
 
 1. **Create Game Instance Class**:
+
    ```javascript
    class CheckersInstance {
      constructor() {
        this.board = new CheckersBoard();
        this.gameStateManager = new CheckersStateManager();
      }
-     
+
      createNewCheckersGame() {
        // Checkers-specific setup
      }
@@ -286,6 +324,7 @@ To add a new game type (e.g., Checkers):
    ```
 
 2. **Add Socket Event Handler**:
+
    ```javascript
    socket.on("createNewCheckersGame", () => {
      createNewSession(database, "checkers");
@@ -297,8 +336,10 @@ To add a new game type (e.g., Checkers):
 ### **Game-Specific Validation Examples**
 
 **Chess Turn Validation**:
+
 ```javascript
-const currentPlayerColour = gameInstance.gameStateManager.turnManager.currentPlayerColour;
+const currentPlayerColour =
+  gameInstance.gameStateManager.turnManager.currentPlayerColour;
 if (player.colour !== currentPlayerColour) {
   socket.emit("notYourTurn");
   return;
@@ -306,8 +347,10 @@ if (player.colour !== currentPlayerColour) {
 ```
 
 **Future Checkers Turn Validation**:
+
 ```javascript
-const currentPlayerColour = gameInstance.checkersStateManager.turnManager.currentPlayerColour;
+const currentPlayerColour =
+  gameInstance.checkersStateManager.turnManager.currentPlayerColour;
 if (player.colour !== currentPlayerColour) {
   socket.emit("notYourTurn");
   return;
@@ -447,21 +490,117 @@ if (session.playerCount === 0) {
 
 ---
 
+## Project Structure & Testing
+
+### **📁 Directory Organization**
+
+```
+Chess_CS50_v2/
+├── backend/
+│   ├── gameSetup/              # 🌐 Networking & Session Management
+│   │   ├── SessionManager.js   # Central session management hub
+│   │   ├── gameSession.js      # Individual game session container
+│   │   ├── Player.js           # Player data representation
+│   │   ├── GameInstance.js     # Game-specific logic container
+│   │   └── launchServer.js     # Socket.IO event setup
+│   ├── gameLogic/              # 🎮 Chess Game Engine
+│   │   ├── GameStateManager.js # Core game controller
+│   │   ├── board.js            # Chess board state
+│   │   ├── turnManager.js      # Turn switching logic
+│   │   ├── chessColorAssignment.js # Color assignment rules
+│   │   └── position.js         # Board position utilities
+│   ├── chessPieces/            # ♟️ Individual Chess Pieces
+│   │   └── [piece].js          # King, Queen, Rook, Bishop, Knight, Pawn
+│   ├── helpers/                # 🔧 Utility Functions
+│   └── server.js               # 🚀 Application entry point
+├── public/                     # 🎨 Frontend (Static Files)
+│   ├── src/frontend/           # Frontend JavaScript modules
+│   └── index.html              # Main game interface
+├── shared/                     # 📋 Shared Constants & Utilities
+├── tests/                      # 🧪 Comprehensive Test Suite
+│   ├── unit/                   # Unit tests by domain
+│   │   ├── chess-pieces/       # Individual piece testing
+│   │   ├── core-logic/         # Game logic testing
+│   │   └── networking/         # Session management testing
+│   ├── integration/            # Integration tests
+│   ├── helpers/                # Test utilities and factories
+└── e2e/                        # 🎭 End-to-End Tests (Playwright)
+```
+
+### **🧪 Testing Strategy**
+
+**Test Organization by Domain**:
+
+- **Unit Tests**: Isolated testing of individual classes and functions
+  - `chess-pieces/`: Each piece type thoroughly tested
+  - `core-logic/`: Game state, board, turn management
+  - `networking/`: Session management, player handling
+- **Integration Tests**: Cross-module interaction testing
+- **E2E Tests**: Full user workflow testing with Playwright
+
+**Test Commands**:
+
+```bash
+npm test                    # Run all unit/integration tests
+npm run test:playwright     # Run end-to-end tests
+npm run test:filter -- "SessionManager"  # Run specific test pattern
+```
+
+---
+
+## 🔄 Recent Architectural Improvements
+
+### **Major Refactoring (2025)**
+
+**Session Management Modernization**:
+
+- **Renamed "Database" → "SessionManager"** for clearer purpose (it's not actually a database)
+- **Extracted Chess Logic**: Created `chessColorAssignment.js` module for game-specific color assignment
+- **Single Source of Truth**: `GameSession.connectedUsers` now manages all player state
+- **Cleaner APIs**: `addSession()`, `removeSession()` vs. previous `createSession()`, `deleteSession()`
+
+**Test Suite Reorganization**:
+
+- **Domain-based Structure**: Tests organized by functionality (chess-pieces, core-logic, networking)
+- **Test Factories**: Centralized object creation for consistent test data
+- **Integration Testing**: Cross-module interaction validation
+- **Comprehensive Coverage**: Unit, integration, and E2E testing
+
+**Code Quality Improvements**:
+
+- **Architectural Consistency**: Fixed mismatches between class definitions and usage patterns
+- **Separation of Concerns**: Clear boundaries between networking layer and game logic
+- **Modularity**: Each file/class has single responsibility
+- **Documentation**: Comprehensive JSDoc comments throughout codebase
+
+**Why These Changes Matter**:
+
+- **Before**: Color assignment logic duplicated across multiple classes
+- **After**: Clean separation — SessionManager handles networking, chessColorAssignment handles game rules
+- **Result**: Easier to add new games, cleaner testing, better maintainability
+
+---
+
 ## Implementation Status
 
 ### **✅ Platform Foundation Complete**
 
 - ✅ **Modular Architecture**: Clean separation between networking and game logic
-- ✅ **Database Layer**: Game-agnostic session and player management
+- ✅ **SessionManager**: Game-agnostic session and player management (replaces "Database")
 - ✅ **Chess Implementation**: Full chess game with complete rule validation
 - ✅ **Real-time Multiplayer**: WebSocket communication with room isolation
 - ✅ **Server Authority**: Anti-cheat protection and state validation
 - ✅ **Memory Management**: Automatic cleanup and leak prevention
 - ✅ **Extensible Design**: Framework ready for new game types
+- ✅ **Comprehensive Testing**: Unit, integration, and E2E test coverage
 
 ### **🎮 Game Implementations**
 
 - ✅ **Chess**: Complete implementation with full rule validation
+  - All piece types with proper movement rules
+  - Turn management and move validation
+  - Captured piece tracking
+  - Game state management (ongoing, checkmate, stalemate)
 - 🔄 **Checkers**: Next planned game implementation
 - 🔄 **Tic-Tac-Toe**: Simple game for testing rapid development
 - 🔄 **Custom Games**: Framework supports any turn-based game

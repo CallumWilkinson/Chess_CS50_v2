@@ -21,7 +21,8 @@
       "Bash(find:*)",
       "Bash(npm install:*)",
       "Bash(jsdoc:*)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(npx jsdoc:*)"
     ],
     "deny": []
   }
