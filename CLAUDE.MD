@@ -105,11 +105,16 @@ Use the following structure:
 
 ### Commit Workflow for Complex Tasks
 
-- If a task requires **multiple changes**, split them into small, focused commits — unless the changes are **interdependent** and must land together to avoid broken functionality
-  - Each commit must leave the codebase in a working state
-  - Use a proper [Conventional Commit](https://www.conventionalcommits.org/) message
+- If a task requires **multiple changes**, show all the changes at once — do **not** drip-feed changes line by line
+- Then, explain how you would break those changes up into multiple commits
+- **Always try to bundle logic and its test into the same commit** where it makes sense to do so
+- Always group the changes into logical units based on what was modified, and suggest a clear, descriptive commit message for each group. However, if you can think of a logical argument to keeping all these changes in one commit please provide your reasoning.
+- I’ll review the full set of changes, and we’ll decide the final commit structure together
 
-### Example of the explanation I want (in addition to the actual commit):
+- Each commit must leave the codebase in a working state
+- Use a proper [Conventional Commit](https://www.conventionalcommits.org/) message
+
+#### Example of the explanation I want (in addition to the actual commit):
 
 ```
 feat: add SessionManager and chess color assignment module
@@ -165,10 +170,30 @@ git push
 ```
 
 - Only after I confirm the change is accepted should you continue with the next small change
-
 - Never bundle unrelated changes into a single commit
 - Never move on to the next task without confirmation
 - In every reply, give a separate analysis of your changes explaining your reasoning and thought process
+
+---
+
+## Task Scope & Context Limits
+
+- If I give you a **large refactor task** (e.g. “update all tests to use a new abstraction”) and you **cannot fit it all into one prompt**, just do **a small chunk** and tell me that I’ll need to re-run you to finish it.
+  - Don’t make me guess what you missed.
+  - Example: say clearly, “This is just the first 3 files — please ask again to continue.”
+- If I ask something like “refactor all tests to use this helper function”, make sure you **check every relevant file** unless you’ve run out of context.
+- I should never have to ask, “Did you check all the test files?”
+
+---
+
+## Refactoring Expectations
+
+- If you encounter old or unclear code during a refactor:
+  - Label it with a `//legacy:` comment and **do not delete it** unless you're **absolutely sure** it’s unused
+  - Flag it clearly for my review and explain your reasoning
+  - If you’re unsure whether it’s safe to remove, say so
+- Always question my assumptions and the original architecture — your job is to **challenge design flaws**, not just execute blindly
+- Point out anything that looks like a deeper structural issue or anti-pattern and recommend fixes
 
 ---
 
