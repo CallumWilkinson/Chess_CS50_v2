@@ -294,10 +294,13 @@ Write comments only when the **intent**, **assumption**, or **why** is not immed
   - Platform bugs or quirks (`// HACK:` or `// FIXME:`)
   - Business rules that aren’t obvious from the code structure
 
-- ✅ Use `JSDoc` for function arguments, return values, side effects, or contracts
+- ✅ Use `JSDoc` for function arguments, return values, side effects, and contracts
 
-  - Only for public APIs or widely reused utilities
-  - Don’t overuse JSDoc for simple internal functions
+  - **Always include JSDoc for constructors and public methods** - provides valuable type information for IDEs and tooling
+  - **Keep parameter type annotations** even when parameter names are obvious (e.g., `@param {string} username`) - this serves tooling, not just documentation
+  - **Focus JSDoc cleanup on redundant descriptions**, not type information (remove "The username" but keep `{string} username`)
+  - Only for public APIs or widely reused utilities should you add detailed explanations beyond types
+  - Don't overuse JSDoc explanatory text for simple internal functions, but type annotations are always valuable
 
 - ✅ Use structural cues instead of inline comments
 
@@ -316,20 +319,46 @@ Write comments only when the **intent**, **assumption**, or **why** is not immed
   // HACK: Forces layout reflow to fix Safari rendering bug
   ```
 
-- ✅ Example of a good vs bad comment:
+- ✅ Example of good vs bad JSDoc and comments:
 
-  ❌ Bad:
+  ❌ Bad inline comment:
 
   ```js
   // loop through items
   for (let i = 0; i < items.length; i++) {
   ```
 
-  ✅ Good:
+  ✅ Good inline comment:
 
   ```js
   // Skip first item — it's always a system default placeholder
   for (let i = 1; i < items.length; i++) {
+  ```
+
+  ❌ Bad JSDoc (removes valuable type info):
+
+  ```js
+  constructor(username, socketId) {
+  ```
+
+  ✅ Good JSDoc (keeps types, removes redundant descriptions):
+
+  ```js
+  /**
+   * @param {string} username
+   * @param {string} socketId
+   */
+  constructor(username, socketId) {
+  ```
+
+  ⚠️ Redundant but acceptable (keep the types, description adds little value):
+
+  ```js
+  /**
+   * @param {string} username - The user's username
+   * @param {string} socketId - The socket identifier
+   */
+  constructor(username, socketId) {
   ```
 
 > Leave comments like you're leaving breadcrumbs for your future self — tired, distracted, and trying to fix a bug.
