@@ -11,14 +11,11 @@ export default class GameSession {
    * Creates a new game session with a random ID
    */
   constructor() {
-    //generate a 6 character random id (letters and numbers)
-    //tostring(36) is base 36 so letters are included
-    //slice makes it 6 chars long
+    //random 6-character game session identifier
     this.gameSessionID = Math.random().toString(36).slice(2, 8);
-    //a user belongs to the game session, but a player belongs to the gameInstance
-    //this is the single source of truth for connected players
+    //single source of truth for connected players
     this.connectedUsers = [];
-    //this is set when you run gamesession.createGameInstance()
+    //set when createGameInstance() is called
     this.gameInstance;
   }
 
@@ -27,14 +24,10 @@ export default class GameSession {
    * @returns {GameInstance} The newly created game instance
    */
   createGameInstance() {
-    //generate a 6 character random id (letters and numbers)
-    //tostring(36) is base 36 so letters are included
-    //slice makes it 6 chars long
+    //random 6-character game instance identifier
     const gameInstanceID = Math.random().toString(36).slice(2, 8);
 
-    //create a new game instance inside this session
     const gameInstance = new GameInstance(gameInstanceID);
-
     this.gameInstance = gameInstance;
     return gameInstance;
   }
@@ -44,7 +37,6 @@ export default class GameSession {
    * @param {Player} player - The player instance to add
    */
   addPlayerToSession(player) {
-    //add player to connectedUsers to maintain single source of truth
     this.connectedUsers.push(player);
   }
 
@@ -53,7 +45,6 @@ export default class GameSession {
    * @param {Player} player - The player instance to remove
    */
   removePlayerFromSession(player) {
-    //remove player from connectedUsers when they disconnect
     const index = this.connectedUsers.findIndex(p => p.socketID === player.socketID);
     if (index !== -1) {
       this.connectedUsers.splice(index, 1);
@@ -71,7 +62,6 @@ export default class GameSession {
   //abstraction layer for color assignment - uses internal connectedUsers as single source of truth
   //delegates to chess-specific logic but could be extended for other game types
   //this keeps networking/session code separate from game-specific rules
-  //uses chess rules: first player black, second player white
   getPlayerColour() {
     return assignChessColor(this.connectedUsers);
   }

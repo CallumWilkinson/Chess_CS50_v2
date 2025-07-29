@@ -22,8 +22,7 @@ export default class Board {
 
   /**
    * Initialize the board with all 64 squares set to null (empty)
-   * Creates position objects for each combination of rank and file
-   * Sets up the grid dictionary with square names as keys
+   * Sets up the grid dictionary where keys are square names (e.g., 'a1', 'e4')
    */
   createEmptyBoard() {
     FilesAndRanks.RANKS.forEach((rank) => {
@@ -34,9 +33,8 @@ export default class Board {
     });
   }
   /**
-   * Initialize all chess pieces in their starting positions
-   * Creates all 32 pieces (16 white, 16 black) and places them on the board
-   * The game state is determined by the current position of each piece in the grid dictionary
+   * Initialize all 32 chess pieces in their starting positions
+   * Game state is tracked by piece positions in the grid dictionary
    */
   initialisePieces() {
     const whiteRookLeft = new Rook("white", new Position("a1"));
@@ -116,7 +114,7 @@ export default class Board {
 
   /**
    * Check if a square exists on the board (valid square name)
-   * Used to ensure we can't access a key that doesn't actually exist in the dictionary
+   * Prevents accessing nonexistent dictionary keys
    * @param {string} square - Square name in algebraic notation (e.g., 'a3', 'e4')
    * @returns {boolean} True if square exists on board, false otherwise
    */
