@@ -9,10 +9,8 @@ import Position from "./position.js";
  * @returns {Object|undefined} New game state object if move successful, undefined if failed
  */
 export function getNewGameState(jsonMoveData, currentGameStateManager, board) {
-  //deconstruct the json data object
   const { chessPiece, targetSquare } = jsonMoveData;
 
-  //get the actual chess peice object thats in the server's board at the correct position
   const selectedPiece = board.grid[chessPiece.position.name];
 
   const possibleMovesArray = selectedPiece.getPossibleMoves(board);
@@ -24,14 +22,11 @@ export function getNewGameState(jsonMoveData, currentGameStateManager, board) {
   if (typeof targetSquare === "string") {
     targetSquareName = targetSquare;
   } else {
-    //else if it comes as a position object, then access its string name property
     targetSquareName = targetSquare.name;
   }
 
-  //make position object so i can run makemove
   const targetSquarePositionObject = new Position(targetSquareName);
 
-  //run the move on server side
   const moveSuccessful = currentGameStateManager.makeMove(
     selectedPiece,
     targetSquarePositionObject,
