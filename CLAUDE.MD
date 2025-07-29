@@ -11,6 +11,58 @@
 - Write clean, modular code where each file or class has a single responsibility
 - Never rely on "magic" behavior — everything should be traceable and explicit
 
+### 🔍 Beginner Red Flag Avoidance Rules
+
+- ✅ **Use Descriptive, Consistent Naming**
+
+  - DO: Name things clearly (e.g., `calculateScore`, `isValidMove`).
+  - DON’T: Use names like `temp`, `foo`, `x` unless absolutely obvious in short scope.
+
+- ✅ **Keep Functions Small and Focused**
+
+  - DO: Each function should do one thing only.
+  - DON’T: Mix concerns like logic, UI, and API calls in one function.
+
+- ✅ **Eliminate Repetition**
+
+  - DO: Abstract repeated logic into reusable functions.
+  - DON’T: Copy/paste the same code in multiple places.
+
+- ✅ **Flatten Control Flow**
+
+  - DO: Return early and avoid deeply nested logic.
+  - DON’T: Use excessive `if/else` nesting or `else` after `return`.
+
+- ✅ **Comment Only Intent or Assumptions**
+
+  - DO: Write `//` comments only when intent or assumption is unclear.
+  - DON’T: Write obvious `// increment i`-style comments.
+
+- ✅ **Replace Magic Numbers and Strings**
+
+  - DO: Use constants with names like `MAX_SCORE` or `USER_TYPE_ADMIN`.
+  - DON’T: Use unexplained numbers like `if (type === 3)`.
+
+- ✅ **Separate Concerns Clearly**
+
+  - DO: Isolate business logic, UI, and data in separate layers or files.
+  - DON’T: Blend them together.
+
+- ✅ **Handle Errors Explicitly**
+
+  - DO: Handle errors with `try/catch` or guard clauses.
+  - DON’T: Swallow errors or log them silently.
+
+- ✅ **Minimize Global State**
+
+  - DO: Pass variables explicitly as function arguments.
+  - DON’T: Depend on external or global state where avoidable.
+
+- ✅ **Write Meaningful Tests**
+
+  - DO: Cover core logic, edge cases, and failure modes.
+  - DON’T: Write placeholder tests that check nothing useful.
+
 - **CRITICAL: Architectural consistency**
 
   - When you encounter code that expects properties or methods that don't exist in the actual class definitions:
@@ -49,8 +101,6 @@
     - Green: Write the minimal code needed to make that test pass
     - Refactor: Clean up both the test and implementation, improving readability without changing behavior
 
----
-
 ## Code Documentation Guidelines
 
 ### Comment Philosophy
@@ -66,8 +116,6 @@
   - Group logic into meaningful functions and name them clearly
   - Use code organization and naming to convey purpose instead of comments
   - Only write `//` comments for non-obvious _why_ explanations or edge-case handling
-
----
 
 ## Git Commit Guidelines
 
@@ -97,8 +145,6 @@ Use the following structure:
 - Only generate **one commit message per logical change**
 - The final output **must include a clean, copy-pasteable commit message** formatted as if it were being submitted to a professional team repo
 - In addition to the commit message, also output a human-readable breakdown in the example style below so I can skim and understand what changed before I copy-paste the commit
-
----
 
 ### Commit Workflow for Complex Tasks
 
@@ -143,8 +189,6 @@ git add tests/SessionManager.test.js
 git add tests/chessColorAssignment.test.js
 ```
 
----
-
 ### Review and Approval Process
 
 - Do **not** auto-commit
@@ -171,8 +215,6 @@ git push
 - Never move on to the next task without confirmation
 - In every reply, give a separate analysis of your changes explaining your reasoning and thought process
 
----
-
 ## Task Scope & Context Limits
 
 - If I give you a **large refactor task** (e.g. “update all tests to use a new abstraction”) and you **cannot fit it all into one prompt**, just do **a small chunk** and tell me that I’ll need to re-run you to finish it.
@@ -180,8 +222,6 @@ git push
   - Example: say clearly, “This is just the first 3 files — please ask again to continue.”
 - If I ask something like “refactor all tests to use this helper function”, make sure you **check every relevant file** unless you’ve run out of context.
 - I should never have to ask, “Did you check all the test files?”
-
----
 
 ## Refactoring Expectations
 
@@ -192,77 +232,20 @@ git push
 - Always question my assumptions and the original architecture — your job is to **challenge design flaws**, not just execute blindly
 - Point out anything that looks like a deeper structural issue or anti-pattern and recommend fixes
 
----
-
 - Do **NOT** write 🤖 Generated with Claude Code Co-Authored-By: Claude <noreply@anthropic.com>
-
----
 
 ## AI Commenting Rules (Human-Readable)
 
 1. **Only comment when the reason or intent is not obvious from the code.**
-
-   - Ask: _“Would someone reading this code tomorrow ask ‘why?’”_
-   - If yes, add a brief comment explaining _why_ the code exists or behaves this way.
-
 2. **Never comment what the code is doing — make the code explain itself.**
-
-   - Use descriptive names and small functions to make logic self-evident.
-   - If you feel the need to explain _what_, rewrite the code instead.
-
 3. **Always explain assumptions if they are not explicit in the code.**
-
-   - For example:
-
-     ```js
-     // Assumes the input is sorted
-     function binarySearch(arr, target) { ... }
-     ```
-
 4. **Flag any unexpected or non-obvious behavior.**
-
-   - Example:
-
-     ```js
-     // Using == to match both null and undefined
-     if (value == null) { ... }
-     ```
-
 5. **Add comments for “gotchas”, edge cases, or workarounds.**
-
-   - Explain why a strange-looking block is necessary, especially if it’s fixing a bug or dealing with a platform quirk.
-
 6. **Use `TODO`, `FIXME`, and `HACK` tags responsibly.**
-
-   - Format:
-
-     ```js
-     // TODO: Improve performance by caching results
-     // FIXME: This fails if input is an empty array
-     // HACK: Forces layout reflow to fix Chrome bug
-     ```
-
 7. **Use JSDoc for function arguments, return values, side effects, and contracts.**
-
-   - Only apply JSDoc to public or reusable functions.
-   - Keep it factual and technical — not a replacement for in-line “why” comments.
-
 8. **Do not comment every line.**
-
-   - Group logic into meaningful functions and name them clearly instead.
-   - If you need a `//` comment every 2–3 lines, the code likely needs refactoring.
-
 9. **Comments must never lie.**
-
-   - If a comment no longer matches the behavior, remove or update it immediately.
-   - Bad comments are worse than no comments.
-
 10. **Delete comments that explain now-obvious code.**
-
-    - If the code becomes clearer through refactoring, remove the old comment.
-    - Treat comments as _temporary scaffolding_, not permanent structure.
-
----
 
 ### 💡 Example: Good vs Bad Comment
 
