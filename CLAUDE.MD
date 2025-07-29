@@ -191,21 +191,22 @@ git add tests/chessColorAssignment.test.js
 
 ### Review and Approval Process
 
-- Do **not** auto-commit
+- **NEVER COMMIT ANYTHING UNDER ANY CIRCUMSTANCES**
+- **NEVER use `git commit` - I will handle all commits myself**
 - Instead, after each change:
 
   - **Make only one logical change**
-  - **Stage only the files related to that change**
+  - **Stage only the files related to that change using `git add`**
   - Output:
     - The staged filenames
-    - The commit message (clean, final format)
+    - The commit message (clean, final format)  
     - A short summary/explanation in the above format
   - Then **pause and wait for feedback**
+  - **DO NOT COMMIT - only provide the commit message**
 
 - I will manually review the change, give feedback, and run:
 
 ```bash
-git add .
 git commit -m "your commit message"
 git push
 ```

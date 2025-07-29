@@ -22,7 +22,8 @@
       "Bash(npm install:*)",
       "Bash(jsdoc:*)",
       "Bash(git check-ignore:*)",
-      "Bash(npx jsdoc:*)"
+      "Bash(npx jsdoc:*)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }
