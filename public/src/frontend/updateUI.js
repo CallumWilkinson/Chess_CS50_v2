@@ -1,4 +1,5 @@
 import { UIConstants, FilesAndRanks } from "./shared/utilities/constants.js";
+import { getFileIndex, getRankIndex, isLightSquare } from "./shared/utilities/toSquareNotation.js";
 
 /**
  * Update the visual chess board UI with current game state
@@ -16,13 +17,13 @@ export function updateUI(ctx, board, gameStateManager) {
   ctx.textBaseline = "middle";
 
   Object.keys(board.grid).forEach((square) => {
-    const row = parseInt(square[1], 10) - 1;
-    const col = square.charCodeAt(0) - "a".charCodeAt(0);
+    const row = getRankIndex(square);
+    const col = getFileIndex(square);
 
     const x = col * UIConstants.TILESIZE;
     const y = row * UIConstants.TILESIZE;
 
-    if ((row + col) % 2 === 0) {
+    if (isLightSquare(square)) {
       ctx.fillStyle = "#EEEED5";
     } else {
       ctx.fillStyle = "#7D945D";
@@ -69,8 +70,8 @@ export function updateUI(ctx, board, gameStateManager) {
       if (currentPiece.colour === "white") {
         const whiteUnicodeLogo = currentPiece.whiteUnicodeLogo;
 
-        const file = square.charCodeAt(0) - 97;
-        const rank = parseInt(square[1]) - 1;
+        const file = getFileIndex(square);
+        const rank = getRankIndex(square);
 
         const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
         const y = rank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
@@ -81,8 +82,8 @@ export function updateUI(ctx, board, gameStateManager) {
       if (currentPiece.colour === "black") {
         const blackUnicodeLogo = currentPiece.blackUnicodeLogo;
 
-        const file = square.charCodeAt(0) - 97;
-        const rank = parseInt(square[1]) - 1;
+        const file = getFileIndex(square);
+        const rank = getRankIndex(square);
 
         const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
         const y = rank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;

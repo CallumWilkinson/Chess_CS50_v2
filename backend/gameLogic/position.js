@@ -1,5 +1,5 @@
 import { FilesAndRanks } from "../../shared/utilities/constants.js";
-import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
+import { toSquareNotation, getFileIndex, getRankIndex } from "../../shared/utilities/toSquareNotation.js";
 
 /**
  * Represents a position on the chess board
@@ -15,8 +15,8 @@ export default class Position {
     this.file = this.name[0];
     this.rank = this.name[1];
 
-    this.fileIndex = this.name.charCodeAt(0) - "a".charCodeAt(0);
-    this.rankIndex = parseInt(this.name[1], 10) - 1;
+    this.fileIndex = getFileIndex(this.name);
+    this.rankIndex = getRankIndex(this.name);
     this.surroundingpositionNames = this._getSurroundingPositionNames();
   }
 

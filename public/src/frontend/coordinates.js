@@ -1,4 +1,5 @@
 import { UIConstants } from "./shared/utilities/constants.js";
+import { getFileIndex } from "./shared/utilities/toSquareNotation.js";
 
 /**
  * Convert chess square notation to canvas pixel coordinates
@@ -7,7 +8,7 @@ import { UIConstants } from "./shared/utilities/constants.js";
  * @returns {{x: number, y: number}} Canvas coordinates pointing to center of the square
  */
 export function squareToCanvasCoordinates(square) {
-  const file = square.charCodeAt(0) - "a".charCodeAt(0);
+  const file = getFileIndex(square);
   //rank is the number, need to reverse it cos its a chess grid
   const rank = 8 - parseInt(square[1]);
 
