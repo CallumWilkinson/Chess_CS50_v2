@@ -11,7 +11,7 @@
 - Write clean, modular code where each file or class has a single responsibility
 - Never rely on "magic" behavior — everything should be traceable and explicit
 
-### 🔍 Beginner Red Flag Avoidance Rules
+### 🔍 Clean Code Principles for Consistency
 
 - ✅ **Use Descriptive, Consistent Naming**
 

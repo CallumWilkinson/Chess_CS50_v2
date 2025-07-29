@@ -7,10 +7,7 @@ import { updateUI } from "./updateUI.js";
  * @param {Function} callback - Callback function to execute when data is received
  */
 export function getPlayerColourAndInitialBoardState(socket, callback) {
-  //only run if a socket connection exists
   if (socket) {
-    //when a new player connects, set its colour to window.playerColour global variable
-    //i think this means, when browser received this event from the server, execute below
     socket.on(
       "playerInfoAndInitialGameState",
       ({ username, colour, gameInstance }) => {
