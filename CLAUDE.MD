@@ -246,6 +246,9 @@ git push
 8. **Do not comment every line.**
 9. **Comments must never lie.**
 10. **Delete comments that explain now-obvious code.**
+11. **Comment Like You're Leaving Breadcrumbs for Future-You**
+
+If you disappeared tomorrow, would someone else know what your _intent_ was? If not, drop a quick `//` explaining what assumptions you're making or why a decision was made.
 
 ### 💡 Example: Good vs Bad Comment
 
@@ -265,6 +268,146 @@ for (let i = 1; i < items.length; i++) {
 
 ---
 
-### Bonus Tip: Comment Like You're Leaving Breadcrumbs for Future-You
+## 🧭 Developer Philosophy (Reference)
 
-If you disappeared tomorrow, would someone else know what your _intent_ was? If not, drop a quick `//` explaining what assumptions you're making or why a decision was made.
+These principles define the kind of developer this workflow is built for:
+
+- Write code for humans first — clarity over cleverness
+- Small, focused, object-oriented modules are easier to test and understand
+- Prioritize readability and maintainability over raw performance
+- Use Git as a narrative tool — tell a story with your commits
+- Leave tests and comments like breadcrumbs for your future self
+- Be skeptical of assumptions — if something feels off, question it
+- Treat your work as collaborative, even if you’re the only contributor
+
+---
+
+## 🔁 Comment Philosophy (Extended Guidance)
+
+Write comments only when the **intent**, **assumption**, or **why** is not immediately clear from the code.
+
+- ❌ Never explain what the code is doing — improve the code to explain itself
+- ✅ Use comments to clarify:
+
+  - Assumptions being made (e.g. "input is expected to be sorted")
+  - Why a non-obvious decision was made
+  - Platform bugs or quirks (`// HACK:` or `// FIXME:`)
+  - Business rules that aren’t obvious from the code structure
+
+- ✅ Use `JSDoc` for function arguments, return values, side effects, or contracts
+
+  - Only for public APIs or widely reused utilities
+  - Don’t overuse JSDoc for simple internal functions
+
+- ✅ Use structural cues instead of inline comments
+
+  - Group related logic into small, well-named functions instead of scattering `//` explanations
+
+- ⚠️ Outdated comments are worse than no comments
+
+  - Update or delete comments when behavior changes
+  - Treat comments as temporary scaffolding
+
+- ✅ Use these tags with clear reasoning:
+
+  ```js
+  // TODO: Improve caching strategy for performance
+  // FIXME: Crashes if userId is undefined — validate earlier
+  // HACK: Forces layout reflow to fix Safari rendering bug
+  ```
+
+- ✅ Example of a good vs bad comment:
+
+  ❌ Bad:
+
+  ```js
+  // loop through items
+  for (let i = 0; i < items.length; i++) {
+  ```
+
+  ✅ Good:
+
+  ```js
+  // Skip first item — it's always a system default placeholder
+  for (let i = 1; i < items.length; i++) {
+  ```
+
+> Leave comments like you're leaving breadcrumbs for your future self — tired, distracted, and trying to fix a bug.
+
+---
+
+## 📐 Clean Code Principles (Extended)
+
+These additions further support your existing rules by reinforcing clarity, structure, and professionalism.
+
+- ✅ Prefer small, well-named files over large catch-all modules
+- ✅ Treat naming as design — the right name removes the need for comments
+- ✅ Avoid logic that depends on code execution order across files (prefer explicit wiring)
+- ✅ Never sacrifice readability for cleverness — leave “tricks” out of production code
+- ✅ Document assumptions through code (default parameters, guard clauses) rather than prose
+- ✅ Apply consistent formatting, spacing, and file organization — make the codebase feel clean at a glance
+- ✅ Design for the future reader, not just the present task
+
+---
+
+## ✅ Testing Philosophy (Extended)
+
+You already have excellent TDD enforcement. These are additive patterns to encourage thoughtful coverage:
+
+- ✅ Use test names that describe behavior: `itRejectsInvalidEmails()` > `test1()`
+- ✅ Keep test setups minimal and descriptive — no deeply nested mocks
+- ✅ Use helper functions for common setup to avoid duplication
+- ✅ Favor real data and real flow over mocking unless the dependency is external
+- ✅ Test edge cases, failure modes, and default fallbacks
+- ✅ Don't test internal implementation — test observable outcomes
+
+---
+
+## 🧠 Git Hygiene Philosophy (Expanded Commit Practices)
+
+You already have an excellent commit system. These are mindset additions, not replacements:
+
+- ✅ Every commit should answer: “What changed?” and “Why?”
+- ✅ Each commit should be self-contained and pass tests on its own
+- ✅ Don't commit “broken in progress” states — use WIP branches locally if needed
+- ✅ If you're undoing something, say why: `revert: removes failing state sync — too fragile`
+- ✅ Use present tense in commit summaries: “Fix bug” not “Fixed bug”
+
+---
+
+## 🛠 Refactoring Guidance (Extended Mindset)
+
+- ✅ Always refactor with a purpose — don’t move code just to “tidy up” without understanding impact
+- ✅ Look for code that’s “almost duplicated” — extract abstraction _only if_ both sides benefit
+- ✅ Don’t just rename a class — rethink its responsibility and API
+- ✅ If you don’t fully understand the old code, flag it for review (`//legacy:`) instead of guessing
+- ✅ Err on the side of safety: comment > delete
+
+---
+
+## Additional Tips to keep in mind
+
+### 🧪 Make Testing a First-Class Citizen
+
+- Think of testing as a design tool, not a chore.
+- Design interfaces and logic to be easy to test — small pure functions, predictable side effects.
+
+### 💬 Favor Explicitness Over Implicit “Magic”
+
+- Be obvious about what’s happening — avoid side effects, implicit globals, and hidden dependencies.
+- Code should be traceable and debuggable just by reading it.
+
+### 🧠 Model Concepts First, Then Code
+
+- Start with the nouns and verbs of the problem domain.
+- Let your code mirror how you'd explain the system to someone else.
+
+### ⛑️ Make Debugging Easy for Future-You
+
+- Leave breadcrumbs: meaningful logs, clear error messages, tight commit history, and helpful comments.
+- Assume your future self will be tired and confused when debugging — write for that person.
+
+### 🔄 Design with Change in Mind
+
+- Ask: “If requirements changed tomorrow, how painful would this be to modify?”
+- Prefer clear seams and interfaces that are easy to adapt.
