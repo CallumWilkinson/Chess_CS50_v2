@@ -6,7 +6,6 @@ export default class ChessPiece {
    */
 
   constructor(name, colour, position) {
-    //name would be pawn or king ect AS a STRING
     this.name = name;
     this.colour = colour;
     this.position = position;
@@ -27,9 +26,6 @@ export default class ChessPiece {
    * @param {Position} newPosition - Square in standard notation (e.g., 'e4')
    */
 
-  //update internal state of the peice to update the posistion associated with the peice
-  //so that the grid knows where the peices are, and the peices also know where they are
-  //mostly used to keep track of if a pawn as moved at all in the game yet
   updateInternalMoveState(newPosition) {
     this.position = newPosition;
     this.hasMoved = true;

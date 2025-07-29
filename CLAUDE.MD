@@ -55,20 +55,17 @@
 
 ### Comment Philosophy
 
-Write comments as if you're explaining the code to yourself 6 months from now when you've forgotten everything about this project.
-
-**Comment every line of code** using the following rules:
-
-- Break the code into logical **sections** (functions, blocks, loops)
-- Match the **tone and style** of existing comments
-- Use **lowercase** unless required (e.g. names, acronyms)
-- **No space after `//`** — write `//comment`, not `// comment`
-- Be **informal and direct**, like you're jotting a note to yourself
-- Focus on **what the line does** and **why it exists**
-- Skip restating obvious syntax (e.g. `let x = 5`) unless the reason isn’t clear
-- Call out **side effects, assumptions, and potential gotchas**
-
-After making any code change, output a commit message the user can copy and paste into Git.
+- Only write comments when the _reason_ for the code is unclear from the code itself
+- Never explain what the code is doing — make the code explain itself
+- Use descriptive variable and function names instead of inline comments
+- Comments are a code smell and often mean the code is not self-explanatory
+- If you need to explain something, ask whether the code could be refactored instead
+- Avoid comments that can become outdated — these are a maintenance burden
+- Use JSDoc only to explain function arguments, return values, side effects, or contracts — treat JSDoc as part of the public interface, not internal explanation
+- Do not comment every line
+  - Group logic into meaningful functions and name them clearly
+  - Use code organization and naming to convey purpose instead of comments
+  - Only write `//` comments for non-obvious _why_ explanations or edge-case handling
 
 ---
 
@@ -198,3 +195,93 @@ git push
 ---
 
 - Do **NOT** write 🤖 Generated with Claude Code Co-Authored-By: Claude <noreply@anthropic.com>
+
+---
+
+## AI Commenting Rules (Human-Readable)
+
+1. **Only comment when the reason or intent is not obvious from the code.**
+
+   - Ask: _“Would someone reading this code tomorrow ask ‘why?’”_
+   - If yes, add a brief comment explaining _why_ the code exists or behaves this way.
+
+2. **Never comment what the code is doing — make the code explain itself.**
+
+   - Use descriptive names and small functions to make logic self-evident.
+   - If you feel the need to explain _what_, rewrite the code instead.
+
+3. **Always explain assumptions if they are not explicit in the code.**
+
+   - For example:
+
+     ```js
+     // Assumes the input is sorted
+     function binarySearch(arr, target) { ... }
+     ```
+
+4. **Flag any unexpected or non-obvious behavior.**
+
+   - Example:
+
+     ```js
+     // Using == to match both null and undefined
+     if (value == null) { ... }
+     ```
+
+5. **Add comments for “gotchas”, edge cases, or workarounds.**
+
+   - Explain why a strange-looking block is necessary, especially if it’s fixing a bug or dealing with a platform quirk.
+
+6. **Use `TODO`, `FIXME`, and `HACK` tags responsibly.**
+
+   - Format:
+
+     ```js
+     // TODO: Improve performance by caching results
+     // FIXME: This fails if input is an empty array
+     // HACK: Forces layout reflow to fix Chrome bug
+     ```
+
+7. **Use JSDoc for function arguments, return values, side effects, and contracts.**
+
+   - Only apply JSDoc to public or reusable functions.
+   - Keep it factual and technical — not a replacement for in-line “why” comments.
+
+8. **Do not comment every line.**
+
+   - Group logic into meaningful functions and name them clearly instead.
+   - If you need a `//` comment every 2–3 lines, the code likely needs refactoring.
+
+9. **Comments must never lie.**
+
+   - If a comment no longer matches the behavior, remove or update it immediately.
+   - Bad comments are worse than no comments.
+
+10. **Delete comments that explain now-obvious code.**
+
+    - If the code becomes clearer through refactoring, remove the old comment.
+    - Treat comments as _temporary scaffolding_, not permanent structure.
+
+---
+
+### 💡 Example: Good vs Bad Comment
+
+Bad:
+
+```js
+// Loop through items
+for (let i = 0; i < items.length; i++) {
+```
+
+Good:
+
+```js
+// Skip the first item because it’s always a system default
+for (let i = 1; i < items.length; i++) {
+```
+
+---
+
+### Bonus Tip: Comment Like You're Leaving Breadcrumbs for Future-You
+
+If you disappeared tomorrow, would someone else know what your _intent_ was? If not, drop a quick `//` explaining what assumptions you're making or why a decision was made.

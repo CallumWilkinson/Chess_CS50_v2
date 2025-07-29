@@ -14,7 +14,6 @@ export default class Bishop extends ChessPiece {
    */
   constructor(colour, position) {
     super("bishop", colour, position);
-    //unicode symbols for display
     this.whiteUnicodeLogo = "\u2657";
     this.blackUnicodeLogo = "\u265D";
   }
@@ -29,19 +28,15 @@ export default class Bishop extends ChessPiece {
   getPossibleMoves(board) {
     const validMoves = [];
 
-    //a piece is diagonal if rank dif === file dif
-    //LOOPS OVER THE ENTIRE BOARD
     for (const square in board.grid) {
       const targetPosition = new Position(square);
 
-      //calc differences in file and rank to determine if square is diagonal
       const fileDiff = Math.abs(
         this.position.fileIndex - targetPosition.fileIndex
       );
       const rankDiff = Math.abs(
         this.position.rankIndex - targetPosition.rankIndex
       );
-      //create variables for readability
       const isDiagonal = fileDiff === rankDiff;
       const isInLineOfSight = this.position.isTraversable(
         targetPosition,
@@ -49,7 +44,6 @@ export default class Bishop extends ChessPiece {
       );
       const isNotBishopsPosition = square != this.position.name;
 
-      //if empty space, add as possible move
       if (
         board.squareIsEmpty(square) &&
         isDiagonal &&
@@ -59,7 +53,6 @@ export default class Bishop extends ChessPiece {
         validMoves.push(targetPosition.name);
       }
 
-      //if enemy piece, add as possible capture
       const possibleCapture = board.grid[targetPosition.name];
       if (
         possibleCapture != null &&

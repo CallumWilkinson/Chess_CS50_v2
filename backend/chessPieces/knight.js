@@ -14,7 +14,6 @@ export default class Knight extends ChessPiece {
    */
   constructor(colour, position) {
     super("knight", colour, position);
-    //unicode symbols for display
     this.whiteUnicodeLogo = "\u2658";
     this.blackUnicodeLogo = "\u265E";
   }
@@ -30,11 +29,9 @@ export default class Knight extends ChessPiece {
     const validMoves = [];
     const knightPossibleSquareNames = [];
 
-    //access rank and file index properties from the position class
     const fileIndex = this.position.fileIndex;
     const rankIndex = this.position.rankIndex;
 
-    //find all possible knight landing squares (names of them as strings)
     const upLeft = toSquareNotation(fileIndex - 1, rankIndex + 2);
     const upRight = toSquareNotation(fileIndex + 1, rankIndex + 2);
     const rightUp = toSquareNotation(fileIndex + 2, rankIndex + 1);
@@ -55,7 +52,6 @@ export default class Knight extends ChessPiece {
       leftDown
     );
 
-    //check knight squares are empty and in LOS, add to valid moves
     for (const square in knightPossibleSquareNames) {
       if (
         board.squareIsEmpty(knightPossibleSquareNames[square]) &&
@@ -64,7 +60,6 @@ export default class Knight extends ChessPiece {
       ) {
         validMoves.push(knightPossibleSquareNames[square]);
       }
-      //check for capture
       const possibleCapture = board.grid[knightPossibleSquareNames[square]];
       if (
         possibleCapture != null &&
@@ -72,7 +67,6 @@ export default class Knight extends ChessPiece {
         board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
         knightPossibleSquareNames[square] != this.position.name
       ) {
-        //add possible capture
         validMoves.push(knightPossibleSquareNames[square]);
       }
     }
