@@ -49,7 +49,6 @@ describe("knight tests", () => {
 
     expect(blackKnight.position.name).toBe("g4");
     expect(board.grid["g4"]).toBe(blackKnight);
-    //expecting whitepawn to be in black's captured array
     expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });

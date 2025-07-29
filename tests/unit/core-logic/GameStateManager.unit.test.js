@@ -20,7 +20,6 @@ describe("Game State Manager class tests", () => {
   });
 
   test("black pawn captures white pawn, gamestatemanger tracks the capture", () => {
-    //scenario setup
     const blackPawn = board.grid["f7"];
     let blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
     const f5 = new Position("f5");

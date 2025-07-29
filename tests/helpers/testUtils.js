@@ -7,7 +7,6 @@ import { jest } from "@jest/globals";
  * @returns {Object} Mock GameSession object with test-friendly methods
  */
 export function createMockGameSession(players) {
-  //convert players object to connectedUsers array for single source of truth
   const connectedUsers = [];
   if (players) {
     for (const [socketId, playerData] of Object.entries(players)) {

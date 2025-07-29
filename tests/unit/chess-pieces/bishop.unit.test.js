@@ -19,7 +19,6 @@ describe("Bishop tests", () => {
   test("white bishop assesses moves from e5", () => {
     const e5 = new Position("e5");
     whiteBishop = new Bishop("white", e5);
-    //get possiblemoves returns array of strings (position names not objects)
     const possibleMovesArray = whiteBishop.getPossibleMoves(board);
 
     const correctMoves = ["d6", "f4", "g3", "f6", "d4", "c3", "g7", "c7"];

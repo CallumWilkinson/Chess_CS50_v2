@@ -6,23 +6,20 @@ import Pawn from "../../../backend/chessPieces/pawn.js";
 import Queen from "../../../backend/chessPieces/queen.js";
 import Rook from "../../../backend/chessPieces/rook.js";
 
-//describe is a jest function to group related tests together into a test suite called "chess board"
 describe("Chess Board", () => {
   let board;
 
-  //beforeeach is jest function that runs before each test
-  //instantiate a board object from the Board class
   beforeEach(() => {
     board = new Board();
   });
 
   test("should initialize an empty grid", () => {
-    expect(board.grid).toEqual({}); // Check if grid starts as an empty DICTIONARY object
+    expect(board.grid).toEqual({});
   });
 
   test("should contain exactly 64 squares in the grid", () => {
-    board.createEmptyBoard(); // Populate the board with null values
-    expect(Object.keys(board.grid).length).toBe(64); // Ensure 64 keys exist
+    board.createEmptyBoard();
+    expect(Object.keys(board.grid).length).toBe(64);
   });
 
   test("setup white peices on board", () => {
