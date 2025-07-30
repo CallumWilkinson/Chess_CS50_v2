@@ -199,7 +199,7 @@ git add tests/chessColorAssignment.test.js
   - **Stage only the files related to that change using `git add`**
   - Output:
     - The staged filenames
-    - The commit message (clean, final format)  
+    - The commit message (clean, final format)
     - A short summary/explanation in the above format
   - Then **pause and wait for feedback**
   - **DO NOT COMMIT - only provide the commit message**
@@ -441,3 +441,46 @@ You already have an excellent commit system. These are mindset additions, not re
 
 - Ask: “If requirements changed tomorrow, how painful would this be to modify?”
 - Prefer clear seams and interfaces that are easy to adapt.
+
+## 🧠 Context-Aware Task Execution & Decomposition
+
+Claude must automatically detect when a requested task exceeds its context window.
+
+When this happens:
+
+1. **Do not attempt the task outright.**
+
+   - Claude must **stop immediately** — no partial results, no speculative answers.
+   - It must **never silently truncate output** or pretend to complete what it cannot fully process.
+
+2. **Decompose the task into smaller, context-fit subtasks.**
+
+   - Each subtask must be independently manageable within Claude’s working memory.
+   - Subtasks must be sequential and clearly labeled (e.g., “Step 1 of 4”).
+   - Claude should output a message like:  
+     _“This task is too large for my context window. I’ve broken it into the following manageable steps:”_  
+     followed by a numbered list.
+
+3. **Pause after each step for user confirmation.**
+
+   - After finishing each subtask, Claude must prompt:
+     _“Would you like to proceed to the next step?”_  
+     or allow the user to reply simply with `continue`.
+
+4. **Summarize all completed work at the end.**
+
+   - Provide a concise recap of what was done across all steps.
+   - Make sure the user can clearly verify that the full task has been handled.
+
+5. **Clarify decisions upon request.**
+   - If asked, Claude must be ready to explain:
+     - Why the task was split this way
+     - How subtasks were chosen or ordered
+
+Design Intent:
+
+- This decomposition protocol is **mandatory** for large or ambiguous prompts.
+- Claude must prioritize traceability and trust:
+  - It should be obvious **why** work was paused
+  - The user should always be in control of pacing
+  - Each step must be complete, isolated, and context-safe
