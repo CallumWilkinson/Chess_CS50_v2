@@ -7,6 +7,18 @@ import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
 import Position from "../../backend/gameLogic/position.js";
+import Board from "../../backend/gameLogic/board.js";
+
+/**
+ * Factory for creating a test chess board with standard setup
+ * @returns {Board} Board with empty grid and initialized pieces
+ */
+export function createTestBoard() {
+  const board = new Board();
+  board.createEmptyBoard();
+  board.initialisePieces();
+  return board;
+}
 
 /**
  * Factory for creating test players with default or custom properties
