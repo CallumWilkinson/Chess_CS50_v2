@@ -1,4 +1,5 @@
 import Position from "./position.js";
+import { ChessConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Shared utilities for chess piece move validation
@@ -109,7 +110,7 @@ export default class MoveValidation {
     const targetPosition = new Position(squareName);
     const fileDiff = Math.abs(this.piece.position.fileIndex - targetPosition.fileIndex);
     const rankDiff = Math.abs(this.piece.position.rankIndex - targetPosition.rankIndex);
-    return fileDiff <= 1 && rankDiff <= 1;
+    return fileDiff <= ChessConstants.KING_MOVEMENT_RANGE && rankDiff <= ChessConstants.KING_MOVEMENT_RANGE;
   }
 
   /**
@@ -119,7 +120,7 @@ export default class MoveValidation {
     const targetPosition = new Position(squareName);
     const fileDiff = Math.abs(this.piece.position.fileIndex - targetPosition.fileIndex);
     const rankDiff = Math.abs(this.piece.position.rankIndex - targetPosition.rankIndex);
-    return (fileDiff === 2 && rankDiff === 1) || (fileDiff === 1 && rankDiff === 2);
+    return (fileDiff === ChessConstants.KNIGHT_LONG_MOVE && rankDiff === ChessConstants.KNIGHT_SHORT_MOVE) || (fileDiff === ChessConstants.KNIGHT_SHORT_MOVE && rankDiff === ChessConstants.KNIGHT_LONG_MOVE);
   }
 
   /**

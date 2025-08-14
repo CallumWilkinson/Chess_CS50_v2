@@ -1,3 +1,5 @@
+import { ChessConstants } from "../../shared/utilities/gameConstants.js";
+
 /**
  * Session manager class for managing game sessions and player connections
  * Consolidates the three global objects previously used in launchServer.js:
@@ -124,7 +126,7 @@ export default class SessionManager {
             colour: waitingPlayer.colour,
           },
           playersConnected: playerCount,
-          maxPlayers: 2,
+          maxPlayers: ChessConstants.MAX_PLAYERS,
         };
 
         availableGames.push(gameInfo);

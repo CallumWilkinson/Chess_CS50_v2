@@ -2,6 +2,7 @@ import { handleMove } from "../helpers/handleMove.js";
 import GameSession from "./gameSession.js";
 import Player from "./Player.js";
 import SessionManager from "./SessionManager.js";
+import { ChessConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Initialize the Socket.IO server with chess game event handlers
@@ -203,7 +204,7 @@ function joinExistingSession(
 
   //check if game is already full using connectedUsers as single source of truth
   const selectedGameSession = gameSessions[gameSessionID];
-  if (selectedGameSession.connectedUsers.length >= 2) {
+  if (selectedGameSession.connectedUsers.length >= ChessConstants.MAX_PLAYERS) {
     socket.emit("error", "Game session is full");
     return;
   }
@@ -347,7 +348,7 @@ export function getAvailableGamesForListing(gameSessions) {
           colour: waitingPlayer.colour,
         },
         playersConnected: playerCount,
-        maxPlayers: 2,
+        maxPlayers: ChessConstants.MAX_PLAYERS,
       };
 
       availableGames.push(gameInfo);

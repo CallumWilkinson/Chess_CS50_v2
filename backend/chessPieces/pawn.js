@@ -1,6 +1,7 @@
 import ChessPiece from "./ChessPiece.js";
 import MoveValidation from "../gameLogic/moveValidation.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
+import { MovementConstants, ChessConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Represents a Pawn chess piece
@@ -29,12 +30,12 @@ export default class Pawn extends ChessPiece {
     const validMoves = [];
     const validator = new MoveValidation(board, this);
 
-    const direction = this.colour === "white" ? 1 : -1;
+    const direction = this.colour === "white" ? MovementConstants.WHITE_DIRECTION : MovementConstants.BLACK_DIRECTION;
     const fileIndex = this.position.fileIndex;
     const rankIndex = this.position.rankIndex;
 
-    const oneSquareForward = toSquareNotation(fileIndex, rankIndex + direction);
-    const twoSquaresForward = toSquareNotation(fileIndex, rankIndex + direction * 2);
+    const oneSquareForward = toSquareNotation(fileIndex, rankIndex + direction * ChessConstants.PAWN_SINGLE_MOVE);
+    const twoSquaresForward = toSquareNotation(fileIndex, rankIndex + direction * ChessConstants.PAWN_DOUBLE_MOVE);
 
     if (validator.isValidEmptySquare(oneSquareForward)) {
       validMoves.push(oneSquareForward);
@@ -44,8 +45,8 @@ export default class Pawn extends ChessPiece {
       }
     }
 
-    const leftCapture = toSquareNotation(fileIndex - 1, rankIndex + direction);
-    const rightCapture = toSquareNotation(fileIndex + 1, rankIndex + direction);
+    const leftCapture = toSquareNotation(fileIndex - ChessConstants.PAWN_SINGLE_MOVE, rankIndex + direction);
+    const rightCapture = toSquareNotation(fileIndex + ChessConstants.PAWN_SINGLE_MOVE, rankIndex + direction);
 
     if (validator.isValidCaptureSquare(leftCapture)) {
       validMoves.push(leftCapture);

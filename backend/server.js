@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
 import { launchServer } from "./gameSetup/launchServer.js";
+import { SystemConstants } from "../shared/utilities/gameConstants.js";
 
 //setup directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -19,8 +20,8 @@ const httpServer = createServer(app);
 //this turns ther web server into a real time webSocket server so clients can talk to eachother
 const io = new Server(httpServer);
 
-//set port to 3000 (most common default port), or to the node.js process to upload to render/hosting service
-const PORT = process.env.PORT || 3000;
+//set port to default (most common default port), or to the node.js process to upload to render/hosting service
+const PORT = process.env.PORT || SystemConstants.DEFAULT_PORT;
 
 //serve static files from public folder (all the front end stuff)
 //basically means when someone goes to port 3000 send them all files in the public folder (the front end)

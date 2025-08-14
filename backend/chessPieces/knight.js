@@ -1,10 +1,11 @@
 import ChessPiece from "./ChessPiece.js";
 import MoveValidation from "../gameLogic/moveValidation.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
+import { ChessConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Represents a Knight chess piece
- * Moves in an L-shape: 2 squares in one direction, then 1 square perpendicular
+ * Moves in an L-shape: long move in one direction, then short move perpendicular
  * The only piece that can jump over other pieces
  */
 export default class Knight extends ChessPiece {
@@ -21,7 +22,7 @@ export default class Knight extends ChessPiece {
 
   /**
    * Calculate all valid moves for the knight
-   * Knights move in an L-shape: 2 squares in one direction, then 1 square perpendicular
+   * Knights move in an L-shape: long move in one direction, then short move perpendicular
    * Can jump over other pieces (no line-of-sight restrictions)
    * @param {Board} board - Current board state
    * @returns {string[]} Array of valid square names the knight can move to
@@ -31,14 +32,14 @@ export default class Knight extends ChessPiece {
     const rankIndex = this.position.rankIndex;
 
     const knightPossibleSquareNames = [
-      toSquareNotation(fileIndex - 1, rankIndex + 2),
-      toSquareNotation(fileIndex + 1, rankIndex + 2),
-      toSquareNotation(fileIndex + 2, rankIndex + 1),
-      toSquareNotation(fileIndex + 2, rankIndex - 1),
-      toSquareNotation(fileIndex + 1, rankIndex - 2),
-      toSquareNotation(fileIndex - 1, rankIndex - 2),
-      toSquareNotation(fileIndex - 2, rankIndex + 1),
-      toSquareNotation(fileIndex - 2, rankIndex - 1)
+      toSquareNotation(fileIndex - ChessConstants.KNIGHT_SHORT_MOVE, rankIndex + ChessConstants.KNIGHT_LONG_MOVE),
+      toSquareNotation(fileIndex + ChessConstants.KNIGHT_SHORT_MOVE, rankIndex + ChessConstants.KNIGHT_LONG_MOVE),
+      toSquareNotation(fileIndex + ChessConstants.KNIGHT_LONG_MOVE, rankIndex + ChessConstants.KNIGHT_SHORT_MOVE),
+      toSquareNotation(fileIndex + ChessConstants.KNIGHT_LONG_MOVE, rankIndex - ChessConstants.KNIGHT_SHORT_MOVE),
+      toSquareNotation(fileIndex + ChessConstants.KNIGHT_SHORT_MOVE, rankIndex - ChessConstants.KNIGHT_LONG_MOVE),
+      toSquareNotation(fileIndex - ChessConstants.KNIGHT_SHORT_MOVE, rankIndex - ChessConstants.KNIGHT_LONG_MOVE),
+      toSquareNotation(fileIndex - ChessConstants.KNIGHT_LONG_MOVE, rankIndex + ChessConstants.KNIGHT_SHORT_MOVE),
+      toSquareNotation(fileIndex - ChessConstants.KNIGHT_LONG_MOVE, rankIndex - ChessConstants.KNIGHT_SHORT_MOVE)
     ];
 
     const validator = new MoveValidation(board, this);

@@ -145,3 +145,6 @@ dist
 # JSDoc generated documentation
 jsdoc-output/
 jsdoc.conf.json
+
+# Claude Code settings (local configuration)
+.claude/settings.local.json

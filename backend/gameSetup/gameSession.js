@@ -1,5 +1,6 @@
 import GameInstance from "./GameInstance.js";
 import { assignChessColor } from "../gameLogic/chessColorAssignment.js";
+import { SystemConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Represents a game session that manages players and game instances
@@ -11,8 +12,8 @@ export default class GameSession {
    * Creates a new game session with a random ID
    */
   constructor() {
-    //random 6-character game session identifier
-    this.gameSessionID = Math.random().toString(36).slice(2, 8);
+    //random game session identifier
+    this.gameSessionID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
     //single source of truth for connected players
     this.connectedUsers = [];
     //set when createGameInstance() is called
@@ -24,8 +25,8 @@ export default class GameSession {
    * @returns {GameInstance} The newly created game instance
    */
   createGameInstance() {
-    //random 6-character game instance identifier
-    const gameInstanceID = Math.random().toString(36).slice(2, 8);
+    //random game instance identifier
+    const gameInstanceID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
 
     const gameInstance = new GameInstance(gameInstanceID);
     this.gameInstance = gameInstance;
@@ -47,7 +48,7 @@ export default class GameSession {
   removePlayerFromSession(player) {
     const index = this.connectedUsers.findIndex(p => p.socketID === player.socketID);
     if (index !== -1) {
-      this.connectedUsers.splice(index, 1);
+      this.connectedUsers.splice(index, SystemConstants.SINGLE_ITEM_REMOVAL);
     }
   }
 

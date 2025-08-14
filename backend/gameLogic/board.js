@@ -6,6 +6,7 @@ import Queen from "../chessPieces/queen.js";
 import Bishop from "../chessPieces/bishop.js";
 import Position from "./position.js";
 import { FilesAndRanks } from "../../shared/utilities/constants.js";
+import { ChessConstants, CoordinateConstants } from "../../shared/utilities/gameConstants.js";
 
 /**
  * Represents a chess board with a grid of squares and pieces
@@ -21,7 +22,7 @@ export default class Board {
   }
 
   /**
-   * Initialize the board with all 64 squares set to null (empty)
+   * Initialize the board with all squares set to null (empty)
    * Sets up the grid dictionary where keys are square names (e.g., 'a1', 'e4')
    */
   createEmptyBoard() {
@@ -33,7 +34,7 @@ export default class Board {
     });
   }
   /**
-   * Initialize all 32 chess pieces in their starting positions
+   * Initialize all chess pieces in their starting positions
    * Game state is tracked by piece positions in the grid dictionary
    */
   initialisePieces() {
@@ -87,9 +88,9 @@ export default class Board {
 
     const whitePawns = [];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < ChessConstants.PAWNS_PER_COLOR; i++) {
       whitePawns.push(
-        new Pawn("white", new Position(String.fromCharCode(97 + i) + "2"))
+        new Pawn("white", new Position(String.fromCharCode(CoordinateConstants.ASCII_FILE_A + i) + ChessConstants.WHITE_PAWN_RANK))
       );
     }
 
@@ -100,9 +101,9 @@ export default class Board {
 
     const blackPawns = [];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < ChessConstants.PAWNS_PER_COLOR; i++) {
       blackPawns.push(
-        new Pawn("black", new Position(String.fromCharCode(97 + i) + "7"))
+        new Pawn("black", new Position(String.fromCharCode(CoordinateConstants.ASCII_FILE_A + i) + ChessConstants.BLACK_PAWN_RANK))
       );
     }
 
