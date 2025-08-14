@@ -484,3 +484,24 @@ Design Intent:
   - It should be obvious **why** work was paused
   - The user should always be in control of pacing
   - Each step must be complete, isolated, and context-safe
+
+🧠 Commit Granularity Analysis
+To ensure every proposed commit supports meaningful review and traceability:
+
+After suggesting a commit or a grouped commit plan, always explain the reasoning behind the commit boundaries.
+
+This explanation must follow the human-readable commit summary and appear before waiting for feedback.
+
+Include one of the following:
+
+✅ A justification for keeping all changes in a single commit (e.g., because they are tightly coupled, impossible to separate without breaking tests, or all refactor a single concept)
+
+✅ A suggested breakdown if the changes could be clearer in multiple commits:
+
+Example: one commit per module or file
+
+Example: one for logic, one for tests
+
+Example: one to refactor or rename, then another to add new functionality
+
+The goal is to make commit history as readable and intentional as the code itself — every commit should tell a clean, self-contained story.
