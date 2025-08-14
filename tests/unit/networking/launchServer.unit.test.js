@@ -240,9 +240,11 @@ describe("launchServer utility functions", () => {
       
       //verify the game session still exists (because player2 is still there)
       expect(gameSessions[session.gameSessionID]).toBeDefined();
-      //verify only the disconnected player was removed from the game
-      expect(gameSessions[session.gameSessionID].connectedPlayersSocketIDs.players["socket1"]).toBeUndefined();
-      expect(gameSessions[session.gameSessionID].connectedPlayersSocketIDs.players["socket2"]).toBeDefined();
+      //verify only the disconnected player was removed from the game using connectedUsers
+      const remainingPlayers = gameSessions[session.gameSessionID].connectedUsers;
+      expect(remainingPlayers.length).toBe(1);
+      expect(remainingPlayers[0].socketID).toBe("socket2");
+      expect(remainingPlayers.find(p => p.socketID === "socket1")).toBeUndefined();
       //verify only the disconnected player's mapping was removed
       expect(socketIDtoGameSessionID["socket1"]).toBeUndefined();
       expect(socketIDtoGameSessionID["socket2"]).toBe(session.gameSessionID);

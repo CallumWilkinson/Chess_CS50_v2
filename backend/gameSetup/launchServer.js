@@ -17,7 +17,6 @@ export function launchServer(io) {
 
   //holds all game sessions, key is gameSessionID, contains game session objects that have the following values:
   //GameSessionID
-  //connectedPlayersSocketIDs.players[{ username, colour }]
   //gameInstance
   const gameSessions = {};
 
@@ -138,13 +137,6 @@ function createNewSession(
   //store mapping between this socket and the new session
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
-  //legacy compatibility: maintain connectedPlayersSocketIDs for backwards compatibility
-  //TODO: remove this once all consumers migrate to connectedUsers
-  newGameSession.connectedPlayersSocketIDs = { players: {} };
-  newGameSession.connectedPlayersSocketIDs.players[socket.id] = {
-    username,
-    colour: assignedColour,
-  };
 
   //add game session object to the sessions dictionary
   gameSessions[gameSessionID] = newGameSession;
@@ -208,22 +200,12 @@ function joinExistingSession(
     return;
   }
 
-  //get the legacy players array for backwards compatibility
-  const players = selectedGameSession.connectedPlayersSocketIDs.players;
-
   //assign this user's socket id and the game they selected to the mapping
   //this allows us in future to associate this user with this gameSession they are about to join
   socketIDtoGameSessionID[socket.id] = gameSessionID;
 
   //determines color for the joining player based on existing connected users
   const assignedColour = selectedGameSession.getPlayerColour();
-
-  //legacy compatibility: assign username and colour to the player's socket.id in the gamesession
-  //TODO: remove this once all consumers migrate to connectedUsers
-  players[socket.id] = {
-    username: username,
-    colour: assignedColour,
-  };
 
   //also update session manager for new move handling system
   sessionManager.mapSocketToSession(socket.id, gameSessionID);
@@ -288,13 +270,6 @@ export function handleDisconnect(
       //remove player from connectedUsers (single source of truth)
       sessionData.removePlayerFromSession(disconnectingPlayer);
 
-      //legacy compatibility: also remove from old tracking system
-      if (
-        sessionData.connectedPlayersSocketIDs &&
-        sessionData.connectedPlayersSocketIDs.players
-      ) {
-        delete sessionData.connectedPlayersSocketIDs.players[socket.id];
-      }
 
       //check if session is now empty using connectedUsers and clean it up to prevent memory leak
       if (sessionData.connectedUsers.length === 0) {

@@ -20,9 +20,6 @@ export function createMockGameSession(players) {
   
   return {
     gameSessionID: "test-session-id",
-    connectedPlayersSocketIDs: {
-      players: players || {}, //legacy compatibility
-    },
     connectedUsers: connectedUsers, //single source of truth
     gameInstance: {
       board: {},

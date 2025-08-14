@@ -95,10 +95,6 @@ describe("ConnectedUsers refactor integration", () => {
     gameSession.addPlayerToSession(player1);
     gameSession.addPlayerToSession(player2);
 
-    //set up legacy structures for compatibility
-    gameSession.connectedPlayersSocketIDs = { players: {} };
-    gameSession.connectedPlayersSocketIDs.players["socket1"] = player1;
-    gameSession.connectedPlayersSocketIDs.players["socket2"] = player2;
 
     const gameSessions = { [gameSession.gameSessionID]: gameSession };
     const socketIDtoGameSessionID = {

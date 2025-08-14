@@ -17,8 +17,6 @@ export default class GameInstance {
     this.board;
     //game state manager handles turns, moves, and win conditions
     this.gameStateManager;
-    //legacy array - use GameSession.connectedUsers instead
-    this.players = [];
   }
 
   /**
@@ -45,33 +43,6 @@ export default class GameInstance {
     this.board.initialisePieces();
   }
 
-  /**
-   * Legacy method for adding players to instance - now handled by GameSession
-   * Database color assignment is no longer supported - color assignment moved to GameSession
-   * This method now only handles the legacy fallback logic
-   * @param {Object} connectedUsers - Object containing connected user data
-   * @param {Object|null} database - Legacy parameter, no longer used
-   * @returns {string} The assigned color ('black' or 'white')
-   * @deprecated Use GameSession.addPlayerToSession instead
-   */
-  addPlayersToInstance(connectedUsers, database = null) { // eslint-disable-line no-unused-vars
-    //database color assignment is no longer supported - color assignment moved to GameSession
-    //this method now only handles the legacy fallback logic
-
-    //fallback to legacy logic for backwards compatibility
-    //assign new player a colour based on the currently connected players
-    const colours = Object.values(connectedUsers).map((p) => p.colour);
-
-    //if black is taken, assign white to new player, otherwise assign black so that black is always player 1
-    let assignedColour;
-
-    if (colours.includes("black")) {
-      assignedColour = "white";
-    } else {
-      assignedColour = "black";
-    }
-    return assignedColour;
-  }
 
   /**
    * Placeholder for future checkers game implementation
