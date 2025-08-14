@@ -1,5 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
-import Position from "../gameLogic/position.js";
+import MoveValidation from "../gameLogic/moveValidation.js";
 
 /**
  * Represents a Rook chess piece
@@ -26,32 +26,7 @@ export default class Rook extends ChessPiece {
    * @returns {string[]} Array of valid square names the rook can move to
    */
   getPossibleMoves(board) {
-    const validMoves = [];
-    const startingPositionName = this.position.name;
-
-    for (const square in board.grid) {
-      const targetSquare = new Position(square);
-      const sameVerticalAxis = square[0] == startingPositionName[0];
-      const sameHorizontalAxis = square[1] == startingPositionName[1];
-
-      const isInLineOfSight = this.position.isTraversable(targetSquare, board);
-      if (board.squareIsEmpty(square) && isInLineOfSight) {
-        if (sameVerticalAxis || sameHorizontalAxis) {
-          validMoves.push(square);
-        }
-      }
-      const possibleCapture = board.grid[square];
-      if (
-        possibleCapture != null &&
-        possibleCapture.colour != this.colour &&
-        isInLineOfSight
-      ) {
-        if (sameVerticalAxis || sameHorizontalAxis) {
-          validMoves.push(square);
-        }
-      }
-    }
-
-    return validMoves;
+    const validator = new MoveValidation(board, this);
+    return validator.getAllValidMoves(validator.isRookMove);
   }
 }

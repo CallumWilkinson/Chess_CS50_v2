@@ -1,4 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
+import MoveValidation from "../gameLogic/moveValidation.js";
 import Position from "../gameLogic/position.js";
 
 /**
@@ -26,37 +27,16 @@ export default class King extends ChessPiece {
    * @returns {string[]} Array of valid square names the king can move to
    */
   getPossibleMoves(board) {
-    const validMoves = [];
     const surroundingSquareNames = this.position.surroundingpositionNames;
+    const candidateSquares = Object.values(surroundingSquareNames);
 
-    for (const squareName in surroundingSquareNames) {
-      if (
-        board.squareIsEmpty(surroundingSquareNames[squareName]) &&
-        this.position.isTraversable(
-          new Position(surroundingSquareNames[squareName]),
-          board
-        ) &&
-        board.squareExistsOnBoard(surroundingSquareNames[squareName]) &&
-        surroundingSquareNames[squareName] != this.position.name
-      ) {
-        validMoves.push(surroundingSquareNames[squareName]);
-      }
-
-      const possibleCapture = board.grid[surroundingSquareNames[squareName]];
-      if (
-        possibleCapture != null &&
-        possibleCapture.colour != this.colour &&
-        this.position.isTraversable(
-          new Position(surroundingSquareNames[squareName]),
-          board
-        ) &&
-        board.squareExistsOnBoard(surroundingSquareNames[squareName]) &&
-        surroundingSquareNames[squareName] != this.position.name
-      ) {
-        validMoves.push(surroundingSquareNames[squareName]);
-      }
-    }
-
-    return validMoves;
+    const validator = new MoveValidation(board, this);
+    return candidateSquares.filter(square => {
+      return (
+        validator.board.squareExistsOnBoard(square) &&
+        validator.hasLineOfSight(square) &&
+        (validator.isValidEmptySquare(square) || validator.isValidCaptureSquare(square))
+      );
+    });
   }
 }

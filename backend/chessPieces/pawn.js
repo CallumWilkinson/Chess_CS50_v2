@@ -1,4 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
+import MoveValidation from "../gameLogic/moveValidation.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
@@ -26,71 +27,34 @@ export default class Pawn extends ChessPiece {
    */
   getPossibleMoves(board) {
     const validMoves = [];
+    const validator = new MoveValidation(board, this);
 
-    //white moves up the board, black moves down
-    //i think this is a little confusing cos when i render the page, i think i flipped it?
-    //from memory i think it was becuase i originally made the dictionary as white first, but then switched it to black first
-    //will need to review this
-    let direction;
-    if (this.colour === "white") {
-      direction = 1;
-    } else {
-      direction = -1;
-    }
-
+    const direction = this.colour === "white" ? 1 : -1;
     const fileIndex = this.position.fileIndex;
     const rankIndex = this.position.rankIndex;
 
-    const rankIndexPlusOne = rankIndex + direction;
-    const rankIndexPlusTwo = rankIndex + direction * 2;
+    const oneSquareForward = toSquareNotation(fileIndex, rankIndex + direction);
+    const twoSquaresForward = toSquareNotation(fileIndex, rankIndex + direction * 2);
 
-    const oneSquareForward = toSquareNotation(fileIndex, rankIndexPlusOne);
-    const twoSquaresForward = toSquareNotation(fileIndex, rankIndexPlusTwo);
-
-    if (
-      board.squareExistsOnBoard(oneSquareForward) &&
-      board.squareIsEmpty(oneSquareForward)
-    ) {
+    if (validator.isValidEmptySquare(oneSquareForward)) {
       validMoves.push(oneSquareForward);
+
+      if (!this.hasMoved && validator.isValidEmptySquare(twoSquaresForward)) {
+        validMoves.push(twoSquaresForward);
+      }
     }
 
-    if (
-      //if empty and pawn hasnt moved yet, both squares must be empty or the path is blocked
-      this.hasMoved === false &&
-      board.squareExistsOnBoard(twoSquaresForward) &&
-      board.squareExistsOnBoard(oneSquareForward) &&
-      board.squareIsEmpty(twoSquaresForward) &&
-      board.squareIsEmpty(oneSquareForward)
-    ) {
-      validMoves.push(twoSquaresForward);
+    const leftCapture = toSquareNotation(fileIndex - 1, rankIndex + direction);
+    const rightCapture = toSquareNotation(fileIndex + 1, rankIndex + direction);
+
+    if (validator.isValidCaptureSquare(leftCapture)) {
+      validMoves.push(leftCapture);
     }
 
-    const rankIndexForward = rankIndex + direction;
-    const fileIndexPlusOne = fileIndex + 1;
-    const fileIndexMinusOne = fileIndex - 1;
-    const NWPositionName = toSquareNotation(
-      fileIndexMinusOne,
-      rankIndexForward
-    );
-    const NEPositionName = toSquareNotation(fileIndexPlusOne, rankIndexForward);
-    const chessPieceAtNWPosition = board.grid[NWPositionName];
-    const chessPieceAtNEPosition = board.grid[NEPositionName];
-
-    if (
-      board.squareExistsOnBoard(NWPositionName) &&
-      chessPieceAtNWPosition != null &&
-      chessPieceAtNWPosition.colour != this.colour
-    ) {
-      validMoves.push(NWPositionName);
+    if (validator.isValidCaptureSquare(rightCapture)) {
+      validMoves.push(rightCapture);
     }
 
-    if (
-      board.squareExistsOnBoard(NEPositionName) &&
-      chessPieceAtNEPosition != null &&
-      chessPieceAtNEPosition.colour != this.colour
-    ) {
-      validMoves.push(NEPositionName);
-    }
     return validMoves;
   }
 }

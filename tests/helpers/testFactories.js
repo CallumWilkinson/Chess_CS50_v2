@@ -6,6 +6,7 @@
 import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
+import Position from "../../backend/gameLogic/position.js";
 
 /**
  * Factory for creating test players with default or custom properties

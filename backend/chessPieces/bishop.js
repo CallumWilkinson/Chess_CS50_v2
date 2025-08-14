@@ -1,5 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
-import Position from "../gameLogic/position.js";
+import MoveValidation from "../gameLogic/moveValidation.js";
 
 /**
  * Represents a Bishop chess piece
@@ -26,44 +26,7 @@ export default class Bishop extends ChessPiece {
    * @returns {string[]} Array of valid square names the bishop can move to
    */
   getPossibleMoves(board) {
-    const validMoves = [];
-
-    for (const square in board.grid) {
-      const targetPosition = new Position(square);
-
-      const fileDiff = Math.abs(
-        this.position.fileIndex - targetPosition.fileIndex
-      );
-      const rankDiff = Math.abs(
-        this.position.rankIndex - targetPosition.rankIndex
-      );
-      const isDiagonal = fileDiff === rankDiff;
-      const isInLineOfSight = this.position.isTraversable(
-        targetPosition,
-        board
-      );
-      const isNotBishopsPosition = square != this.position.name;
-
-      if (
-        board.squareIsEmpty(square) &&
-        isDiagonal &&
-        isInLineOfSight &&
-        isNotBishopsPosition
-      ) {
-        validMoves.push(targetPosition.name);
-      }
-
-      const possibleCapture = board.grid[targetPosition.name];
-      if (
-        possibleCapture != null &&
-        possibleCapture.colour != this.colour &&
-        isDiagonal &&
-        isInLineOfSight &&
-        isNotBishopsPosition
-      ) {
-        validMoves.push(targetPosition.name);
-      }
-    }
-    return validMoves;
+    const validator = new MoveValidation(board, this);
+    return validator.getAllValidMoves(validator.isBishopMove);
   }
 }

@@ -1,4 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
+import MoveValidation from "../gameLogic/moveValidation.js";
 import { toSquareNotation } from "../../shared/utilities/toSquareNotation.js";
 
 /**
@@ -26,50 +27,26 @@ export default class Knight extends ChessPiece {
    * @returns {string[]} Array of valid square names the knight can move to
    */
   getPossibleMoves(board) {
-    const validMoves = [];
-    const knightPossibleSquareNames = [];
-
     const fileIndex = this.position.fileIndex;
     const rankIndex = this.position.rankIndex;
 
-    const upLeft = toSquareNotation(fileIndex - 1, rankIndex + 2);
-    const upRight = toSquareNotation(fileIndex + 1, rankIndex + 2);
-    const rightUp = toSquareNotation(fileIndex + 2, rankIndex + 1);
-    const rightDown = toSquareNotation(fileIndex + 2, rankIndex - 1);
-    const downRight = toSquareNotation(fileIndex + 1, rankIndex - 2);
-    const downLeft = toSquareNotation(fileIndex - 1, rankIndex - 2);
-    const leftUp = toSquareNotation(fileIndex - 2, rankIndex + 1);
-    const leftDown = toSquareNotation(fileIndex - 2, rankIndex - 1);
+    const knightPossibleSquareNames = [
+      toSquareNotation(fileIndex - 1, rankIndex + 2),
+      toSquareNotation(fileIndex + 1, rankIndex + 2),
+      toSquareNotation(fileIndex + 2, rankIndex + 1),
+      toSquareNotation(fileIndex + 2, rankIndex - 1),
+      toSquareNotation(fileIndex + 1, rankIndex - 2),
+      toSquareNotation(fileIndex - 1, rankIndex - 2),
+      toSquareNotation(fileIndex - 2, rankIndex + 1),
+      toSquareNotation(fileIndex - 2, rankIndex - 1)
+    ];
 
-    knightPossibleSquareNames.push(
-      upLeft,
-      upRight,
-      rightUp,
-      rightDown,
-      downLeft,
-      downRight,
-      leftUp,
-      leftDown
-    );
-
-    for (const square in knightPossibleSquareNames) {
-      if (
-        board.squareIsEmpty(knightPossibleSquareNames[square]) &&
-        board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
-        knightPossibleSquareNames[square] != this.position.name
-      ) {
-        validMoves.push(knightPossibleSquareNames[square]);
-      }
-      const possibleCapture = board.grid[knightPossibleSquareNames[square]];
-      if (
-        possibleCapture != null &&
-        possibleCapture.colour != this.colour &&
-        board.squareExistsOnBoard(knightPossibleSquareNames[square]) &&
-        knightPossibleSquareNames[square] != this.position.name
-      ) {
-        validMoves.push(knightPossibleSquareNames[square]);
-      }
-    }
-    return validMoves;
+    const validator = new MoveValidation(board, this);
+    return knightPossibleSquareNames.filter(square => {
+      return (
+        validator.board.squareExistsOnBoard(square) &&
+        (validator.isValidEmptySquare(square) || validator.isValidCaptureSquare(square))
+      );
+    });
   }
 }
