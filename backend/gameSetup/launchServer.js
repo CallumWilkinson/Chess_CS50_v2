@@ -124,8 +124,7 @@ function createNewSession(
   //create gameInstance
   const newGameInstance = newGameSession.createGameInstance();
 
-  //create a chess game inside the instance, this function creates the board, the gamestatemanager and all the chess peices
-  //the game is now setup like a normal chess board
+  //initialize chess game with board, game state manager, and pieces
   newGameInstance.createNewChessGame();
 
   //track players connected to this session
@@ -338,9 +337,7 @@ export function getAvailableGamesForListing(gameSessions) {
       //get the waiting player's info from connectedUsers (single source of truth)
       const waitingPlayer = gameSession.connectedUsers[0];
 
-      //create game listing object
-      //this is the data i can send back to the client, so the client can list stuff about each game currently going
-      //so for example the client will see who is in each game and if it is full or not
+      //create game listing object for client display
       const gameInfo = {
         gameSessionID: gameSessionID,
         waitingPlayer: {

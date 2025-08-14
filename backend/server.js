@@ -20,11 +20,9 @@ const httpServer = createServer(app);
 //this turns ther web server into a real time webSocket server so clients can talk to eachother
 const io = new Server(httpServer);
 
-//set port to default (most common default port), or to the node.js process to upload to render/hosting service
 const PORT = process.env.PORT || SystemConstants.DEFAULT_PORT;
 
-//serve static files from public folder (all the front end stuff)
-//basically means when someone goes to port 3000 send them all files in the public folder (the front end)
+//serve static files from public folder
 app.use(express.static(path.join(__dirname, "../public")));
 
 //creates new game sessions and adds all socket listeners

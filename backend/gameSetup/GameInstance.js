@@ -78,6 +78,5 @@ export default class GameInstance {
    * Example of how this GameInstance class can support multiple game types
    * @todo Implement checkers game logic
    */
-  //im not going to actually make a checkers game yet but this is just an example, like with this gameInstance class i can create games inside it
   createNewCheckersGame() {}
 }

@@ -44,7 +44,7 @@ export default class SessionManager {
    * @param {string} gameSessionId - Unique identifier for the game session
    * @param {GameSession} gameSessionObject - The GameSession instance to store
    */
-  //session creation logic should happen elsewhere, this just stores it
+  //stores session - creation logic handled by caller
   addSession(gameSessionId, gameSessionObject) {
     this.gameSessions[gameSessionId] = gameSessionObject;
   }
