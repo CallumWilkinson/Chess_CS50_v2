@@ -56,9 +56,9 @@ export default class GameStateManager {
     }
 
     if (this.board.grid[targetSquareName] != null) {
-      const enemyPeice = this.board.grid[targetSquareName];
-      if (enemyPeice.colour != this.currentPlayerColour) {
-        this.capturedPieces[this.currentPlayerColour].push(enemyPeice);
+      const enemyPiece = this.board.grid[targetSquareName];
+      if (enemyPiece.colour != this.currentPlayerColour) {
+        this.capturedPieces[this.currentPlayerColour].push(enemyPiece);
       }
     }
 
