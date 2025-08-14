@@ -27,12 +27,13 @@ window.onload = () => {
   //runs a callback function so that the game is only loaded when the data is received from the server and lets me access the gameinstance from the server
   getPlayerColourAndInitialBoardState(socket, (gameData) => initializeGameUI(socket, canvas, ctx, gameData));
 
-  function initializeGameUI(socket, canvas, ctx, { gameInstance }) {
+  function initializeGameUI(socket, canvas, ctx, { gameInstance, playerColour }) {
     //create a shared reference object that will hold the current game state
     //this allows the event listeners to always access the most up-to-date game state
     const currentGameState = {
       board: gameInstance.board,
-      gameStateManager: gameInstance.gameStateManager
+      gameStateManager: gameInstance.gameStateManager,
+      playerColour: playerColour
     };
 
     updateUI(ctx, currentGameState.board, currentGameState.gameStateManager);

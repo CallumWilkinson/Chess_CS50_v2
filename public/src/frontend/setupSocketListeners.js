@@ -14,12 +14,10 @@ export function getPlayerColourAndInitialBoardState(socket, callback) {
         console.log("Hello", username);
         console.log("You are playing as", colour);
         console.log("client received this initial gameinstance:", gameInstance);
-        //i could probably return the colour in the callback so i dont need to assign to a window, but leave this for now
-        window.playerColour = colour;
 
         //now that the client has actually got the data from the server, we can run the callback function
         //pass the data to the callback so i dont need to use window.gameinstance ect as global variables, this is jsut a bit neater
-        callback({ gameInstance });
+        callback({ gameInstance, playerColour: colour });
       }
     );
   }

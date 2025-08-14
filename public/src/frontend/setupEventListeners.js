@@ -28,7 +28,7 @@ export function setupMovementEventListeners(
       if (
         selectedPiece == null ||
         selectedPiece.colour !== currentGameState.gameStateManager.currentPlayerColour ||
-        selectedPiece.colour !== window.playerColour
+        selectedPiece.colour !== currentGameState.playerColour
       ) {
         firstClick = false;
         selectedPiece = null;
@@ -51,7 +51,7 @@ export function setupMovementEventListeners(
       if (
         newSelectedPiece != null &&
         newSelectedPiece.colour === currentGameState.gameStateManager.currentPlayerColour &&
-        newSelectedPiece.colour === window.playerColour
+        newSelectedPiece.colour === currentGameState.playerColour
       ) {
         //treat this second click as a new selection
         firstClickedSquareName = secondClickSquareName;
