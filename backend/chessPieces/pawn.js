@@ -30,7 +30,12 @@ export default class Pawn extends ChessPiece {
     const validMoves = [];
     const validator = new MoveValidation(board, this);
 
-    const direction = this.colour === "white" ? MovementConstants.WHITE_DIRECTION : MovementConstants.BLACK_DIRECTION;
+    let direction;
+    if (this.colour === "white") {
+      direction = MovementConstants.WHITE_DIRECTION;
+    } else {
+      direction = MovementConstants.BLACK_DIRECTION;
+    }
     const fileIndex = this.position.fileIndex;
     const rankIndex = this.position.rankIndex;
 

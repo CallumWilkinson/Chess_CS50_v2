@@ -6,7 +6,7 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs}"],
-    ignores: ["node_modules/**", "test-results/**", "playwright-report/**"],
+    ignores: ["node_modules/**", "test-results/**", "playwright-report/**", "jsdoc-output/**", ".vscode/**"],
     plugins: { js },
     extends: ["js/recommended"],
     languageOptions: {
@@ -33,7 +33,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.spec.js", "**/*.test.js", "e2e/**/*.js"],
+    files: ["**/*.spec.js", "**/*.test.js", "e2e/**/*.js", "tests/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -41,6 +41,9 @@ export default defineConfig([
         ...globals.browser,
         ...globals.jest,
       },
+    },
+    rules: {
+      "no-unused-vars": "off", // Test files often have legitimate unused imports
     },
   },
 ]);

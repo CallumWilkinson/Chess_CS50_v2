@@ -54,7 +54,7 @@ export default class GameInstance {
    * @returns {string} The assigned color ('black' or 'white')
    * @deprecated Use GameSession.addPlayerToSession instead
    */
-  addPlayersToInstance(connectedUsers, database = null) {
+  addPlayersToInstance(connectedUsers, database = null) { // eslint-disable-line no-unused-vars
     //database color assignment is no longer supported - color assignment moved to GameSession
     //this method now only handles the legacy fallback logic
 

@@ -1,6 +1,5 @@
 import ChessPiece from "./ChessPiece.js";
 import MoveValidation from "../gameLogic/moveValidation.js";
-import Position from "../gameLogic/position.js";
 
 /**
  * Represents a King chess piece
