@@ -1,6 +1,8 @@
 import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
 import Board from "../../../backend/gameLogic/board.js";
 import Position from "../../../backend/gameLogic/position.js";
+import { GameStatus } from "../../../shared/utilities/constants.js";
+import King from "../../../backend/chessPieces/king.js";
 
 describe("Game State Manager class tests", () => {
   let board;
@@ -46,5 +48,60 @@ describe("Game State Manager class tests", () => {
     expect(board.grid["g4"]).toBe(blackPawn);
     //expecting whitepawn to be in black's captured array
     expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
+  });
+
+  test("capturing enemy king ends game with correct winner", () => {
+    //create a simple scenario where we can test king capture directly
+    const blackPawn = board.grid["f7"];
+    const whiteKing = new King("white", new Position("e5"));
+    
+    //place white king in a position where black pawn can capture it diagonally
+    board.grid["e5"] = whiteKing;
+    
+    //move black pawn to f6 first
+    const f6 = new Position("f6");
+    let blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    gameStateManager.makeMove(blackPawn, f6, blackPossibleMovesArray);
+    
+    //switch turn to white - make a dummy move
+    const whitePawn = board.grid["a2"];
+    const a3 = new Position("a3");
+    const whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
+    gameStateManager.makeMove(whitePawn, a3, whitePossibleMovesArray);
+    
+    //now it's black's turn - get actual possible moves for the pawn at f6
+    blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    
+    //capture the king - pawn at f6 should be able to capture diagonally at e5
+    gameStateManager.makeMove(blackPawn, new Position("e5"), blackPossibleMovesArray);
+    
+    //verify game ends with black as winner
+    expect(gameStateManager.gameStatus).toBe(GameStatus.CHECKMATE);
+    expect(gameStateManager.winner).toBe("black");
+    expect(gameStateManager.capturedPieces["black"]).toContain(whiteKing);
+  });
+
+  test("no moves allowed after game ends", () => {
+    //manually end the game
+    gameStateManager.endGame("white");
+    
+    const blackPawn = board.grid["f7"];
+    const blackPossibleMovesArray = blackPawn.getPossibleMoves(board);
+    const f5 = new Position("f5");
+    
+    //attempt to make a move after game is over
+    expect(() => {
+      gameStateManager.makeMove(blackPawn, f5, blackPossibleMovesArray);
+    }).toThrow("Game is over. No more moves allowed.");
+  });
+
+  test("endGame method sets correct winner and status", () => {
+    expect(gameStateManager.gameStatus).toBe(GameStatus.ONGOING);
+    expect(gameStateManager.winner).toBe(null);
+    
+    gameStateManager.endGame("white");
+    
+    expect(gameStateManager.gameStatus).toBe(GameStatus.CHECKMATE);
+    expect(gameStateManager.winner).toBe("white");
   });
 });

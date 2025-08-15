@@ -1,4 +1,4 @@
-import { UIConstants, FilesAndRanks } from "./shared/utilities/constants.js";
+import { UIConstants, FilesAndRanks, GameStatus } from "./shared/utilities/constants.js";
 import { getFileIndex, getRankIndex, isLightSquare } from "./shared/utilities/toSquareNotation.js";
 
 /**
@@ -93,7 +93,14 @@ export function updateUI(ctx, board, gameStateManager) {
     }
   }
 
-  //update current player turn text
-  document.getElementById("current-turn-contents").textContent =
-    gameStateManager.currentPlayerColour;
+  //update current player turn text or display game end result
+  if (gameStateManager.gameStatus === GameStatus.CHECKMATE) {
+    document.getElementById("current-turn-contents").textContent = 
+      `🎉 ${gameStateManager.winner} wins by checkmate!`;
+    document.getElementById("current-turn-heading").textContent = "Game Over";
+  } else {
+    document.getElementById("current-turn-contents").textContent =
+      gameStateManager.currentPlayerColour;
+    document.getElementById("current-turn-heading").textContent = "Current Turn";
+  }
 }

@@ -34,6 +34,10 @@ export default class GameStateManager {
    * @throws {Error} If move is invalid (not player's turn, illegal move, friendly fire)
    */
   makeMove(chessPiece, targetSquare, possibleMovesArray) {
+    if (this.gameStatus !== GameStatus.ONGOING) {
+      throw new Error("Game is over. No more moves allowed.");
+    }
+    
     const startSquareName = chessPiece.position.name;
     const targetSquareName = targetSquare.name;
     if (chessPiece.colour !== this.currentPlayerColour) {
@@ -59,6 +63,11 @@ export default class GameStateManager {
       const enemyPiece = this.board.grid[targetSquareName];
       if (enemyPiece.colour != this.currentPlayerColour) {
         this.capturedPieces[this.currentPlayerColour].push(enemyPiece);
+        
+        if (enemyPiece.name === "king") {
+          this.endGame(this.currentPlayerColour);
+          return true;
+        }
       }
     }
 
