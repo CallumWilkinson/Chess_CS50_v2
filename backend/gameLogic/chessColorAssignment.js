@@ -7,6 +7,14 @@
  * @returns {string|null} "black", "white", or null if both colors are taken
  */
 export function assignChessColor(players) {
+  // Test mode: Force specific color assignment
+  if (process.env.TEST_FORCE_COLOR) {
+    const forcedColor = process.env.TEST_FORCE_COLOR.toLowerCase();
+    if (forcedColor === 'white' || forcedColor === 'black') {
+      return forcedColor;
+    }
+  }
+
   if (!players) {
     return "black";
   }

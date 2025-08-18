@@ -12,8 +12,12 @@ export default class GameSession {
    * Creates a new game session with a random ID
    */
   constructor() {
-    //random game session identifier
-    this.gameSessionID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
+    //random game session identifier (or test deterministic ID)
+    if (process.env.TEST_SESSION) {
+      this.gameSessionID = process.env.TEST_SESSION;
+    } else {
+      this.gameSessionID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
+    }
     //single source of truth for connected players
     this.connectedUsers = [];
     //set when createGameInstance() is called
@@ -25,8 +29,13 @@ export default class GameSession {
    * @returns {GameInstance} The newly created game instance
    */
   createGameInstance() {
-    //random game instance identifier
-    const gameInstanceID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
+    //random game instance identifier (or test deterministic ID)
+    let gameInstanceID;
+    if (process.env.TEST_SESSION) {
+      gameInstanceID = `${process.env.TEST_SESSION}-instance`;
+    } else {
+      gameInstanceID = Math.random().toString(SystemConstants.RANDOM_STRING_RADIX).slice(SystemConstants.RANDOM_STRING_START, SystemConstants.RANDOM_STRING_END);
+    }
 
     const gameInstance = new GameInstance(gameInstanceID);
     this.gameInstance = gameInstance;
