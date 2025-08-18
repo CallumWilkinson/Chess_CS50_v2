@@ -11,6 +11,10 @@ import { getFileIndex, getRankIndex, isLightSquare } from "./shared/utilities/to
  */
 export function updateUI(ctx, board, gameStateManager) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  
+  // Add data attributes to canvas for testing
+  ctx.canvas.setAttribute("data-game-status", gameStateManager.gameStatus);
+  ctx.canvas.setAttribute("data-current-turn", gameStateManager.currentPlayerColour);
 
   ctx.font = `${UIConstants.TILESIZE - 65}px serif`;
   ctx.textAlign = "center";
@@ -98,9 +102,18 @@ export function updateUI(ctx, board, gameStateManager) {
     document.getElementById("current-turn-contents").textContent = 
       `🎉 ${gameStateManager.winner} wins by checkmate!`;
     document.getElementById("current-turn-heading").textContent = "Game Over";
+    
+    // Add winner display for testing
+    const winnerElement = document.getElementById("current-turn-contents");
+    winnerElement.setAttribute("data-testid", "winner-display");
+    winnerElement.setAttribute("data-winner", gameStateManager.winner);
   } else {
     document.getElementById("current-turn-contents").textContent =
       gameStateManager.currentPlayerColour;
     document.getElementById("current-turn-heading").textContent = "Current Turn";
+    
+    // Add current turn data for testing
+    const turnElement = document.getElementById("current-turn-contents");
+    turnElement.setAttribute("data-current-turn", gameStateManager.currentPlayerColour);
   }
 }

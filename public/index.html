@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="current-turn-container">
-      <h1 id="current-turn-heading">Current Turn</h1>
-      <p id="current-turn-contents"></p>
+    <div id="current-turn-container" data-testid="game-status-container">
+      <h1 id="current-turn-heading" data-testid="turn-banner">Current Turn</h1>
+      <p id="current-turn-contents" data-testid="game-status"></p>
     </div>
-    <canvas id="chessBoard" width="640" height="640"></canvas>
+    <canvas id="chessBoard" width="640" height="640" data-testid="board-container"></canvas>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
