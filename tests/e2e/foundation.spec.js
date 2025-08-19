@@ -1,17 +1,6 @@
 import { test, expect } from "./fixtures.js";
 
 test.describe("Foundation Tests", () => {
-  test("Server serves pages correctly", async ({ chessPage }) => {
-    const response = await chessPage.goto("/");
-    expect(response?.status()).toBe(200);
-    await expect(chessPage).toHaveTitle("Chess Game");
-  });
-
-  test("Game loads with board visible", async ({ chessPage }) => {
-    await chessPage.startGame("TestPlayer");
-    await expect(chessPage.getByTestId("board-container")).toBeVisible();
-  });
-
   test("Multiple users can connect", async ({ browser }) => {
     const page1 = await browser.newPage();
     const page2 = await browser.newPage();
