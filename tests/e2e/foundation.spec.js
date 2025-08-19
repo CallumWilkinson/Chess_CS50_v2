@@ -1,19 +1,21 @@
 import { test, expect } from "./fixtures.js";
 
-test.describe("Foundation Tests", () => {
-  test("Multiple users can connect", async ({ browser }) => {
-    const page1 = await browser.newPage();
-    const page2 = await browser.newPage();
+test.describe("Foundation Tests of Core Gameplay", () => {
+  test("both players move their pawns two spaces forward", async ({
+    twoPlayers,
+  }) => {
+    const { page1, page2 } = twoPlayers;
 
-    page1.on("dialog", async (dialog) => await dialog.accept("Player1"));
-    page2.on("dialog", async (dialog) => await dialog.accept("Player2"));
+    await page1.clickSquare("e2");
+    await page1.clickSquare("e4");
 
-    await Promise.all([page1.goto("/"), page2.goto("/")]);
+    await page2.clickSquare("e7");
+    await page2.clickSquare("e5");
 
     await expect(page1.getByTestId("board-container")).toBeVisible();
     await expect(page2.getByTestId("board-container")).toBeVisible();
 
-    await page1.close();
-    await page2.close();
+    //should i have a better expect assertion here?
+    //how do i assert that the move has actually happened?
   });
 });
