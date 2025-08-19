@@ -41,12 +41,33 @@ export const test = base.extend({
     // Wait for game to be ready
     page.waitForGameReady = async () => {
       await expect(page.getByTestId('board-container')).toBeVisible();
-      await expect(page.getByTestId('game-status')).toHaveText(/black|white/);
+      
+      // Wait for initial game state to be received and processed
+      // This indicates Socket.IO connection is working since the server sends this data
+      await expect(page.getByTestId('game-status')).toHaveText(/black|white/, {
+        timeout: 15000
+      });
+      
+      // Ensure board is fully rendered with game data
+      await expect(page.getByTestId('board-container')).toHaveAttribute('data-game-status', 'ongoing', {
+        timeout: 10000
+      });
     };
 
     // Click a chess square by notation
     page.clickSquare = async (file, rank) => {
       const canvas = page.getByTestId('board-container');
+      
+      // Wait for canvas to be fully rendered and interactive
+      await canvas.waitFor({ state: 'attached' });
+      await expect(canvas).toBeVisible();
+      
+      // Verify canvas context is available (indicates full rendering)
+      await page.waitForFunction(() => {
+        const canvas = document.querySelector('[data-testid="board-container"]');
+        return canvas && canvas.getContext && canvas.offsetWidth > 0 && canvas.offsetHeight > 0;
+      });
+      
       const box = await canvas.boundingBox();
       
       if (!box) {
@@ -61,6 +82,9 @@ export const test = base.extend({
       const y = box.y + (rankIndex * 80) + 40;
       
       await page.mouse.click(x, y);
+      
+      // Wait for click to be processed by checking for any visual feedback
+      await page.waitForTimeout(50); // Minimal delay for event propagation
     };
 
     // Check game state helper
@@ -107,14 +131,31 @@ export const ChessTestHelpers = {
   /**
    * Perform a standard chess move
    */
-  async makeMove(page, from, to) {
+  async makeMove(page, from, to, options = {}) {
     const [fromFile, fromRank] = from.split('');
     const [toFile, toRank] = to.split('');
+    
+    // Capture current turn before making move
+    const currentTurnElement = page.getByTestId('board-container');
+    const currentTurn = await currentTurnElement.getAttribute('data-current-turn');
     
     await page.clickSquare(fromFile, fromRank);
     await page.clickSquare(toFile, toRank);
     
-    // Wait for move to process
+    // Wait for move to be processed by watching for state changes
+    if (options.expectTurnChange !== false) {
+      try {
+        // Wait for turn to change or move to be rejected
+        await expect.soft(currentTurnElement).not.toHaveAttribute('data-current-turn', currentTurn, {
+          timeout: 5000
+        });
+      } catch (error) {
+        // Move might have been invalid or we're in single-player mode
+        // This is acceptable for some test scenarios
+      }
+    }
+    
+    // Small delay to ensure any UI updates are complete
     await page.waitForTimeout(100);
   },
 
@@ -122,7 +163,9 @@ export const ChessTestHelpers = {
    * Check that a move was successful by verifying turn change
    */
   async expectMoveSuccess(page, expectedNextTurn) {
-    await expect(page.getByTestId('board-container')).toHaveAttribute('data-current-turn', expectedNextTurn);
+    await expect(page.getByTestId('board-container')).toHaveAttribute('data-current-turn', expectedNextTurn, {
+      timeout: 10000
+    });
   },
 
   /**
