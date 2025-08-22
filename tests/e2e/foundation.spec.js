@@ -2,18 +2,18 @@ import { test, expect } from "./fixtures.js";
 
 test.describe("Foundation Tests of Core Gameplay", () => {
   test("both players move their pawns two spaces forward", async ({
-    twoPlayers,
+    twoPlayerGame,
   }) => {
-    const { page1, page2 } = twoPlayers;
+    const { player1, player2 } = twoPlayerGame;
 
-    await page1.clickSquare("e2");
-    await page1.clickSquare("e4");
+    await player1.clickSquare("e2");
+    await player1.clickSquare("e4");
 
-    await page2.clickSquare("e7");
-    await page2.clickSquare("e5");
+    await player2.clickSquare("e7");
+    await player2.clickSquare("e5");
 
-    await expect(page1.getByTestId("board-container")).toBeVisible();
-    await expect(page2.getByTestId("board-container")).toBeVisible();
+    await expect(player1.getByTestId("board-container")).toBeVisible();
+    await expect(player2.getByTestId("board-container")).toBeVisible();
 
     //should i have a better expect assertion here?
     //how do i assert that the move has actually happened?

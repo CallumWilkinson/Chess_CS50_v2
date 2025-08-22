@@ -53,7 +53,6 @@ function enhanceChessPage(page) {
 }
 
 /**
- * Your original single-page fixture, unchanged in usage.
  * Tests can do: test("...", async ({ chessPage }) => { await chessPage.startGame(); ... })
  */
 export const test = base.extend({
@@ -63,26 +62,29 @@ export const test = base.extend({
   },
 
   /**
-   * New two-player fixture.
+   * two-player fixture.
    * Creates two isolated contexts and hands back ready pages with helpers.
    * Usage:
-   *   test("...", async ({ twoPlayers }) => {
-   *     const { page1, page2 } = twoPlayers;
-   *     await page1.clickSquare("e2");
+   *   test("...", async ({ twoPlayerGame }) => {
+   *     const { player1, player2 } = twoPlayerGame;
+   *     await player1.clickSquare("e2");
    *   })
    */
-  twoPlayers: async ({ browser }, use) => {
+  twoPlayerGame: async ({ browser }, use) => {
     const context1 = await browser.newContext();
     const context2 = await browser.newContext();
 
-    const page1 = enhanceChessPage(await context1.newPage());
-    const page2 = enhanceChessPage(await context2.newPage());
+    const player1 = enhanceChessPage(await context1.newPage());
+    const player2 = enhanceChessPage(await context2.newPage());
 
     // Start both players in parallel so the session setup is realistic and fast
-    await Promise.all([page1.startGame("Player1"), page2.startGame("Player2")]);
+    await Promise.all([
+      player1.startGame("Player1"),
+      player2.startGame("Player2"),
+    ]);
 
     try {
-      await use({ page1, page2 });
+      await use({ player1, player2 });
     } finally {
       await context1.close();
       await context2.close();
