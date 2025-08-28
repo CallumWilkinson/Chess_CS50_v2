@@ -150,6 +150,7 @@ Use the following structure:
 
 - If a task requires **multiple changes**, show all the changes at once — do **not** drip-feed changes line by line
 - Then, explain how you would break those changes up into multiple commits
+- One concern per commit, keep added lines less than 100 and changed files less than 4.
 - **Always try to bundle logic and its test into the same commit** where it makes sense to do so
 - Always group the changes into logical units based on what was modified, and suggest a clear, descriptive commit message for each group. However, if you can think of a logical argument to keeping all these changes in one commit please provide your reasoning.
 - I’ll review the full set of changes, and we’ll decide the final commit structure together
