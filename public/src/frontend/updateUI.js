@@ -1,5 +1,11 @@
 import { UIConstants, FilesAndRanks, GameStatus } from "./shared/utilities/constants.js";
 import { getFileIndex, getRankIndex, isLightSquare } from "./shared/utilities/toSquareNotation.js";
+import { 
+  squareToPixelCoordinates, 
+  squareToPieceCenterCoordinates, 
+  getRankLabelCoordinates, 
+  getFileLabelCoordinates 
+} from "./shared/utilities/coordinateMapping.js";
 
 /**
  * Update the visual chess board UI with current game state
@@ -24,8 +30,7 @@ export function updateUI(ctx, board, gameStateManager) {
     const row = getRankIndex(square);
     const col = getFileIndex(square);
 
-    const x = col * UIConstants.TILESIZE;
-    const y = row * UIConstants.TILESIZE;
+    const { x, y } = squareToPixelCoordinates(col, row);
 
     if (isLightSquare(square)) {
       ctx.fillStyle = "#EEEED5";
@@ -33,31 +38,28 @@ export function updateUI(ctx, board, gameStateManager) {
       ctx.fillStyle = "#7D945D";
     }
 
-    ctx.fillRect(
-      col * UIConstants.TILESIZE,
-      row * UIConstants.TILESIZE,
-      UIConstants.TILESIZE,
-      UIConstants.TILESIZE
-    );
+    ctx.fillRect(x, y, UIConstants.TILESIZE, UIConstants.TILESIZE);
 
     // add text to left side of the grid
     if (col === 0) {
       ctx.fillStyle = "black";
+      const rankCoordinates = getRankLabelCoordinates(row);
       ctx.fillText(
         //starting with number 8 on top left
         FilesAndRanks.RANKS[row],
-        x + 5,
-        y + UIConstants.TILESIZE * 0.7
+        rankCoordinates.x,
+        rankCoordinates.y
       );
     }
 
     //add text to bottom of grid
     if (row === 7) {
       ctx.fillStyle = "black";
+      const fileCoordinates = getFileLabelCoordinates(col);
       ctx.fillText(
         FilesAndRanks.FILES[col],
-        x + UIConstants.TILESIZE * 0.75,
-        y + UIConstants.TILESIZE - 5
+        fileCoordinates.x,
+        fileCoordinates.y
       );
     }
   });
@@ -77,8 +79,7 @@ export function updateUI(ctx, board, gameStateManager) {
         const file = getFileIndex(square);
         const rank = getRankIndex(square);
 
-        const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
-        const y = rank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
+        const { x, y } = squareToPieceCenterCoordinates(file, rank);
 
         ctx.fillText(whiteUnicodeLogo, x, y);
       }
@@ -89,8 +90,7 @@ export function updateUI(ctx, board, gameStateManager) {
         const file = getFileIndex(square);
         const rank = getRankIndex(square);
 
-        const x = file * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
-        const y = rank * UIConstants.TILESIZE + UIConstants.TILESIZE / 2;
+        const { x, y } = squareToPieceCenterCoordinates(file, rank);
 
         ctx.fillText(blackUnicodeLogo, x, y);
       }
