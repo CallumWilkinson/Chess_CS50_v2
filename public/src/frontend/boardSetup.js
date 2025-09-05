@@ -6,7 +6,8 @@ import { updateUI } from "./updateUI.js";
  * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context
  * @param {Board} chessBoard - The chess board instance with piece positions
  * @param {GameStateManager} gameStateManager - Game state manager for turn tracking
+ * @param {string} playerColour - Current player's color for board orientation
  */
-export function setupBoard(ctx, chessBoard, gameStateManager) {
-  updateUI(ctx, chessBoard, gameStateManager);
+export function setupBoard(ctx, chessBoard, gameStateManager, playerColour) {
+  updateUI(ctx, chessBoard, gameStateManager, playerColour);
 }

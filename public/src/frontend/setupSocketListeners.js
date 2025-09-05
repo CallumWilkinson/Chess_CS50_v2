@@ -46,7 +46,7 @@ export function updateUIWithNewGameState(ctx, socket, currentGameState) {
       currentGameState.gameStateManager = currentGameStateManager;
       
       //update local UI to show the new game state
-      updateUI(ctx, currentGameStateManager.board, currentGameStateManager);
+      updateUI(ctx, currentGameStateManager.board, currentGameStateManager, currentGameState.playerColour);
     });
   }
 }

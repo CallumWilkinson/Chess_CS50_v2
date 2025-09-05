@@ -36,7 +36,7 @@ window.onload = () => {
       playerColour: playerColour
     };
 
-    updateUI(ctx, currentGameState.board, currentGameState.gameStateManager);
+    updateUI(ctx, currentGameState.board, currentGameState.gameStateManager, currentGameState.playerColour);
     setupMovementEventListeners(socket, canvas, currentGameState);
     updateUIWithNewGameState(ctx, socket, currentGameState);
   }

@@ -6,6 +6,7 @@ import {
   getRankLabelCoordinates, 
   getFileLabelCoordinates 
 } from "./shared/utilities/coordinateMapping.js";
+import { transformCoordinatesForPlayer } from "./shared/utilities/boardOrientation.js";
 
 /**
  * Update the visual chess board UI with current game state
@@ -14,8 +15,9 @@ import {
  * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context
  * @param {Board} board - Current board state with piece positions
  * @param {GameStateManager} gameStateManager - Game state for turn tracking
+ * @param {string} playerColour - Current player's color for board orientation
  */
-export function updateUI(ctx, board, gameStateManager) {
+export function updateUI(ctx, board, gameStateManager, playerColour) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
   // Add data attributes to canvas for testing
@@ -30,7 +32,9 @@ export function updateUI(ctx, board, gameStateManager) {
     const row = getRankIndex(square);
     const col = getFileIndex(square);
 
-    const { x, y } = squareToPixelCoordinates(col, row);
+    // Transform coordinates based on player perspective
+    const { rank: transformedRow, file: transformedCol } = transformCoordinatesForPlayer(row, col, playerColour);
+    const { x, y } = squareToPixelCoordinates(transformedCol, transformedRow);
 
     if (isLightSquare(square)) {
       ctx.fillStyle = "#EEEED5";
@@ -41,9 +45,9 @@ export function updateUI(ctx, board, gameStateManager) {
     ctx.fillRect(x, y, UIConstants.TILESIZE, UIConstants.TILESIZE);
 
     // add text to left side of the grid
-    if (col === 0) {
+    if (transformedCol === 0) {
       ctx.fillStyle = "black";
-      const rankCoordinates = getRankLabelCoordinates(row);
+      const rankCoordinates = getRankLabelCoordinates(transformedRow);
       ctx.fillText(
         //starting with number 8 on top left
         FilesAndRanks.RANKS[row],
@@ -53,9 +57,9 @@ export function updateUI(ctx, board, gameStateManager) {
     }
 
     //add text to bottom of grid
-    if (row === 7) {
+    if (transformedRow === 7) {
       ctx.fillStyle = "black";
-      const fileCoordinates = getFileLabelCoordinates(col);
+      const fileCoordinates = getFileLabelCoordinates(transformedCol);
       ctx.fillText(
         FilesAndRanks.FILES[col],
         fileCoordinates.x,
@@ -79,7 +83,9 @@ export function updateUI(ctx, board, gameStateManager) {
         const file = getFileIndex(square);
         const rank = getRankIndex(square);
 
-        const { x, y } = squareToPieceCenterCoordinates(file, rank);
+        // Transform coordinates based on player perspective
+        const { rank: transformedRank, file: transformedFile } = transformCoordinatesForPlayer(rank, file, playerColour);
+        const { x, y } = squareToPieceCenterCoordinates(transformedFile, transformedRank);
 
         ctx.fillText(whiteUnicodeLogo, x, y);
       }
@@ -90,7 +96,9 @@ export function updateUI(ctx, board, gameStateManager) {
         const file = getFileIndex(square);
         const rank = getRankIndex(square);
 
-        const { x, y } = squareToPieceCenterCoordinates(file, rank);
+        // Transform coordinates based on player perspective
+        const { rank: transformedRank, file: transformedFile } = transformCoordinatesForPlayer(rank, file, playerColour);
+        const { x, y } = squareToPieceCenterCoordinates(transformedFile, transformedRank);
 
         ctx.fillText(blackUnicodeLogo, x, y);
       }
