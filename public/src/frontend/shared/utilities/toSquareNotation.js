@@ -3,7 +3,7 @@
 
 /**
  * Converts numeric indices back to standard chess notation.
- * this function is used in position.squareIsInLOS function, setupEventListeners, pawn class and the knight class
+ * this function is used in position.squareIsInLOS function, setupEventListeners, pawn class and the knight class for example
  *
  * @param {number} fileIndex - 0..7
  * @param {number} rankIndex - 0..7
@@ -28,7 +28,7 @@ export function getFileIndex(squareName) {
 }
 
 /**
- * Converts chess rank number to array index (1=0, 2=1, etc.) 
+ * Converts chess rank number to array index (1=0, 2=1, etc.)
  * @param {string} squareName - Chess square notation (e.g., "e4", "a1")
  * @returns {number} Rank index (0-7)
  */
