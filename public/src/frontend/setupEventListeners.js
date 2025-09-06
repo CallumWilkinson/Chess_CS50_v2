@@ -22,7 +22,7 @@ export function setupMovementEventListeners(
     if (firstClick == false) {
       firstClick = true;
 
-      firstClickedSquareName = getClickedSquareName(event, canvas);
+      firstClickedSquareName = getClickedSquareName(event, canvas, currentGameState.playerColour);
       selectedPiece = currentGameState.board.grid[firstClickedSquareName];
 
       if (
@@ -36,7 +36,7 @@ export function setupMovementEventListeners(
       }
     } else {
       //second click is valid if firstClick variable is NOT NULL, so it contains a value
-      const secondClickSquareName = getClickedSquareName(event, canvas);
+      const secondClickSquareName = getClickedSquareName(event, canvas, currentGameState.playerColour);
 
       //cancel selection if user double clicks the same square (reset click state)
       if (firstClickedSquareName === secondClickSquareName) {
