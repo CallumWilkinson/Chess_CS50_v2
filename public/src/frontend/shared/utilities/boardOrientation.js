@@ -32,3 +32,14 @@ export function transformCoordinatesForPlayer(
     file: fileIndex,
   };
 }
+
+export function updateHTMLTestAttributesForFlippedBoard(playerColour) {
+  //grab html attribute and change to true
+  if (shouldFlipBoard(playerColour)) {
+    const canvasElement = document.querySelector("#chessBoard");
+    if (!canvasElement) {
+      return;
+    }
+    canvasElement.setAttribute("data-black-pieces-on-bottom", "false");
+  }
+}

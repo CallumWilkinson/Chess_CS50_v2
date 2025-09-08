@@ -1,12 +1,23 @@
-import { UIConstants, FilesAndRanks, GameStatus } from "./shared/utilities/constants.js";
-import { getFileIndex, getRankIndex, isLightSquare } from "./shared/utilities/toSquareNotation.js";
-import { 
-  squareToPixelCoordinates, 
-  squareToPieceCenterCoordinates, 
-  getRankLabelCoordinates, 
-  getFileLabelCoordinates 
+import {
+  UIConstants,
+  FilesAndRanks,
+  GameStatus,
+} from "./shared/utilities/constants.js";
+import {
+  getFileIndex,
+  getRankIndex,
+  isLightSquare,
+} from "./shared/utilities/toSquareNotation.js";
+import {
+  squareToPixelCoordinates,
+  squareToPieceCenterCoordinates,
+  getRankLabelCoordinates,
+  getFileLabelCoordinates,
 } from "./shared/utilities/coordinateMapping.js";
-import { transformCoordinatesForPlayer } from "./shared/utilities/boardOrientation.js";
+import {
+  transformCoordinatesForPlayer,
+  updateHTMLTestAttributesForFlippedBoard,
+} from "./shared/utilities/boardOrientation.js";
 
 /**
  * Update the visual chess board UI with current game state
@@ -19,10 +30,13 @@ import { transformCoordinatesForPlayer } from "./shared/utilities/boardOrientati
  */
 export function updateUI(ctx, board, gameStateManager, playerColour) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
+
   // Add data attributes to canvas for testing
   ctx.canvas.setAttribute("data-game-status", gameStateManager.gameStatus);
-  ctx.canvas.setAttribute("data-current-turn", gameStateManager.currentPlayerColour);
+  ctx.canvas.setAttribute(
+    "data-current-turn",
+    gameStateManager.currentPlayerColour
+  );
 
   ctx.font = `${UIConstants.TILESIZE - 65}px serif`;
   ctx.textAlign = "center";
@@ -33,8 +47,11 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
     const col = getFileIndex(square);
 
     // Transform coordinates based on player perspective
-    const { rank: transformedRow, file: transformedCol } = transformCoordinatesForPlayer(row, col, playerColour);
+    const { rank: transformedRow, file: transformedCol } =
+      transformCoordinatesForPlayer(row, col, playerColour);
     const { x, y } = squareToPixelCoordinates(transformedCol, transformedRow);
+
+    updateHTMLTestAttributesForFlippedBoard(playerColour);
 
     if (isLightSquare(square)) {
       ctx.fillStyle = "#EEEED5";
@@ -84,8 +101,12 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
         const rank = getRankIndex(square);
 
         // Transform coordinates based on player perspective
-        const { rank: transformedRank, file: transformedFile } = transformCoordinatesForPlayer(rank, file, playerColour);
-        const { x, y } = squareToPieceCenterCoordinates(transformedFile, transformedRank);
+        const { rank: transformedRank, file: transformedFile } =
+          transformCoordinatesForPlayer(rank, file, playerColour);
+        const { x, y } = squareToPieceCenterCoordinates(
+          transformedFile,
+          transformedRank
+        );
 
         ctx.fillText(whiteUnicodeLogo, x, y);
       }
@@ -97,8 +118,12 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
         const rank = getRankIndex(square);
 
         // Transform coordinates based on player perspective
-        const { rank: transformedRank, file: transformedFile } = transformCoordinatesForPlayer(rank, file, playerColour);
-        const { x, y } = squareToPieceCenterCoordinates(transformedFile, transformedRank);
+        const { rank: transformedRank, file: transformedFile } =
+          transformCoordinatesForPlayer(rank, file, playerColour);
+        const { x, y } = squareToPieceCenterCoordinates(
+          transformedFile,
+          transformedRank
+        );
 
         ctx.fillText(blackUnicodeLogo, x, y);
       }
@@ -107,10 +132,11 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
 
   //update current player turn text or display game end result
   if (gameStateManager.gameStatus === GameStatus.CHECKMATE) {
-    document.getElementById("current-turn-contents").textContent = 
-      `🎉 ${gameStateManager.winner} wins by checkmate!`;
+    document.getElementById(
+      "current-turn-contents"
+    ).textContent = `🎉 ${gameStateManager.winner} wins by checkmate!`;
     document.getElementById("current-turn-heading").textContent = "Game Over";
-    
+
     // Add winner display for testing
     const winnerElement = document.getElementById("current-turn-contents");
     winnerElement.setAttribute("data-testid", "winner-display");
@@ -118,10 +144,14 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
   } else {
     document.getElementById("current-turn-contents").textContent =
       gameStateManager.currentPlayerColour;
-    document.getElementById("current-turn-heading").textContent = "Current Turn";
-    
+    document.getElementById("current-turn-heading").textContent =
+      "Current Turn";
+
     // Add current turn data for testing
     const turnElement = document.getElementById("current-turn-contents");
-    turnElement.setAttribute("data-current-turn", gameStateManager.currentPlayerColour);
+    turnElement.setAttribute(
+      "data-current-turn",
+      gameStateManager.currentPlayerColour
+    );
   }
 }

@@ -2,7 +2,7 @@
 import { test as base, expect } from "@playwright/test";
 
 /**
- * Private helper: attach your chess helpers to any Playwright Page.
+ * Private helper: attach chess helpers to any Playwright Page.
  * Not exported. Both fixtures use this so there is a single definition.
  */
 function enhanceChessPage(page) {
