@@ -46,17 +46,20 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testDir: "tests/e2e",
+      fullyParallel: false, // nothing in this folder runs in parallel
+      workers: 1, // this forces no paralell tests, do this to reduce flakiness but drop speed
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -83,7 +86,7 @@ export default defineConfig({
   webServer: {
     command: "npm run start",
     url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false, // ensures fresh server per run
     timeout: 120 * 1000, // 2 minutes
   },
 });

@@ -88,6 +88,11 @@ export const test = base.extend({
     } finally {
       await context1.close();
       await context2.close();
+
+      // extra cleanup: tell server to reset or disconnect
+      await fetch("http://localhost:3000/test/reset", { method: "POST" }).catch(
+        () => {}
+      );
     }
   },
 });
