@@ -13,12 +13,16 @@ export default class SessionManager {
   constructor() {
     //key: gameSessionID, value: GameSession object
     this.gameSessions = {};
-    
+
     //key: socket.id, value: Player object
     this.connectedPlayers = {};
-    
+
     //mapping of socket.id to gameSessionID for quick lookups
     this.socketIDtoGameSessionID = {};
+
+    //mapping of canonical lobby names to session IDs for unique lobby indexing
+    //acts as a simple in-memory index to support create/join flows by name
+    this.lobbyNameToSessionID = new Map();
   }
 
   /**
@@ -117,7 +121,7 @@ export default class SessionManager {
       //only include games with exactly 1 player waiting
       if (playerCount === 1) {
         const waitingPlayer = session.connectedUsers[0];
-        
+
         //data sent to client for displaying available games
         const gameInfo = {
           gameSessionID: gameSessionID,
@@ -128,6 +132,11 @@ export default class SessionManager {
           playersConnected: playerCount,
           maxPlayers: ChessConstants.MAX_PLAYERS,
         };
+
+        //include lobbyName only when present to maintain backward-compatible tests
+        if (session.lobbyName) {
+          gameInfo.lobbyName = session.lobbyName;
+        }
 
         availableGames.push(gameInfo);
       }
@@ -159,7 +168,6 @@ export default class SessionManager {
     return session.connectedUsers.length;
   }
 
-
   /**
    * Get game instance for a specific socket id
    * Returns the game instance if socket is mapped to a valid session, null otherwise
@@ -180,7 +188,6 @@ export default class SessionManager {
     return session.gameInstance;
   }
 
-
   /**
    * Get the players array for a specific session using connectedUsers as single source of truth
    * Returns the connectedUsers array if session exists, null otherwise
@@ -195,5 +202,76 @@ export default class SessionManager {
     }
 
     return session.connectedUsers;
+  }
+
+  /**
+   * Determine if a lobby name is available (and valid) for registration
+   * @param {string} name - Proposed lobby name
+   * @returns {boolean} true if valid and not taken, false otherwise
+   */
+  isLobbyNameAvailable(name) {
+    const canonical = this.#canonicalizeLobbyName(name);
+    if (!this.#isValidLobbyName(canonical)) {
+      return false;
+    }
+    return !this.lobbyNameToSessionID.has(canonical);
+  }
+
+  /**
+   * Register a lobby name to point at a session ID (no-op if invalid or taken)
+   * @param {string} name - Lobby name to register
+   * @param {string} sessionId - Associated session ID
+   * @returns {boolean} true if registration succeeded
+   */
+  registerLobbyName(name, sessionId) {
+    const canonical = this.#canonicalizeLobbyName(name);
+    if (!this.#isValidLobbyName(canonical)) {
+      return false;
+    }
+    if (this.lobbyNameToSessionID.has(canonical)) {
+      return false;
+    }
+    this.lobbyNameToSessionID.set(canonical, sessionId);
+    return true;
+  }
+
+  /**
+   * Unregister a lobby name (free it for reuse)
+   * @param {string} name - Lobby name to remove
+   */
+  unregisterLobbyName(name) {
+    const canonical = this.#canonicalizeLobbyName(name);
+    this.lobbyNameToSessionID.delete(canonical);
+  }
+
+  /**
+   * Look up a session ID by lobby name
+   * @param {string} name - Lobby name to look up
+   * @returns {string|undefined} session ID if found
+   */
+  findSessionIdByLobbyName(name) {
+    const canonical = this.#canonicalizeLobbyName(name);
+    return this.lobbyNameToSessionID.get(canonical);
+  }
+
+  //normalize names for unique indexing: trim, collapse internal spaces, lowercase
+  #canonicalizeLobbyName(name) {
+    if (typeof name !== "string") {
+      return "";
+    }
+    const trimmed = name.trim().replace(/\s+/g, " ");
+    return trimmed.toLowerCase();
+  }
+
+  //validate canonical name against business rules
+  #isValidLobbyName(canonical) {
+    if (!canonical) {
+      return false;
+    }
+    if (canonical.length < 3 || canonical.length > 24) {
+      return false;
+    }
+    //allow a-z, 0-9, space and dash only
+    return /^[a-z0-9 -]+$/.test(canonical);
   }
 }
