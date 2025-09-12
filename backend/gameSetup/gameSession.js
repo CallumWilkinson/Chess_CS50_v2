@@ -22,6 +22,9 @@ export default class GameSession {
     this.connectedUsers = [];
     //set when createGameInstance() is called
     this.gameInstance;
+
+    //optional host-selected preferred colour for the first player to join this session
+    this.hostPreferredColour = null;
   }
 
   /**
@@ -73,6 +76,14 @@ export default class GameSession {
   //delegates to chess-specific logic but could be extended for other game types
   //this keeps networking/session code separate from game-specific rules
   getPlayerColour() {
+    if (
+      Array.isArray(this.connectedUsers) &&
+      this.connectedUsers.length === 0 &&
+      (this.hostPreferredColour === "white" || this.hostPreferredColour === "black")
+    ) {
+      return this.hostPreferredColour;
+    }
+
     return assignChessColor(this.connectedUsers);
   }
 }
