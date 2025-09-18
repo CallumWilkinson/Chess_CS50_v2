@@ -25,6 +25,7 @@ export default class GameSession {
 
     //optional host-selected preferred colour for the first player to join this session
     this.hostPreferredColour = null;
+    this.lobbyName = null;
   }
 
   /**
