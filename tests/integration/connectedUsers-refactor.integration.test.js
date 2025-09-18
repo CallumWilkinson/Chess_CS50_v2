@@ -4,10 +4,7 @@
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import Player from "../../backend/gameSetup/Player.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
-import {
-  handleDisconnect,
-  getAvailableGamesForListing,
-} from "../../backend/gameSetup/launchServer.js";
+import { handleDisconnect } from "../../backend/gameSetup/services/SessionLifecycleService.js";
 import { createMockSocket } from "../helpers/testUtils.js";
 import { createTestPlayer, createGameSessionWithPlayers, createTestScenario, TEST_PLAYERS } from "../helpers/testFactories.js";
 
@@ -67,13 +64,12 @@ describe("ConnectedUsers refactor integration", () => {
     //create session with no players (should not appear - no waiting player)
     const emptySession = createGameSessionWithPlayers([]);
 
-    const gameSessions = {
-      [waitingSession.gameSessionID]: waitingSession,
-      [fullSession.gameSessionID]: fullSession,
-      [emptySession.gameSessionID]: emptySession,
-    };
+    const manager = new SessionManager();
+    manager.addSession(waitingSession.gameSessionID, waitingSession);
+    manager.addSession(fullSession.gameSessionID, fullSession);
+    manager.addSession(emptySession.gameSessionID, emptySession);
 
-    const availableGames = getAvailableGamesForListing(gameSessions);
+    const availableGames = manager.getAvailableGames();
 
     //only the waiting session should appear
     expect(availableGames).toHaveLength(1);

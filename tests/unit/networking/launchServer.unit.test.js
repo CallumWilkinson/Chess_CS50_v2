@@ -26,7 +26,9 @@ jest.unstable_mockModule("../../../backend/gameSetup/player.js", () => ({
 
 //we import launchServer AFTER setting up the mocks
 //this ensures launchServer gets the mocked versions of its dependencies
-const { launchServer, getAvailableGamesForListing, handleDisconnect } = await import("../../../backend/gameSetup/launchServer.js");
+const { launchServer } = await import("../../../backend/gameSetup/launchServer.js");
+const { handleDisconnect } = await import("../../../backend/gameSetup/services/SessionLifecycleService.js");
+import SessionManager from "../../../backend/gameSetup/SessionManager.js";
 
 //describe groups related tests together
 //this is testing the helper functions inside launchServer.js
@@ -39,13 +41,10 @@ describe("launchServer utility functions", () => {
   });
 
   //this tests the function that finds games players can join
-  describe("getAvailableGamesForListing", () => {
+  describe("getAvailableGames listings", () => {
     test("returns empty array when no game sessions exist", () => {
-      //create empty gameSessions object (no games exist)
-      const gameSessions = {};
-      
-      //call the actual exported function
-      const result = getAvailableGamesForListing(gameSessions);
+      const manager = new SessionManager();
+      const result = manager.getAvailableGames();
       //expect it to return empty array since no games exist
       expect(result).toEqual([]);
     });
@@ -54,14 +53,10 @@ describe("launchServer utility functions", () => {
       //create test data with games that have 0 players and 2 players using factories
       const emptySession = createGameSessionWithPlayers(TEST_PLAYERS.EMPTY_GAME);
       const fullSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_FULL_GAME);
-      
-      const gameSessions = {
-        [emptySession.gameSessionID]: emptySession,
-        [fullSession.gameSessionID]: fullSession
-      };
-      
-      //call the actual exported function
-      const result = getAvailableGamesForListing(gameSessions);
+      const manager = new SessionManager();
+      manager.addSession(emptySession.gameSessionID, emptySession);
+      manager.addSession(fullSession.gameSessionID, fullSession);
+      const result = manager.getAvailableGames();
       //expect empty array since no games have exactly 1 player waiting
       expect(result).toEqual([]);
     });
@@ -72,14 +67,11 @@ describe("launchServer utility functions", () => {
       const waitingSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_WAITING_GAME);
       const fullSession = createGameSessionWithPlayers(TEST_PLAYERS.CHESS_FULL_GAME);
       
-      const gameSessions = {
-        [emptySession.gameSessionID]: emptySession,
-        [waitingSession.gameSessionID]: waitingSession,
-        [fullSession.gameSessionID]: fullSession,
-      };
-      
-      //call the actual exported function
-      const result = getAvailableGamesForListing(gameSessions);
+      const manager = new SessionManager();
+      manager.addSession(emptySession.gameSessionID, emptySession);
+      manager.addSession(waitingSession.gameSessionID, waitingSession);
+      manager.addSession(fullSession.gameSessionID, fullSession);
+      const result = manager.getAvailableGames();
       //expect it to return info about session2 (the only game with 1 player)
       expect(result).toEqual([{
         gameSessionID: waitingSession.gameSessionID,
@@ -97,13 +89,10 @@ describe("launchServer utility functions", () => {
       const waitingSession1 = createGameSessionWithPlayers([{username: "user1", socketId: "socket1", colour: "black"}]);
       const waitingSession2 = createGameSessionWithPlayers([{username: "user2", socketId: "socket2", colour: "black"}]);
       
-      const gameSessions = {
-        [waitingSession1.gameSessionID]: waitingSession1,
-        [waitingSession2.gameSessionID]: waitingSession2,
-      };
-      
-      //call the actual exported function
-      const result = getAvailableGamesForListing(gameSessions);
+      const manager = new SessionManager();
+      manager.addSession(waitingSession1.gameSessionID, waitingSession1);
+      manager.addSession(waitingSession2.gameSessionID, waitingSession2);
+      const result = manager.getAvailableGames();
       //expect it to return both games since both have 1 player waiting
       expect(result).toHaveLength(2);
       //expect.arrayContaining checks that the array contains these items (order doesn't matter)
