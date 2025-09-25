@@ -93,6 +93,22 @@ body {
   border: 2px solid var(--btn-border);
   border-radius: var(--btn-radius);
   box-shadow: var(--btn-shadow);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  /* a bit more drop to match the lift */
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
+  /* slight brightening without changing your color token */
+  filter: brightness(1.06);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: var(--btn-shadow);
+  filter: none;
 }
 
 /* responsive nicety: stack buttons on small screens only */
