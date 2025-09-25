@@ -1,113 +1,115 @@
 :root {
-  /* theme tokens you can tweak to match figma exactly */
-  --page-bg: #e5e5e5;
+  --canvas-edge: #1f1f1f;
+  --panel-bg: #e5e5e5;
   --title-bg: #8f8f8f;
   --title-text: #111111;
   --btn-bg: #7bd957;
   --btn-text: #ffffff;
   --btn-border: #2f3b2f;
-  --radius: 8px;
-  --shadow-soft: 0 4px 8px rgba(0, 0, 0, 0.15);
-  --shadow-tight: 0 2px 0 rgba(0, 0, 0, 0.25);
-  --space-1: 8px;
-  --space-2: 16px;
-  --space-3: 24px;
-  --space-4: 32px;
-  --content-max: 960px; /* widen or narrow the main frame */
+
+  --panel-width: 1130px; /* light panel width */
+  --panel-pad: 56px; /* inner padding on all sides */
+  --title-width: 520px;
+  --title-height: 120px;
+  --title-radius: 8px;
+  --buttons-gap: 180px; /* space between buttons */
+  --btn-width: 180px;
+  --btn-height: 64px;
+  --btn-radius: 6px;
+
+  --title-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  --btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
+  height: 100%;
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
     "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--title-text);
-  background: #1f1f1f; /* dark canvas edge like your screenshot */
+  background: var(--canvas-edge); /* dark outer area */
 }
 
+/* center the light panel */
 .page {
-  min-height: 100vh;
+  min-height: 100%;
   display: grid;
   place-items: center;
-  padding: var(--space-4);
+  padding: 24px;
 }
 
+/* the light grey panel */
 .frame {
-  width: 100%;
-  max-width: var(--content-max);
-  background: var(--page-bg);
-  padding: 56px;
-  border-radius: 4px;
-  outline: 2px solid #4aa3ff; /* the blue frame edge you showed */
+  width: min(100%, var(--panel-width));
+  background: var(--panel-bg);
+  padding: var(--panel-pad);
+  border-radius: 0;
+  box-shadow: none;
 }
 
+/* big grey title pill */
 .title {
-  margin: 0 auto 72px;
-  text-align: center;
-  padding: 24px 40px;
+  width: var(--title-width);
+  height: var(--title-height);
+  margin: 0 auto 120px;
+  display: grid;
+  place-items: center;
   background: var(--title-bg);
   color: var(--title-text);
-  font-size: 40px; /* adjust to match your figma size */
+  font-size: 28px;
   font-weight: 600;
-  line-height: 1.15;
-  border-radius: 4px;
-  box-shadow: var(--shadow-soft);
-  width: fit-content;
+  line-height: 1.2;
+  border-radius: var(--title-radius);
+  box-shadow: var(--title-shadow);
 }
 
+/* two green buttons, horizontally centered */
 .actions {
   display: grid;
   grid-auto-flow: column;
-  column-gap: 120px; /* distance between the two buttons */
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  column-gap: var(--buttons-gap);
 }
 
+/* button look: solid fill, dark border, thin bottom shadow */
 .button {
-  display: inline-grid;
+  width: var(--btn-width);
+  height: var(--btn-height);
+  display: grid;
   place-items: center;
-  min-width: 220px;
-  min-height: 72px;
-  padding: 0 var(--space-3);
+  padding: 0 12px;
   background: var(--btn-bg);
   color: var(--btn-text);
-  text-align: center;
   text-decoration: none;
+  text-align: center;
   font-size: 18px;
   font-weight: 600;
   border: 2px solid var(--btn-border);
-  border-radius: 4px;
-  box-shadow: var(--shadow-tight);
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
 }
 
-.button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-}
-
-.button:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-tight);
-}
-
-.button:focus-visible {
-  outline: 3px solid #2b6cb0;
-  outline-offset: 2px;
-}
-
-/* small screens stack the buttons */
-@media (max-width: 640px) {
+/* responsive nicety: stack buttons on small screens only */
+@media (max-width: 560px) {
+  .title {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+    margin-bottom: 48px;
+    font-size: 24px;
+  }
   .actions {
     grid-auto-flow: row;
-    row-gap: var(--space-3);
+    row-gap: 16px;
     column-gap: 0;
   }
-  .title {
-    font-size: 32px;
-    text-align: center;
+  .button {
+    width: 90%;
   }
 }
