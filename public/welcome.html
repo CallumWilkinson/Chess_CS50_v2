@@ -12,10 +12,15 @@
         <h1 class="title">Online Multiplayer Chess</h1>
 
         <nav class="actions">
-          <a class="button" href="#create">Create New<br />Game</a>
-          <a class="button" href="#join">Join Existing<br />Game</a>
+          <a class="button" data-create-game-button href="#create">Create New<br />Game</a>
+          <a class="button" data-join-game-button href="#join">Join Existing<br />Game</a>
         </nav>
       </section>
     </main>
+
+    <script type="module">
+      import { initializeWelcomePage } from "./welcome.js";
+      initializeWelcomePage();
+    </script>
   </body>
 </html>
