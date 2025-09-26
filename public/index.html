@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chess Game</title>
+    <script>
+      (function redirectToWelcomeIfNeeded() {
+        try {
+          const key = 'pendingGameSession';
+          const hasPending = window.sessionStorage && window.sessionStorage.getItem(key);
+          if (!hasPending) {
+            window.location.replace('welcome.html');
+          }
+        } catch (error) {
+          window.location.replace('welcome.html');
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -21,3 +33,5 @@
     <script type="module" src="./main.js"></script>
   </body>
 </html>
+
+
