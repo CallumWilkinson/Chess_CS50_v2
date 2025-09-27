@@ -145,7 +145,9 @@ export default class LobbyService {
       result.session.lobbyName &&
       result.session.connectedUsers.length >= ChessConstants.MAX_PLAYERS
     ) {
-      this.sessionManager.unregisterLobbyName(result.session.lobbyName);
+      const activeLobbyName = result.session.lobbyName;
+      this.sessionManager.unregisterLobbyName(activeLobbyName);
+      result.session.lobbyName = null;
     }
 
     this.broadcastLobbyUpdate(io);
@@ -191,3 +193,4 @@ function createErrorPayload(code) {
   const message = LobbyErrorMessages[code] || "Lobby error";
   return { code, message };
 }
+
