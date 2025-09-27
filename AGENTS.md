@@ -64,7 +64,8 @@ Avoid opaque nouns that hide intent. Examples to avoid: `Manager`, `Service`, `H
 Additional rules:
 
 - Never omit tests unless explicitly told to for this task. If a test is omitted, explain why it cannot or should not be tested.
-- You must run all tests before suggesting changes.
+- You must run all tests before suggesting changes. EXCEPT PLAYWRITE TESTS
+- Playwrite tests no not need to pass and they do not need to be run on each chage, only Jest tests need to run and pass
 - A unit test is required for every new function or logic change.
 - Place tests in `__tests__` or `*.test.js`. Use Jest syntax.
 - Update or extend relevant tests when logic changes.
