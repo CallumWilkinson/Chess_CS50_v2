@@ -212,6 +212,27 @@ describe("launchServer utility functions", () => {
       expect(socketIDtoGameSessionID["socket1"]).toBeUndefined();
     });
 
+    test("retains lobby session after host disconnect when name registered", () => {
+      const { sessionManager, session } = createTestScenario([
+        { username: "host", socketId: "socket1", colour: "black" }
+      ]);
+
+      session.lobbyName = "Alpha Lobby";
+      sessionManager.registerLobbyName("Alpha Lobby", session.gameSessionID);
+
+      const gameSessions = { [session.gameSessionID]: session };
+      const socketIDtoGameSessionID = sessionManager.socketIDtoGameSessionID;
+      const connectedPlayers = sessionManager.connectedPlayers;
+      const mockSocket = createMockSocket("socket1");
+
+      handleDisconnect(gameSessions, socketIDtoGameSessionID, mockSocket, connectedPlayers);
+
+      expect(gameSessions[session.gameSessionID]).toBeDefined();
+      expect(gameSessions[session.gameSessionID].connectedUsers).toHaveLength(0);
+      expect(socketIDtoGameSessionID["socket1"]).toBeUndefined();
+      expect(sessionManager.findSessionIdByLobbyName("Alpha Lobby")).toBe(session.gameSessionID);
+    });
+
     test("keeps game session when other players remain after disconnect", () => {
       //set up test data using factory with 2 players
       const { sessionManager, session } = createTestScenario([
@@ -256,3 +277,4 @@ describe("launchServer utility functions", () => {
     });
   });
 });
+

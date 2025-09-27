@@ -18,29 +18,39 @@ export function cleanupOnDisconnect(
   delete connectedPlayers[socket.id];
 
   const sessionData = gameSessions[gameSessionID];
-  if (sessionData != null) {
-    const disconnectingPlayer = sessionData.connectedUsers.find((p) => {
-      return p.socketID === socket.id;
-    });
+  if (!sessionData) {
+    return;
+  }
 
-    if (disconnectingPlayer) {
-      const playerUsername = disconnectingPlayer.username;
-      sessionData.removePlayerFromSession(disconnectingPlayer);
+  const disconnectingPlayer = sessionData.connectedUsers.find((player) => {
+    return player.socketID === socket.id;
+  });
 
-      if (sessionData.connectedUsers.length === 0) {
-        delete gameSessions[gameSessionID];
-        logLifecycle(
-          `Game session ${gameSessionID} deleted - no players remaining`
-        );
-      }
+  if (!disconnectingPlayer) {
+    return;
+  }
 
-      delete socketIDtoGameSessionID[socket.id];
+  const playerUsername = disconnectingPlayer.username;
+  sessionData.removePlayerFromSession(disconnectingPlayer);
 
+  if (sessionData.connectedUsers.length === 0) {
+    if (sessionData.lobbyName) {
       logLifecycle(
-        `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameSessionID ${gameSessionID}`
+        `Game session ${gameSessionID} retained for lobby ${sessionData.lobbyName}`
+      );
+    } else {
+      delete gameSessions[gameSessionID];
+      logLifecycle(
+        `Game session ${gameSessionID} deleted - no players remaining`
       );
     }
   }
+
+  delete socketIDtoGameSessionID[socket.id];
+
+  logLifecycle(
+    `Player ${playerUsername} with socket id of ${socket.id} disconnected from gameSessionID ${gameSessionID}`
+  );
 }
 
 //internal: conditional logging for service messages
