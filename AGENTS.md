@@ -54,23 +54,32 @@ Avoid opaque nouns that hide intent. Examples to avoid: `Manager`, `Service`, `H
 
 ## Testing Rules
 
-**TDD is mandatory.** Follow a strict Red to Green to Refactor loop.
+**TDD is mandatory for the backend and any shared domain logic.** Follow a strict Red to Green to Refactor loop.
 
 - **Red**: write a failing unit test for a small slice of behavior.
 - **Green**: write the minimal implementation to make that test pass.
 - **Refactor**: clean code and tests without changing behavior. Remove duplication and improve names.
 - Repeat for the next slice.
 
+**Scope and focus**
+
+- **Backend focus**: heavy unit and integration testing for server code, domain logic, repositories, adapters, and any code that touches persistence, networking, or business rules.
+- **Frontend policy**: do not write unit tests or integration tests for UI components, view-model wiring, or client-side event wiring. Frontend behavior will be covered later by user-authored Playwright end-to-end tests. Do not create, run, or maintain Playwright tests in this workflow.
+
 Additional rules:
 
-- Never omit tests unless explicitly told to for this task. If a test is omitted, explain why it cannot or should not be tested.
-- You must run all tests before suggesting changes. EXCEPT PLAYWRITE TESTS
-- Playwrite tests no not need to pass and they do not need to be run on each chage, only Jest tests need to run and pass
-- A unit test is required for every new function or logic change.
+- Never omit required backend tests unless explicitly told to for this task. If a backend test is omitted, explain why it cannot or should not be tested.
+- Run all Jest tests before suggesting changes. Do not run Playwright.
+- A unit test is required for every new function or logic change that affects backend or shared domain logic. Pure UI-only changes are exempt.
 - Place tests in `__tests__` or `*.test.js`. Use Jest syntax.
 - Update or extend relevant tests when logic changes.
 - Tests must run independently. Use mock data or mocks where needed.
 - Prefer real class instances over mocks. Mock only external dependencies or hard-to-reproduce failures.
+
+**Socket and frontend-to-backend boundaries**
+
+- Do not write client-side unit or integration tests for Socket.IO emits or event wiring because they require heavy mocking and produce low value.
+- Test server-side socket handlers at the backend layer. Prefer lightweight integration tests that spin up the server in-memory or use adapter fakes at the boundary to assert observable outcomes.
 
 **Class-specific testing alignment**
 
@@ -139,6 +148,7 @@ Expectations:
 ## Review and Approval Process
 
 - Never commit for the user.
+
 - Make one logical change at a time. Stage only relevant files. Then output:
 
   - Staged filenames
@@ -146,7 +156,9 @@ Expectations:
   - A short summary
 
 - Wait for feedback before the next change.
+
 - Do not bundle unrelated changes.
+
 - Provide a brief analysis of your reasoning in every reply.
 
 **Pull Request Template**
@@ -259,6 +271,8 @@ Inline or collapse when:
 - Favor real flows. Mock only externals.
 - Cover edges, failures, and defaults.
 - Test observable outcomes, not internals.
+- Frontend coverage relies on real user flows verified by Playwright later, not unit or integration tests created here.
+- Backend receives the testing emphasis. Prefer integration tests that exercise real boundaries like repositories and adapters.
 
 ## Git Hygiene — Expanded Practices
 
@@ -285,6 +299,4 @@ Inline or collapse when:
 
 **Analogy**
 
-Classes are labeled toolboxes that keep the tools they really use. If a class holds no tools or only passes tools to someone else, do not buy the toolbox.
-
----
+Classes are labeled toolboxes that keep the tools they really use. If a class holds no tools or only passes tools to someone else, do not buy the toolbox. Frontend tests in this workflow are like a final walkthrough of the house to see if doors open and lights turn on which you will do with Playwright later and backend tests are the building inspections that check the wiring and the plumbing now.
