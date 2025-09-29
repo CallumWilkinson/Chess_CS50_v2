@@ -26,6 +26,7 @@ Simplicity Addendum takes precedence on any abstraction decision. If Codex and S
 - Separation: keep business logic, UI, and data in separate layers.
 - Errors: handle explicitly with guard clauses or `try` and `catch`. Do not swallow errors.
 - Global state: minimize. Prefer parameters and explicit dependencies.
+- NEVER USE TERNARY OPERATORS
 
 ## Architectural Consistency
 
