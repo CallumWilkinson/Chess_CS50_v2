@@ -66,6 +66,9 @@ describe("initializeWelcomePage", () => {
 
     expect(mockWindow.prompt).toHaveBeenCalled();
     expect(createSocket).toHaveBeenCalledTimes(1);
+    expect(createSocket).toHaveBeenCalledWith(
+      expect.objectContaining({ promptUser: null })
+    );
   });
 
   test("sends lobby:create, stores session, and redirects on success", () => {

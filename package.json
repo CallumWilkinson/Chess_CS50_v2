@@ -21,7 +21,10 @@
     "testPathIgnorePatterns": [
       "/e2e/"
     ],
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "^https://cdn\\.socket\\.io/4\\.7\\.2/socket\\.io\\.esm\\.min\\.js$": "<rootDir>/tests/unit/frontend/__mocks__/socketIoEsmMock.js"
+    }
   },
   "name": "chess_cs50_v2",
   "version": "1.0.0",

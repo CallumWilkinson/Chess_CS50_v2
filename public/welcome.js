@@ -69,7 +69,7 @@ export function initializeWelcomePage({
 
   function ensureSocket() {
     if (!socket) {
-      socket = createSocket();
+      socket = createSocket({ promptUser: null });
     }
 
     if (!hasConnected) {
