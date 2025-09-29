@@ -1,10 +1,23 @@
-import { setupSocketWithAuthentication } from "./src/frontend/setupAuthentication.js";
+﻿import { setupSocketWithAuthentication } from "./src/frontend/setupAuthentication.js";
+import { createLobbyListModal } from "./src/frontend/LobbyListModal.js";
 
 export const PENDING_SESSION_KEY = "pendingGameSession";
 const DEFAULT_LOBBY_PROMPT = "Enter a lobby name:";
 const GENERIC_ERROR_MESSAGE = "Unable to create lobby";
 const MISSING_NAME_MESSAGE = "Please enter a lobby name.";
+const LOBBY_LIST_ERROR_MESSAGE = "Unable to fetch available lobbies.";
+const LOBBY_UPDATE_EVENT = "lobbies:updated";
+const LOBBY_LIST_EVENT = "lobby:list";
 
+/**
+ * Initialize welcome page interactions for creating or joining games.
+ * Wires button handlers, establishes a socket on demand, and manages modal lifecycle.
+ * @param {object} [deps]
+ * @param {Document} [deps.document]
+ * @param {Window} [deps.window]
+ * @param {(options: { promptUser: null }) => any} [deps.createSocket]
+ * @returns {void}
+ */
 export function initializeWelcomePage({
   document: doc = document,
   window: win = window,
@@ -19,6 +32,9 @@ export function initializeWelcomePage({
 
   let socket;
   let hasConnected = false;
+  let modalApi;
+  let unsubscribeLobbyUpdates;
+  let activeSocketForModal;
 
   createButton.addEventListener('click', (event) => {
     event.preventDefault();
@@ -63,7 +79,7 @@ export function initializeWelcomePage({
   if (joinButton) {
     joinButton.addEventListener('click', (event) => {
       event.preventDefault();
-      win.alert('Join flow coming soon.');
+      handleJoinFlow();
     });
   }
 
@@ -79,6 +95,147 @@ export function initializeWelcomePage({
 
     return socket;
   }
+
+  async function handleJoinFlow() {
+    const activeSocket = ensureSocket();
+    activeSocketForModal = activeSocket;
+
+    let lobbies;
+    try {
+      lobbies = await requestLobbySnapshot(activeSocket);
+    } catch (error) {
+      win.alert(error.message || LOBBY_LIST_ERROR_MESSAGE);
+      return;
+    }
+
+    const modal = ensureModal();
+    modal.show(lobbies);
+
+    resetLobbySubscription();
+    unsubscribeLobbyUpdates = subscribeToLobbyUpdates(
+      activeSocket,
+      (payload) => {
+        let listings = [];
+        if (Array.isArray(payload?.lobbies)) {
+          listings = payload.lobbies;
+        }
+        modal.show(listings);
+      }
+    );
+  }
+
+  function ensureModal() {
+    if (!modalApi) {
+      modalApi = createLobbyListModal(doc);
+      modalApi.onSelect((sessionId, lobbyName) => {
+        handleModalSelection({
+          sessionId,
+          lobbyName,
+          socket: activeSocketForModal,
+          modal: modalApi,
+          window: win,
+        });
+      });
+      modalApi.onRefresh(async () => {
+        if (!activeSocketForModal) {
+          return;
+        }
+        try {
+          const refreshed = await requestLobbySnapshot(activeSocketForModal);
+          modalApi.show(refreshed);
+        } catch (error) {
+          win.alert(error.message || LOBBY_LIST_ERROR_MESSAGE);
+        }
+      });
+      modalApi.onClose(() => {
+        resetLobbySubscription();
+      });
+    }
+    return modalApi;
+  }
+
+  function resetLobbySubscription() {
+    if (unsubscribeLobbyUpdates) {
+      unsubscribeLobbyUpdates();
+      unsubscribeLobbyUpdates = null;
+    }
+  }
+
+  function handleModalSelection({ sessionId, lobbyName, socket: activeSocket, modal, window: winRef }) {
+    if (!sessionId) {
+      winRef.alert(LOBBY_LIST_ERROR_MESSAGE);
+      return;
+    }
+
+    const username = activeSocket?.auth?.username || '';
+    const resolvedLobbyName = lobbyName || sessionId;
+
+    try {
+      storePendingSession(winRef.sessionStorage, {
+        gameSessionID: sessionId,
+        lobbyName: resolvedLobbyName,
+        username,
+      });
+    } catch (error) {
+      console.error("Unable to persist pending session", error);
+      winRef.alert(GENERIC_ERROR_MESSAGE);
+      return;
+    }
+
+    resetLobbySubscription();
+    modal.hide();
+    winRef.location.assign('index.html');
+  }
+}
+
+/**
+ * Subscribe to server-driven lobby updates.
+ * @param {any} activeSocket - socket-like object supporting on/off or removeListener.
+ * @param {(payload: any) => void} handler - called when lobbies are updated.
+ * @returns {() => void} unsubscribe function.
+ */
+function subscribeToLobbyUpdates(activeSocket, handler) {
+  activeSocket.on(LOBBY_UPDATE_EVENT, handler);
+
+  return () => {
+    if (typeof activeSocket.off === 'function') {
+      activeSocket.off(LOBBY_UPDATE_EVENT, handler);
+    } else if (typeof activeSocket.removeListener === 'function') {
+      activeSocket.removeListener(LOBBY_UPDATE_EVENT, handler);
+    }
+  };
+}
+
+/**
+ * Request a one-shot snapshot of available lobbies from the server.
+ * @param {any} activeSocket - socket-like object supporting emit with ack callback.
+ * @returns {Promise<Array<any>>} resolves to list of lobbies or rejects with error.
+ */
+async function requestLobbySnapshot(activeSocket) {
+  return await new Promise((resolve, reject) => {
+    try {
+      activeSocket.emit(LOBBY_LIST_EVENT, undefined, (response) => {
+        if (!response) {
+          reject(new Error(LOBBY_LIST_ERROR_MESSAGE));
+          return;
+        }
+
+        if (response.error) {
+          const message = response.error.message || LOBBY_LIST_ERROR_MESSAGE;
+          reject(new Error(message));
+          return;
+        }
+
+        let listings = [];
+        if (Array.isArray(response.lobbies)) {
+          listings = response.lobbies;
+        }
+        resolve(listings);
+      });
+    } catch (error) {
+      reject(new Error(LOBBY_LIST_ERROR_MESSAGE));
+    }
+  });
 }
 
 function sanitizeLobbyName(value) {
@@ -111,4 +268,3 @@ function storePendingSession(storage, payload) {
     throw error;
   }
 }
-
