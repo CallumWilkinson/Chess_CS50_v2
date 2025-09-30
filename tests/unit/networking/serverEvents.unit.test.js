@@ -59,6 +59,25 @@ describe("Testing that the server is sending and receiving data over sockets as 
       expect.objectContaining({
         colour: expect.any(String),
         gameInstance: expect.any(Object),
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
+      })
+    );
+
+    const hostRosterEmit = mockSocketA.emit.mock.calls.find(call => call[0] === "session:players");
+    expect(hostRosterEmit).toBeDefined();
+    expect(hostRosterEmit[1]).toEqual(
+      expect.objectContaining({
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
       })
     );
   });
@@ -87,6 +106,25 @@ describe("Testing that the server is sending and receiving data over sockets as 
       expect.objectContaining({
         colour: expect.any(String),
         gameInstance: expect.any(Object),
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
+      })
+    );
+
+    const rosterBroadcast = mockIOServer.__toEmitMock.mock.calls.find(call => call[0] === "session:players");
+    expect(rosterBroadcast).toBeDefined();
+    expect(rosterBroadcast[1]).toEqual(
+      expect.objectContaining({
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
       })
     );
   });

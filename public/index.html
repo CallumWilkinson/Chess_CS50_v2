@@ -19,19 +19,53 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="current-turn-container" data-testid="game-status-container">
-      <h1 id="current-turn-heading" data-testid="turn-banner">Current Turn</h1>
-      <p id="current-turn-contents" data-testid="game-status"></p>
-    </div>
-    <canvas
-      id="chessBoard"
-      width="640"
-      height="640"
-      data-testid="board-container"
-      data-black-pieces-on-bottom="true"
-    ></canvas>
+    <main id="game-layout">
+      <header id="current-turn-container" data-testid="game-status-container">
+        <h1 id="current-turn-heading" data-testid="turn-banner">Current Turn</h1>
+        <p id="current-turn-contents" data-testid="game-status"></p>
+      </header>
+      <section id="game-stage">
+        <aside class="player-card" id="player-card-self" data-testid="player-card-self">
+          <h2 class="player-card__label">You</h2>
+          <p
+            class="player-card__username"
+            id="player-self-username"
+            data-testid="player-self-username"
+          ></p>
+          <p
+            class="player-card__colour"
+            id="player-self-colour"
+            data-testid="player-self-colour"
+          ></p>
+        </aside>
+        <div id="board-wrapper">
+          <canvas
+            id="chessBoard"
+            width="640"
+            height="640"
+            data-testid="board-container"
+            data-black-pieces-on-bottom="true"
+          ></canvas>
+        </div>
+        <aside
+          class="player-card"
+          id="player-card-opponent"
+          data-testid="player-card-opponent"
+        >
+          <h2 class="player-card__label">Opponent</h2>
+          <p
+            class="player-card__username"
+            id="player-opponent-username"
+            data-testid="player-opponent-username"
+          ></p>
+          <p
+            class="player-card__colour"
+            id="player-opponent-colour"
+            data-testid="player-opponent-colour"
+          ></p>
+        </aside>
+      </section>
+    </main>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
-
-

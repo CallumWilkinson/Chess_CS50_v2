@@ -1,4 +1,5 @@
 import { updateUI } from "./updateUI.js";
+import { createPlayerRoster } from "./shared/utilities/playerRoster.js";
 
 /**
  * Set up socket listener for initial player info and game state
@@ -7,20 +8,28 @@ import { updateUI } from "./updateUI.js";
  * @param {Function} callback - Callback function to execute when data is received
  */
 export function getPlayerColourAndInitialBoardState(socket, callback) {
-  if (socket) {
-    socket.on(
-      "playerInfoAndInitialGameState",
-      ({ username, colour, gameInstance }) => {
-        console.log("Hello", username);
-        console.log("You are playing as", colour);
-        console.log("client received this initial gameinstance:", gameInstance);
-
-        //now that the client has actually got the data from the server, we can run the callback function
-        //pass the data to the callback so i dont need to use window.gameinstance ect as global variables, this is jsut a bit neater
-        callback({ gameInstance, playerColour: colour });
-      }
-    );
+  if (!socket) {
+    return;
   }
+
+  socket.on(
+    "playerInfoAndInitialGameState",
+    ({ username, colour, gameInstance, players }) => {
+      console.log("Hello", username);
+      console.log("You are playing as", colour);
+      console.log("client received this initial gameinstance:", gameInstance);
+
+      const roster = createPlayerRoster(players);
+
+      callback({
+        gameInstance,
+        playerColour: colour,
+        players,
+        playerRoster: roster,
+        username,
+      });
+    }
+  );
 }
 
 /**
@@ -31,22 +40,47 @@ export function getPlayerColourAndInitialBoardState(socket, callback) {
  * @param {Object} currentGameState - Shared reference to current game state
  */
 export function updateUIWithNewGameState(ctx, socket, currentGameState) {
-  //when a SUCCESSFULL MOVE IS RECEIVED
-  //extract the gamestatemanger from json object received
-  if (socket) {
-    socket.on("newGameState", ({ currentGameStateManager }) => {
-      console.log(
-        "client recived this new gamestatemanager",
-        currentGameStateManager
-      );
-      
-      //update the shared reference with the new game state
-      //this ensures that event listeners always have access to the current game state
-      currentGameState.board = currentGameStateManager.board;
-      currentGameState.gameStateManager = currentGameStateManager;
-      
-      //update local UI to show the new game state
-      updateUI(ctx, currentGameStateManager.board, currentGameStateManager, currentGameState.playerColour);
-    });
+  if (!socket) {
+    return;
   }
+
+  socket.on("newGameState", ({ currentGameStateManager }) => {
+    console.log(
+      "client recived this new gamestatemanager",
+      currentGameStateManager
+    );
+
+    currentGameState.board = currentGameStateManager.board;
+    currentGameState.gameStateManager = currentGameStateManager;
+
+    updateUI(
+      ctx,
+      currentGameStateManager.board,
+      currentGameStateManager,
+      currentGameState.playerColour,
+      currentGameState.playerRoster,
+      currentGameState.viewerUsername
+    );
+  });
+
+  socket.on("session:players", ({ players }) => {
+    if (!Array.isArray(players)) {
+      return;
+    }
+
+    currentGameState.playerRoster = createPlayerRoster(players);
+
+    if (!currentGameState.board || !currentGameState.gameStateManager) {
+      return;
+    }
+
+    updateUI(
+      ctx,
+      currentGameState.board,
+      currentGameState.gameStateManager,
+      currentGameState.playerColour,
+      currentGameState.playerRoster,
+      currentGameState.viewerUsername
+    );
+  });
 }

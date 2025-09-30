@@ -6,8 +6,8 @@ import { getPlayerColourAndInitialBoardState } from "./src/frontend/setupSocketL
 import joinExistingGameOrCreateNewChessGame, {
   joinPendingSessionFromStorage,
 } from "./src/frontend/joinExistingGameOrCreateNewChessGame.js";
-const PENDING_SESSION_KEY = "pendingGameSession";
 
+const PENDING_SESSION_KEY = "pendingGameSession";
 
 /**
  * Main entry point for the chess game client
@@ -51,20 +51,45 @@ window.onload = () => {
   });
 };
 
-function initializeGameUI(socket, canvas, ctx, { gameInstance, playerColour }) {
+function initializeGameUI(
+  socket,
+  canvas,
+  ctx,
+  { gameInstance, playerColour, playerRoster = {}, players = [], username }
+) {
+  const resolvedUsername = resolveViewerUsername(socket, username);
+
   const currentGameState = {
     board: gameInstance.board,
     gameStateManager: gameInstance.gameStateManager,
-    playerColour: playerColour,
+    playerColour,
+    playerRoster,
+    viewerUsername: resolvedUsername,
+    players,
   };
 
   updateUI(
     ctx,
     currentGameState.board,
     currentGameState.gameStateManager,
-    currentGameState.playerColour
+    currentGameState.playerColour,
+    currentGameState.playerRoster,
+    currentGameState.viewerUsername
   );
+
   setupMovementEventListeners(socket, canvas, currentGameState);
   updateUIWithNewGameState(ctx, socket, currentGameState);
 }
 
+function resolveViewerUsername(socket, reportedUsername) {
+  if (typeof reportedUsername === "string" && reportedUsername.trim().length > 0) {
+    return reportedUsername;
+  }
+
+  const socketAuthName = socket?.auth?.username;
+  if (typeof socketAuthName === "string" && socketAuthName.trim().length > 0) {
+    return socketAuthName;
+  }
+
+  return "";
+}

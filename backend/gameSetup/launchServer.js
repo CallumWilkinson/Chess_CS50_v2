@@ -63,6 +63,10 @@ export function launchServer(io) {
       });
       if (!result.ok) {
         socket.emit("error", result.error.message);
+      } else {
+        io.to(gameSessionID).emit("session:players", {
+          players: Array.isArray(result.players) ? result.players : [],
+        });
       }
     });
 

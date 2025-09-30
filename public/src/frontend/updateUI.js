@@ -18,6 +18,11 @@ import {
   transformCoordinatesForPlayer,
   updateHTMLTestAttributesForFlippedBoard,
 } from "./shared/utilities/boardOrientation.js";
+import {
+  formatColourLabel,
+  normalizeChessColour,
+} from "./shared/utilities/chessColours.js";
+import { renderPlayerCards } from "./renderPlayerCards.js";
 
 /**
  * Update the visual chess board UI with current game state
@@ -27,11 +32,19 @@ import {
  * @param {Board} board - Current board state with piece positions
  * @param {GameStateManager} gameStateManager - Game state for turn tracking
  * @param {string} playerColour - Current player's color for board orientation
+ * @param {Record<string, {username: string|null, colour: string|null}>} playerRoster - Players keyed by colour.
+ * @param {string} viewerUsername - Username of the local viewer.
  */
-export function updateUI(ctx, board, gameStateManager, playerColour) {
+export function updateUI(
+  ctx,
+  board,
+  gameStateManager,
+  playerColour,
+  playerRoster = {},
+  viewerUsername = ""
+) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  // Add data attributes to canvas for testing
   ctx.canvas.setAttribute("data-game-status", gameStateManager.gameStatus);
   ctx.canvas.setAttribute(
     "data-current-turn",
@@ -46,34 +59,25 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
     const row = getRankIndex(square);
     const col = getFileIndex(square);
 
-    // Transform coordinates based on player perspective
     const { rank: transformedRow, file: transformedCol } =
       transformCoordinatesForPlayer(row, col, playerColour);
     const { x, y } = squareToPixelCoordinates(transformedCol, transformedRow);
 
     updateHTMLTestAttributesForFlippedBoard(playerColour);
 
-    if (isLightSquare(square)) {
-      ctx.fillStyle = "#EEEED5";
-    } else {
-      ctx.fillStyle = "#7D945D";
-    }
-
+    ctx.fillStyle = isLightSquare(square) ? "#EEEED5" : "#7D945D";
     ctx.fillRect(x, y, UIConstants.TILESIZE, UIConstants.TILESIZE);
 
-    // add text to left side of the grid
     if (transformedCol === 0) {
       ctx.fillStyle = "black";
       const rankCoordinates = getRankLabelCoordinates(transformedRow);
       ctx.fillText(
-        //starting with number 8 on top left
         FilesAndRanks.RANKS[row],
         rankCoordinates.x,
         rankCoordinates.y
       );
     }
 
-    //add text to bottom of grid
     if (transformedRow === 7) {
       ctx.fillStyle = "black";
       const fileCoordinates = getFileLabelCoordinates(transformedCol);
@@ -85,73 +89,112 @@ export function updateUI(ctx, board, gameStateManager, playerColour) {
     }
   });
 
-  //DRAW THE ACTUAL PEICES ON THE BOARD TO REFLECT THE CURRENT BOARD STATE
   ctx.font = `${UIConstants.TILESIZE - 15}px serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   for (const square in board.grid) {
-    if (board.grid[square] != null) {
-      const currentPiece = board.grid[square];
+    if (!board.grid[square]) {
+      continue;
+    }
 
-      if (currentPiece.colour === "white") {
-        const whiteUnicodeLogo = currentPiece.whiteUnicodeLogo;
+    const currentPiece = board.grid[square];
+    const file = getFileIndex(square);
+    const rank = getRankIndex(square);
+    const { rank: transformedRank, file: transformedFile } =
+      transformCoordinatesForPlayer(rank, file, playerColour);
+    const { x, y } = squareToPieceCenterCoordinates(
+      transformedFile,
+      transformedRank
+    );
 
-        const file = getFileIndex(square);
-        const rank = getRankIndex(square);
-
-        // Transform coordinates based on player perspective
-        const { rank: transformedRank, file: transformedFile } =
-          transformCoordinatesForPlayer(rank, file, playerColour);
-        const { x, y } = squareToPieceCenterCoordinates(
-          transformedFile,
-          transformedRank
-        );
-
-        ctx.fillText(whiteUnicodeLogo, x, y);
-      }
-
-      if (currentPiece.colour === "black") {
-        const blackUnicodeLogo = currentPiece.blackUnicodeLogo;
-
-        const file = getFileIndex(square);
-        const rank = getRankIndex(square);
-
-        // Transform coordinates based on player perspective
-        const { rank: transformedRank, file: transformedFile } =
-          transformCoordinatesForPlayer(rank, file, playerColour);
-        const { x, y } = squareToPieceCenterCoordinates(
-          transformedFile,
-          transformedRank
-        );
-
-        ctx.fillText(blackUnicodeLogo, x, y);
-      }
+    if (currentPiece.colour === "white") {
+      ctx.fillText(currentPiece.whiteUnicodeLogo, x, y);
+    } else if (currentPiece.colour === "black") {
+      ctx.fillText(currentPiece.blackUnicodeLogo, x, y);
     }
   }
 
-  //update current player turn text or display game end result
-  if (gameStateManager.gameStatus === GameStatus.CHECKMATE) {
-    document.getElementById(
-      "current-turn-contents"
-    ).textContent = `🎉 ${gameStateManager.winner} wins by checkmate!`;
-    document.getElementById("current-turn-heading").textContent = "Game Over";
+  renderPlayerCards(playerRoster, {
+    viewerColour: playerColour,
+    viewerUsername,
+  });
 
-    // Add winner display for testing
-    const winnerElement = document.getElementById("current-turn-contents");
-    winnerElement.setAttribute("data-testid", "winner-display");
-    winnerElement.setAttribute("data-winner", gameStateManager.winner);
-  } else {
-    document.getElementById("current-turn-contents").textContent =
-      gameStateManager.currentPlayerColour;
-    document.getElementById("current-turn-heading").textContent =
-      "Current Turn";
+  updateTurnDisplay(gameStateManager, playerRoster);
+}
 
-    // Add current turn data for testing
-    const turnElement = document.getElementById("current-turn-contents");
-    turnElement.setAttribute(
-      "data-current-turn",
-      gameStateManager.currentPlayerColour
-    );
+function updateTurnDisplay(gameStateManager, playerRoster) {
+  const headingElement = document.getElementById("current-turn-heading");
+  const contentElement = document.getElementById("current-turn-contents");
+  if (!headingElement || !contentElement) {
+    return;
   }
+
+  if (gameStateManager.gameStatus === GameStatus.CHECKMATE) {
+    headingElement.textContent = "Game Over";
+
+    const winnerColour = normalizeChessColour(gameStateManager.winner);
+    const winnerDetails = resolvePlayerDetails(playerRoster, winnerColour);
+    const winnerName = winnerDetails.username || winnerDetails.colourLabel || "Unknown";
+
+    contentElement.textContent = `${winnerName} wins by checkmate!`;
+    contentElement.setAttribute("data-testid", "winner-display");
+    contentElement.setAttribute(
+      "data-winner",
+      typeof gameStateManager.winner === "string" ? gameStateManager.winner : ""
+    );
+    if (winnerColour) {
+      contentElement.setAttribute("data-winner-colour", winnerColour);
+    } else {
+      contentElement.removeAttribute("data-winner-colour");
+    }
+    contentElement.removeAttribute("data-current-turn");
+    return;
+  }
+
+  headingElement.textContent = "Current Turn";
+
+  const currentColour = normalizeChessColour(gameStateManager.currentPlayerColour);
+  const currentDetails = resolvePlayerDetails(playerRoster, currentColour);
+  const turnMessage = buildTurnMessage(
+    currentDetails.colourLabel,
+    currentDetails.username
+  );
+
+  contentElement.textContent = turnMessage;
+  contentElement.setAttribute("data-current-turn", currentColour || "");
+  contentElement.removeAttribute("data-testid");
+  contentElement.removeAttribute("data-winner");
+  contentElement.removeAttribute("data-winner-colour");
+}
+
+function resolvePlayerDetails(playerRoster, colour) {
+  if (!colour || !playerRoster || typeof playerRoster !== "object") {
+    return { username: null, colourLabel: "" };
+  }
+
+  const rosterEntry = playerRoster[colour];
+  const username =
+    typeof rosterEntry?.username === "string" && rosterEntry.username.trim().length > 0
+      ? rosterEntry.username
+      : null;
+  const colourLabel = formatColourLabel(colour);
+
+  return { username, colourLabel };
+}
+
+function buildTurnMessage(colourLabel, username) {
+  if (colourLabel && username) {
+    return `${colourLabel} - ${username}'s turn`;
+  }
+
+  if (colourLabel) {
+    return `${colourLabel}'s turn`;
+  }
+
+  if (username) {
+    return `${username}'s turn`;
+  }
+
+  return "Waiting for turn data";
 }

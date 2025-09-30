@@ -74,11 +74,16 @@ export default class SessionLifecycleService {
 
     socket.join(gameSessionID);
 
+    const playersSnapshot = buildPlayersSnapshot(newGameSession.connectedUsers);
+
     socket.emit("playerInfoAndInitialGameState", {
       username,
       colour: assignedColour,
       gameInstance: newGameInstance,
+      players: playersSnapshot,
     });
+
+    socket.emit("session:players", { players: playersSnapshot });
 
     logLifecycle(`${username} connected to gameSessionID ${gameSessionID}`);
 
@@ -140,10 +145,13 @@ export default class SessionLifecycleService {
 
     const gameInstance = session.gameInstance;
 
+    const playersSnapshot = buildPlayersSnapshot(session.connectedUsers);
+
     socket.emit("playerInfoAndInitialGameState", {
       username,
       colour: assignedColour,
       gameInstance,
+      players: playersSnapshot,
     });
 
     logLifecycle(`${username} connected to gameSessionID ${gameSessionID}`);
@@ -153,6 +161,7 @@ export default class SessionLifecycleService {
       session,
       gameInstance,
       assignedColour,
+      players: playersSnapshot,
     };
   }
 
@@ -226,6 +235,22 @@ export function handleDisconnect(
     socket,
     connectedPlayers
   );
+}
+
+//prepare sanitized player payload for clients
+function buildPlayersSnapshot(connectedUsers) {
+  if (!Array.isArray(connectedUsers)) {
+    return [];
+  }
+
+  return connectedUsers
+    .filter((player) => player && typeof player === "object")
+    .map((player) => ({
+      username:
+        typeof player.username === "string" ? player.username : "",
+      colour:
+        typeof player.colour === "string" ? player.colour : null,
+    }));
 }
 
 //internal: conditional logging for service messages

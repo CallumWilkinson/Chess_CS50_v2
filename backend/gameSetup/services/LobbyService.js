@@ -141,6 +141,10 @@ export default class LobbyService {
 
     ackFn({ ok: true, gameSessionID: sessionId });
 
+    if (Array.isArray(result.players)) {
+      io.to(sessionId).emit("session:players", { players: result.players });
+    }
+
     if (
       result.session.lobbyName &&
       result.session.connectedUsers.length >= ChessConstants.MAX_PLAYERS

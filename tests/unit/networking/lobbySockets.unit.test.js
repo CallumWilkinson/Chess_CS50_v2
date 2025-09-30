@@ -107,6 +107,25 @@ describe("Lobby socket events", () => {
       expect.objectContaining({
         colour: expect.stringMatching(/^(black|white)$/),
         gameInstance: expect.any(Object),
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
+      })
+    );
+
+    const rosterBroadcast = io.__toEmitMock.mock.calls.find(call => call[0] === "session:players");
+    expect(rosterBroadcast).toBeDefined();
+    expect(rosterBroadcast[1]).toEqual(
+      expect.objectContaining({
+        players: expect.arrayContaining([
+          expect.objectContaining({
+            username: expect.any(String),
+            colour: expect.any(String),
+          }),
+        ]),
       })
     );
 
