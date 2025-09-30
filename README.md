@@ -1,5 +1,6 @@
 Click Here to play the intial demo (lightweight client side version)
-multiplayer-chess-qh1o.onrender.com/ 
+
+https://multiplayer-chess-qh1o.onrender.com/ 
 
 
 **🚧 Active Development**: server-side-refactor branch
