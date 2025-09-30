@@ -31,12 +31,11 @@ launchServer(io);
 
 //start HTTP server and listen on the specified port
 //when i run node backend/server.js this line makes the server go live
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, HOST, () => {
   //log that the server is running and show the local URL
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// health check endpoint for hosting service
-app.get("/health", (req, res) => {
-  res.status(200).send("ok");
-});
+// Simple root + health routes to verify HTTP works even before sockets (for azure hosting)
+app.get("/", (_req, res) => res.status(200).send("OK: chess server"));
+app.get("/health", (_req, res) => res.status(200).send("ok"));
