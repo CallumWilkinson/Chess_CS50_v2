@@ -14,13 +14,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
-      - name: Verify start script
-        run: node -e "const p=require('./package.json'); if(!p.scripts?.start){throw new Error('Missing start script')}"
+      # install production dependencies so node_modules exists in the artifact
+      - name: Install production deps
+        run: |
+          npm ci --omit=dev
+          node -e "const p=require('./package.json'); if(!p.scripts?.start){throw new Error('Missing start script')}"
+          node -e "const d=require('./package.json').dependencies||{}; if(!d.express||!d['socket.io']){throw new Error('Missing express or socket.io in dependencies')}"
+
+      - name: Create deploy zip
+        run: |
+          zip -r app.zip . -x ".git/*" ".github/*" "node_modules/.cache/*"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: multiplayer-chess
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: .
+          package: ./app.zip
