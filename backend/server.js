@@ -34,3 +34,8 @@ httpServer.listen(PORT, () => {
   //log that the server is running and show the local URL
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// health check endpoint for hosting service
+app.get("/health", (req, res) => {
+  res.status(200).send("ok");
+});
