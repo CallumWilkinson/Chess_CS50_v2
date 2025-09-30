@@ -33,6 +33,9 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "ansi-escapes": "^4.3.2",
     "ansi-regex": "^5.0.1",
