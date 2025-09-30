@@ -1,5 +1,5 @@
 import { handleMove } from "../helpers/handleMove.js";
-import Player from "./Player.js";
+import Player from "./player.js";
 import SessionManager from "./SessionManager.js";
 import SessionLifecycleService from "./services/SessionLifecycleService.js";
 import LobbyService from "./services/LobbyService.js";
