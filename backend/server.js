@@ -21,6 +21,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 const PORT = process.env.PORT || SystemConstants.DEFAULT_PORT;
+const HOST = "0.0.0.0"; // required in Azure
 
 //serve static files from public folder
 app.use(express.static(path.join(__dirname, "../public")));
