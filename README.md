@@ -1,3 +1,7 @@
+Click Here to play the intial demo (lightweight client side version)
+multiplayer-chess-qh1o.onrender.com/ 
+
+
 **🚧 Active Development**: server-side-refactor branch
 
 **📦 Repository**: https://github.com/CallumWilkinson/Chess_CS50_v2/tree/server-side-refactor
