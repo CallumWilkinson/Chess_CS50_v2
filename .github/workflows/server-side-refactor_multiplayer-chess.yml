@@ -2,38 +2,25 @@ name: Deploy Node.js app to Azure Web App - multiplayer-chess
 
 on:
   push:
-    branches:
-      - server-side-refactor # change if you deploy from another branch
+    branches: [server-side-refactor]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Use Node 20
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      # Optional smoke check that your start script exists
       - name: Verify start script
-        run: |
-          node -e "const p=require('./package.json'); if(!p.scripts||!p.scripts.start){console.error('Missing start script'); process.exit(1)}"
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F8A9D6C3510A42FC89E42A70094AD6CD }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_646BDB328C4D4C91B31A230E64C9D365 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_98DD3129D22648D58C9F9B611DBB3D26 }}
+        run: node -e "const p=require('./package.json'); if(!p.scripts?.start){throw new Error('Missing start script')}"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "multiplayer-chess"
-          slot-name: "Production"
+          app-name: multiplayer-chess
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
