@@ -16,16 +16,21 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # install production dependencies so node_modules exists in the artifact
       - name: Install production deps
         run: |
           npm ci --omit=dev
           node -e "const p=require('./package.json'); if(!p.scripts?.start){throw new Error('Missing start script')}"
           node -e "const d=require('./package.json').dependencies||{}; if(!d.express||!d['socket.io']){throw new Error('Missing express or socket.io in dependencies')}"
 
+      - name: Verify node_modules is present
+        run: |
+          test -f node_modules/express/package.json
+          test -f node_modules/socket.io/package.json
+
       - name: Create deploy zip
         run: |
           zip -r app.zip . -x ".git/*" ".github/*" "node_modules/.cache/*"
+          unzip -l app.zip | grep -E "node_modules/express/package.json|node_modules/socket.io/package.json"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
