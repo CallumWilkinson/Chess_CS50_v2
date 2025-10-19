@@ -20,7 +20,7 @@ jest.unstable_mockModule("../../../backend/gameSetup/gameSession.js", () => ({
   default: mockGameSession,
 }));
 
-jest.unstable_mockModule("../../../backend/gameSetup/player.js", () => ({
+jest.unstable_mockModule("../../../backend/gameSetup/Player.js", () => ({
   default: mockPlayer,
 }));
 
