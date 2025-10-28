@@ -1,4 +1,4 @@
-import { renderPlayerCards } from "../renderPlayerCards.js";
+import { renderPlayerCards } from "../../../public/src/frontend/renderPlayerCards.js";
 
 describe("renderPlayerCards", () => {
   beforeEach(() => {
