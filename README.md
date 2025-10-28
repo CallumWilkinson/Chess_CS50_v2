@@ -77,12 +77,12 @@ This project is designed as a **multiplayer game platform** that can support var
 - **GameInstance** (`backend/gameSetup/GameInstance.js`): Game-specific logic container
   - Contains `Board` and `GameStateManager` for chess implementation
   - Extensible design for future games (checkers, tic-tac-toe, etc.)
-- **GameStateManager** (`backend/gameLogic/GameStateManager.js`): Core game controller
+- **GameStateManager** (`core/gameLogic/GameStateManager.js`): Core game controller
   - Handles move validation, turn switching, game status tracking
   - Manages captured pieces and game ending conditions
   - Contains `TurnManager` for player turn logic
-- **Board** (`backend/gameLogic/board.js`): Chess board state and piece management
-- **Chess Pieces** (`backend/chessPieces/`): Individual piece logic with movement rules
+- **Board** (`core/gameLogic/board.js`): Chess board state and piece management
+- **Chess Pieces** (`core/chessPieces/`): Individual piece logic with movement rules
 - **Support Modules**:
   - `chessColorAssignment.js`: Chess-specific color assignment logic
   - `position.js`: Board position utilities
