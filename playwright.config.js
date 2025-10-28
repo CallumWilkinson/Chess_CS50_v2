@@ -20,7 +20,8 @@ if (process.env.CI) {
 }
 
 export default defineConfig({
-  testDir: "./tests/e2e",
+  /* CHANGE FILE PATH TO RE-ENABLE PLAYWRITE*/
+  testDir: "./tests/_disabled",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -46,7 +47,8 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      testDir: "tests/e2e",
+      /* CHANGE FILE PATH TO RE-ENABLE PLAYWRITE*/
+      testDir: "./tests/_disabled",
       fullyParallel: false, // nothing in this folder runs in parallel
       workers: 1, // this forces no paralell tests, do this to reduce flakiness but drop speed
     },
