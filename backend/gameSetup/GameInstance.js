@@ -1,5 +1,5 @@
-import Board from "../gameLogic/board.js";
-import GameStateManager from "../gameLogic/GameStateManager.js";
+import Board from "../../core/gameLogic/board.js";
+import GameStateManager from "../../core/gameLogic/GameStateManager.js";
 
 /**
  * Represents a single game instance within a session

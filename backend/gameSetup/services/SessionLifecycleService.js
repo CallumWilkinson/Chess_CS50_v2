@@ -1,6 +1,6 @@
 import GameSession from "../gameSession.js";
 import { ChessConstants } from "../../../shared/utilities/gameConstants.js";
-import { cleanupOnDisconnect } from "./disconnectCleanup.js";
+import { disconnectCleanupService } from "./DisconnectCleanupService.js";
 
 export const SessionLifecycleErrorCodes = {
   SESSION_NOT_FOUND: "SESSION_NOT_FOUND",
@@ -182,7 +182,7 @@ export default class SessionLifecycleService {
    * @param {import("socket.io").Socket} socket - Disconnecting socket.
    */
   handleDisconnect(socket) {
-    cleanupOnDisconnect(
+    disconnectCleanupService(
       this.gameSessions,
       this.socketIDtoGameSessionID,
       socket,
@@ -212,7 +212,7 @@ export default class SessionLifecycleService {
     socket,
     connectedPlayers
   ) {
-    cleanupOnDisconnect(
+    disconnectCleanupService(
       gameSessions,
       socketIDtoGameSessionID,
       socket,
@@ -229,7 +229,7 @@ export function handleDisconnect(
   socket,
   connectedPlayers
 ) {
-  cleanupOnDisconnect(
+  disconnectCleanupService(
     gameSessions,
     socketIDtoGameSessionID,
     socket,
@@ -246,10 +246,8 @@ function buildPlayersSnapshot(connectedUsers) {
   return connectedUsers
     .filter((player) => player && typeof player === "object")
     .map((player) => ({
-      username:
-        typeof player.username === "string" ? player.username : "",
-      colour:
-        typeof player.colour === "string" ? player.colour : null,
+      username: typeof player.username === "string" ? player.username : "",
+      colour: typeof player.colour === "string" ? player.colour : null,
     }));
 }
 
