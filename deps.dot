@@ -1,0 +1,143 @@
+strict digraph "dependency-cruiser output"{
+    rankdir="LR" splines="true" overlap="false" nodesep="0.16" ranksep="0.18" fontname="Helvetica-bold" fontsize="9" style="rounded,bold,filled" fillcolor="#ffffff" compound="true"
+    node [shape="box" style="rounded, filled" height="0.2" color="black" fillcolor="#ffffcc" fontcolor="black" fontname="Helvetica" fontsize="9"]
+    edge [arrowhead="normal" arrowsize="0.6" penwidth="2.0" color="#00000033" fontname="Helvetica" fontsize="9"]
+
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/ChessPiece.js" [label=<ChessPiece.js> tooltip="ChessPiece.js" URL="backend/chessPieces/ChessPiece.js" ] } }
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/bishop.js" [label=<bishop.js> tooltip="bishop.js" URL="backend/chessPieces/bishop.js" ] } }
+    "backend/chessPieces/bishop.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/bishop.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/king.js" [label=<king.js> tooltip="king.js" URL="backend/chessPieces/king.js" ] } }
+    "backend/chessPieces/king.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/king.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/knight.js" [label=<knight.js> tooltip="knight.js" URL="backend/chessPieces/knight.js" ] } }
+    "backend/chessPieces/knight.js" -> "shared/utilities/gameConstants.js"
+    "backend/chessPieces/knight.js" -> "shared/utilities/toSquareNotation.js"
+    "backend/chessPieces/knight.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/knight.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/pawn.js" [label=<pawn.js> tooltip="pawn.js" URL="backend/chessPieces/pawn.js" ] } }
+    "backend/chessPieces/pawn.js" -> "shared/utilities/gameConstants.js"
+    "backend/chessPieces/pawn.js" -> "shared/utilities/toSquareNotation.js"
+    "backend/chessPieces/pawn.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/pawn.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/queen.js" [label=<queen.js> tooltip="queen.js" URL="backend/chessPieces/queen.js" ] } }
+    "backend/chessPieces/queen.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/queen.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/chessPieces" {label="chessPieces" "backend/chessPieces/rook.js" [label=<rook.js> tooltip="rook.js" URL="backend/chessPieces/rook.js" ] } }
+    "backend/chessPieces/rook.js" -> "backend/gameLogic/moveValidation.js"
+    "backend/chessPieces/rook.js" -> "backend/chessPieces/ChessPiece.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/GameStateManager.js" [label=<GameStateManager.js> tooltip="GameStateManager.js" URL="backend/gameLogic/GameStateManager.js" ] } }
+    "backend/gameLogic/GameStateManager.js" -> "shared/utilities/constants.js"
+    "backend/gameLogic/GameStateManager.js" -> "backend/gameLogic/turnManager.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/board.js" [label=<board.js> tooltip="board.js" URL="backend/gameLogic/board.js" ] } }
+    "backend/gameLogic/board.js" -> "shared/utilities/constants.js"
+    "backend/gameLogic/board.js" -> "shared/utilities/gameConstants.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/bishop.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/king.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/knight.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/pawn.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/queen.js"
+    "backend/gameLogic/board.js" -> "backend/chessPieces/rook.js"
+    "backend/gameLogic/board.js" -> "backend/gameLogic/position.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/chessColorAssignment.js" [label=<chessColorAssignment.js> tooltip="chessColorAssignment.js" URL="backend/gameLogic/chessColorAssignment.js" ] } }
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/getNewGameState.js" [label=<getNewGameState.js> tooltip="getNewGameState.js" URL="backend/gameLogic/getNewGameState.js" ] } }
+    "backend/gameLogic/getNewGameState.js" -> "backend/gameLogic/position.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/moveValidation.js" [label=<moveValidation.js> tooltip="moveValidation.js" URL="backend/gameLogic/moveValidation.js" ] } }
+    "backend/gameLogic/moveValidation.js" -> "shared/utilities/gameConstants.js"
+    "backend/gameLogic/moveValidation.js" -> "backend/gameLogic/position.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/position.js" [label=<position.js> tooltip="position.js" URL="backend/gameLogic/position.js" ] } }
+    "backend/gameLogic/position.js" -> "shared/utilities/constants.js"
+    "backend/gameLogic/position.js" -> "shared/utilities/toSquareNotation.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameLogic" {label="gameLogic" "backend/gameLogic/turnManager.js" [label=<turnManager.js> tooltip="turnManager.js" URL="backend/gameLogic/turnManager.js" ] } }
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" "backend/gameSetup/GameInstance.js" [label=<GameInstance.js> tooltip="GameInstance.js" URL="backend/gameSetup/GameInstance.js" ] } }
+    "backend/gameSetup/GameInstance.js" -> "backend/gameLogic/board.js"
+    "backend/gameSetup/GameInstance.js" -> "backend/gameLogic/GameStateManager.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" "backend/gameSetup/SessionManager.js" [label=<SessionManager.js> tooltip="SessionManager.js" URL="backend/gameSetup/SessionManager.js" ] } }
+    "backend/gameSetup/SessionManager.js" -> "shared/utilities/gameConstants.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" "backend/gameSetup/gameSession.js" [label=<gameSession.js> tooltip="gameSession.js" URL="backend/gameSetup/gameSession.js" ] } }
+    "backend/gameSetup/gameSession.js" -> "shared/utilities/gameConstants.js"
+    "backend/gameSetup/gameSession.js" -> "backend/gameLogic/chessColorAssignment.js"
+    "backend/gameSetup/gameSession.js" -> "backend/gameSetup/GameInstance.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" "backend/gameSetup/launchServer.js" [label=<launchServer.js> tooltip="launchServer.js" URL="backend/gameSetup/launchServer.js" ] } }
+    "backend/gameSetup/launchServer.js" -> "backend/helpers/handleMove.js"
+    "backend/gameSetup/launchServer.js" -> "backend/gameSetup/player.js"
+    "backend/gameSetup/launchServer.js" -> "backend/gameSetup/services/LobbyService.js"
+    "backend/gameSetup/launchServer.js" -> "backend/gameSetup/services/SessionLifecycleService.js"
+    "backend/gameSetup/launchServer.js" -> "backend/gameSetup/SessionManager.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" "backend/gameSetup/player.js" [label=<player.js> tooltip="player.js" URL="backend/gameSetup/player.js" ] } }
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" subgraph "cluster_backend/gameSetup/services" {label="services" "backend/gameSetup/services/LobbyService.js" [label=<LobbyService.js> tooltip="LobbyService.js" URL="backend/gameSetup/services/LobbyService.js" ] } } }
+    "backend/gameSetup/services/LobbyService.js" -> "shared/utilities/gameConstants.js"
+    "backend/gameSetup/services/LobbyService.js" -> "backend/gameSetup/services/SessionLifecycleService.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" subgraph "cluster_backend/gameSetup/services" {label="services" "backend/gameSetup/services/SessionLifecycleService.js" [label=<SessionLifecycleService.js> tooltip="SessionLifecycleService.js" URL="backend/gameSetup/services/SessionLifecycleService.js" ] } } }
+    "backend/gameSetup/services/SessionLifecycleService.js" -> "shared/utilities/gameConstants.js"
+    "backend/gameSetup/services/SessionLifecycleService.js" -> "backend/gameSetup/gameSession.js"
+    "backend/gameSetup/services/SessionLifecycleService.js" -> "backend/gameSetup/services/disconnectCleanup.js"
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/gameSetup" {label="gameSetup" subgraph "cluster_backend/gameSetup/services" {label="services" "backend/gameSetup/services/disconnectCleanup.js" [label=<disconnectCleanup.js> tooltip="disconnectCleanup.js" URL="backend/gameSetup/services/disconnectCleanup.js" ] } } }
+    subgraph "cluster_backend" {label="backend" subgraph "cluster_backend/helpers" {label="helpers" "backend/helpers/handleMove.js" [label=<handleMove.js> tooltip="handleMove.js" URL="backend/helpers/handleMove.js" ] } }
+    "backend/helpers/handleMove.js" -> "backend/gameLogic/getNewGameState.js"
+    subgraph "cluster_backend" {label="backend" "backend/server.js" [label=<server.js> tooltip="server.js" URL="backend/server.js" ] }
+    "backend/server.js" -> "shared/utilities/gameConstants.js"
+    "backend/server.js" -> "backend/gameSetup/launchServer.js"
+    "backend/server.js" -> "node_modules/express" [penwidth="1.0"]
+    "backend/server.js" -> "http" [style="dashed" penwidth="1.0"]
+    "backend/server.js" -> "path" [style="dashed" penwidth="1.0"]
+    "backend/server.js" -> "node_modules/socket.io" [penwidth="1.0"]
+    "backend/server.js" -> "url" [style="dashed" penwidth="1.0"]
+    "http" [label=<http> tooltip="http" URL="https://nodejs.org/api/http.html" color="grey" fontcolor="grey"]
+    subgraph "cluster_https:" {label="https:" subgraph "cluster_https:/" {label="" subgraph "cluster_https://cdn.socket.io" {label="cdn.socket.io" subgraph "cluster_https://cdn.socket.io/4.7.2" {label="4.7.2" "https://cdn.socket.io/4.7.2/socket.io.esm.min.js" [label=<socket.io.esm.min.js> tooltip="socket.io.esm.min.js" ] } } } }
+    subgraph "cluster_node_modules" {label="node_modules" "node_modules/express" [label=<express> tooltip="express" URL="https://www.npmjs.com/package/express" shape="box3d" fillcolor="#c40b0a1a" fontcolor="#c40b0a"] }
+    subgraph "cluster_node_modules" {label="node_modules" "node_modules/socket.io" [label=<socket.io> tooltip="socket.io" URL="https://www.npmjs.com/package/socket.io" shape="box3d" fillcolor="#c40b0a1a" fontcolor="#c40b0a"] }
+    "path" [label=<path> tooltip="path" URL="https://nodejs.org/api/path.html" color="grey" fontcolor="grey"]
+    subgraph "cluster_public" {label="public" "public/main.js" [label=<main.js> tooltip="main.js" URL="public/main.js" ] }
+    "public/main.js" -> "public/src/frontend/joinExistingGameOrCreateNewChessGame.js"
+    "public/main.js" -> "public/src/frontend/setupAuthentication.js"
+    "public/main.js" -> "public/src/frontend/setupEventListeners.js"
+    "public/main.js" -> "public/src/frontend/setupSocketListeners.js"
+    "public/main.js" -> "public/src/frontend/updateUI.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/LobbyListModal.js" [label=<LobbyListModal.js> tooltip="LobbyListModal.js" URL="public/src/frontend/LobbyListModal.js" ] } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/boardSetup.js" [label=<boardSetup.js> tooltip="boardSetup.js" URL="public/src/frontend/boardSetup.js" ] } } }
+    "public/src/frontend/boardSetup.js" -> "public/src/frontend/updateUI.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/coordinates.js" [label=<coordinates.js> tooltip="coordinates.js" URL="public/src/frontend/coordinates.js" ] } } }
+    "public/src/frontend/coordinates.js" -> "public/src/frontend/shared/utilities/boardOrientation.js"
+    "public/src/frontend/coordinates.js" -> "public/src/frontend/shared/utilities/constants.js"
+    "public/src/frontend/coordinates.js" -> "public/src/frontend/shared/utilities/toSquareNotation.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/getClickedSquareName.js" [label=<getClickedSquareName.js> tooltip="getClickedSquareName.js" URL="public/src/frontend/getClickedSquareName.js" ] } } }
+    "public/src/frontend/getClickedSquareName.js" -> "public/src/frontend/shared/utilities/boardOrientation.js"
+    "public/src/frontend/getClickedSquareName.js" -> "public/src/frontend/shared/utilities/constants.js"
+    "public/src/frontend/getClickedSquareName.js" -> "public/src/frontend/shared/utilities/toSquareNotation.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/joinExistingGameOrCreateNewChessGame.js" [label=<joinExistingGameOrCreateNewChessGame.js> tooltip="joinExistingGameOrCreateNewChessGame.js" URL="public/src/frontend/joinExistingGameOrCreateNewChessGame.js" ] } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/renderPlayerCards.js" [label=<renderPlayerCards.js> tooltip="renderPlayerCards.js" URL="public/src/frontend/renderPlayerCards.js" ] } } }
+    "public/src/frontend/renderPlayerCards.js" -> "public/src/frontend/shared/utilities/chessColours.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/sendMoveData.js" [label=<sendMoveData.js> tooltip="sendMoveData.js" URL="public/src/frontend/sendMoveData.js" ] } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/setupAuthentication.js" [label=<setupAuthentication.js> tooltip="setupAuthentication.js" URL="public/src/frontend/setupAuthentication.js" ] } } }
+    "public/src/frontend/setupAuthentication.js" -> "https://cdn.socket.io/4.7.2/socket.io.esm.min.js" [xlabel="not-to-unresolvable" tooltip="not-to-unresolvable" fontcolor="red" color="red"]
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/setupEventListeners.js" [label=<setupEventListeners.js> tooltip="setupEventListeners.js" URL="public/src/frontend/setupEventListeners.js" ] } } }
+    "public/src/frontend/setupEventListeners.js" -> "public/src/frontend/getClickedSquareName.js"
+    "public/src/frontend/setupEventListeners.js" -> "public/src/frontend/sendMoveData.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/setupSocketListeners.js" [label=<setupSocketListeners.js> tooltip="setupSocketListeners.js" URL="public/src/frontend/setupSocketListeners.js" ] } } }
+    "public/src/frontend/setupSocketListeners.js" -> "public/src/frontend/shared/utilities/playerRoster.js"
+    "public/src/frontend/setupSocketListeners.js" -> "public/src/frontend/updateUI.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/boardOrientation.js" [label=<boardOrientation.js> tooltip="boardOrientation.js" URL="public/src/frontend/shared/utilities/boardOrientation.js" ] } } } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/chessColours.js" [label=<chessColours.js> tooltip="chessColours.js" URL="public/src/frontend/shared/utilities/chessColours.js" ] } } } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/constants.js" [label=<constants.js> tooltip="constants.js" URL="public/src/frontend/shared/utilities/constants.js" ] } } } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/coordinateMapping.js" [label=<coordinateMapping.js> tooltip="coordinateMapping.js" URL="public/src/frontend/shared/utilities/coordinateMapping.js" ] } } } } }
+    "public/src/frontend/shared/utilities/coordinateMapping.js" -> "public/src/frontend/shared/utilities/constants.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/playerRoster.js" [label=<playerRoster.js> tooltip="playerRoster.js" URL="public/src/frontend/shared/utilities/playerRoster.js" ] } } } } }
+    "public/src/frontend/shared/utilities/playerRoster.js" -> "public/src/frontend/shared/utilities/chessColours.js"
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" subgraph "cluster_public/src/frontend/shared" {label="shared" subgraph "cluster_public/src/frontend/shared/utilities" {label="utilities" "public/src/frontend/shared/utilities/toSquareNotation.js" [label=<toSquareNotation.js> tooltip="toSquareNotation.js" URL="public/src/frontend/shared/utilities/toSquareNotation.js" ] } } } } }
+    subgraph "cluster_public" {label="public" subgraph "cluster_public/src" {label="src" subgraph "cluster_public/src/frontend" {label="frontend" "public/src/frontend/updateUI.js" [label=<updateUI.js> tooltip="updateUI.js" URL="public/src/frontend/updateUI.js" ] } } }
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/renderPlayerCards.js"
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/shared/utilities/boardOrientation.js"
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/shared/utilities/chessColours.js"
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/shared/utilities/constants.js"
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/shared/utilities/coordinateMapping.js"
+    "public/src/frontend/updateUI.js" -> "public/src/frontend/shared/utilities/toSquareNotation.js"
+    subgraph "cluster_public" {label="public" "public/welcome.js" [label=<welcome.js> tooltip="welcome.js" URL="public/welcome.js" ] }
+    "public/welcome.js" -> "public/src/frontend/LobbyListModal.js"
+    "public/welcome.js" -> "public/src/frontend/setupAuthentication.js"
+    subgraph "cluster_shared" {label="shared" subgraph "cluster_shared/utilities" {label="utilities" "shared/utilities/constants.js" [label=<constants.js> tooltip="constants.js" URL="shared/utilities/constants.js" ] } }
+    subgraph "cluster_shared" {label="shared" subgraph "cluster_shared/utilities" {label="utilities" "shared/utilities/gameConstants.js" [label=<gameConstants.js> tooltip="gameConstants.js" URL="shared/utilities/gameConstants.js" ] } }
+    subgraph "cluster_shared" {label="shared" subgraph "cluster_shared/utilities" {label="utilities" "shared/utilities/toSquareNotation.js" [label=<toSquareNotation.js> tooltip="toSquareNotation.js" URL="shared/utilities/toSquareNotation.js" ] } }
+    "shared/utilities/toSquareNotation.js" -> "shared/utilities/gameConstants.js"
+    "url" [label=<url> tooltip="url" URL="https://nodejs.org/api/url.html" color="grey" fontcolor="grey"]
+}

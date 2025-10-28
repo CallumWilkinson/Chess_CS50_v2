@@ -14,7 +14,8 @@
     "start": "node backend/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:playwright": "playwright test",
-    "test:filter": "node --experimental-vm-modules node_modules/jest/bin/jest.js -t"
+    "test:filter": "node --experimental-vm-modules node_modules/jest/bin/jest.js -t",
+    "depgraph": "depcruise backend shared public --output-type dot > deps.dot && dot -Tsvg deps.dot -o dependency-graph.svg"
   },
   "type": "module",
   "jest": {
