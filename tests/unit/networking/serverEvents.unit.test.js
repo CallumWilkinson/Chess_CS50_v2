@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
 import { launchServer } from "../../../backend/gameSetup/launchServer.js";
-import Pawn from "../../../backend/chessPieces/pawn.js";
-import Position from "../../../backend/gameLogic/position.js";
+import Pawn from "../../../core/chessPieces/pawn.js";
+import Position from "../../../core/gameLogic/position.js";
 import { createMockSocket, createMockIOServer } from "../../helpers/testUtils.js";
 
 describe("Testing that the server is sending and receiving data over sockets as intended", () => {

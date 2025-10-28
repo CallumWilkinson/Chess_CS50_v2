@@ -1,8 +1,8 @@
-import Board from "../../../backend/gameLogic/board.js";
-import Rook from "../../../backend/chessPieces/rook.js";
-import Position from "../../../backend/gameLogic/position.js";
-import Pawn from "../../../backend/chessPieces/pawn.js";
-import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import Board from "../../../core/gameLogic/board.js";
+import Rook from "../../../core/chessPieces/rook.js";
+import Position from "../../../core/gameLogic/position.js";
+import Pawn from "../../../core/chessPieces/pawn.js";
+import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
 
 describe("Rook tests", () => {
   let board;

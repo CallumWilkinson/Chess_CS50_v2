@@ -1,10 +1,10 @@
-import Bishop from "../../../backend/chessPieces/bishop.js";
-import Board from "../../../backend/gameLogic/board.js";
-import King from "../../../backend/chessPieces/king.js";
-import Knight from "../../../backend/chessPieces/knight.js";
-import Pawn from "../../../backend/chessPieces/pawn.js";
-import Queen from "../../../backend/chessPieces/queen.js";
-import Rook from "../../../backend/chessPieces/rook.js";
+import Bishop from "../../../core/chessPieces/bishop.js";
+import Board from "../../../core/gameLogic/board.js";
+import King from "../../../core/chessPieces/king.js";
+import Knight from "../../../core/chessPieces/knight.js";
+import Pawn from "../../../core/chessPieces/pawn.js";
+import Queen from "../../../core/chessPieces/queen.js";
+import Rook from "../../../core/chessPieces/rook.js";
 
 describe("Chess Board", () => {
   let board;

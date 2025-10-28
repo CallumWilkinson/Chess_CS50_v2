@@ -6,8 +6,8 @@
 import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
-import Position from "../../backend/gameLogic/position.js";
-import Board from "../../backend/gameLogic/board.js";
+import Position from "../../core/gameLogic/position.js";
+import Board from "../../core/gameLogic/board.js";
 
 /**
  * Factory for creating a test chess board with standard setup

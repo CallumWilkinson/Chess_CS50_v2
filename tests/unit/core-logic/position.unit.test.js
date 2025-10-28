@@ -1,6 +1,6 @@
-import Board from "../../../backend/gameLogic/board.js";
-import Position from "../../../backend/gameLogic/position.js";
-import Rook from "../../../backend/chessPieces/rook.js";
+import Board from "../../../core/gameLogic/board.js";
+import Position from "../../../core/gameLogic/position.js";
+import Rook from "../../../core/chessPieces/rook.js";
 
 describe("tests for position class", () => {
   let board;

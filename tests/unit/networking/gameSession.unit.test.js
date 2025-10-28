@@ -1,7 +1,7 @@
 import GameSession from "../../../backend/gameSetup/gameSession.js";
 import GameInstance from "../../../backend/gameSetup/GameInstance.js";
-import Board from "../../../backend/gameLogic/board.js";
-import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import Board from "../../../core/gameLogic/board.js";
+import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
 import { createTestPlayer, createGameSessionWithPlayers } from "../../helpers/testFactories.js";
 
 describe("tests for gameSession class", () => {

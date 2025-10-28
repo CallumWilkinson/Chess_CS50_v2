@@ -3,8 +3,8 @@ import { UIConstants } from "../../public/src/frontend/shared/utilities/constant
 import { squareToCanvasCoordinates } from "../../public/src/frontend/coordinates.js";
 import { setupMovementEventListeners } from "../../public/src/frontend/setupEventListeners.js";
 
-import Board from "../../backend/gameLogic/board.js";
-import GameStateManager from "../../backend/gameLogic/GameStateManager.js";
+import Board from "../../core/gameLogic/board.js";
+import GameStateManager from "../../core/gameLogic/GameStateManager.js";
 
 //jsdom lacks real layout, so provide a predictable bounding rect
 function createTestCanvas() {

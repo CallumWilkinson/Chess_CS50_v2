@@ -1,6 +1,6 @@
-import { getNewGameState } from "../../../backend/gameLogic/getNewGameState.js";
+import { getNewGameState } from "../../../core/gameLogic/getNewGameState.js";
 import { createTestBoard } from "../../helpers/testFactories.js";
-import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
+import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
 
 describe("getNewGameState", () => {
   let board;

@@ -1,8 +1,8 @@
-import GameStateManager from "../../../backend/gameLogic/GameStateManager.js";
-import Board from "../../../backend/gameLogic/board.js";
-import Position from "../../../backend/gameLogic/position.js";
+import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
+import Board from "../../../core/gameLogic/board.js";
+import Position from "../../../core/gameLogic/position.js";
 import { GameStatus } from "../../../shared/utilities/constants.js";
-import King from "../../../backend/chessPieces/king.js";
+import King from "../../../core/chessPieces/king.js";
 
 describe("Game State Manager class tests", () => {
   let board;

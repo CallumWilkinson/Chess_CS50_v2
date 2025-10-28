@@ -1,7 +1,7 @@
-import MoveValidation from "../../../backend/gameLogic/moveValidation.js";
-import Board from "../../../backend/gameLogic/board.js";
-import Rook from "../../../backend/chessPieces/rook.js";
-import Position from "../../../backend/gameLogic/position.js";
+import MoveValidation from "../../../core/gameLogic/moveValidation.js";
+import Board from "../../../core/gameLogic/board.js";
+import Rook from "../../../core/chessPieces/rook.js";
+import Position from "../../../core/gameLogic/position.js";
 
 describe("MoveValidation", () => {
   let board;
