@@ -18,9 +18,13 @@ export function createPlayerRoster(players = []) {
       return;
     }
 
+    let username = "";
+    if (typeof player?.username === "string") {
+      username = player.username;
+    }
+
     roster[colour] = {
-      username:
-        typeof player?.username === "string" ? player.username : "",
+      username,
       colour,
     };
   });
