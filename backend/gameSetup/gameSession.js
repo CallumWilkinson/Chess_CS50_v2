@@ -1,5 +1,5 @@
-import GameInstance from "./GameInstance.js";
-import { assignChessColor } from "../../core/gameLogic/chessColorAssignment.js";
+﻿import GameInstance from "./GameInstance.js";
+import { assignChessColor } from "../../chessCore/gameLogic/chessColorAssignment.js";
 import { SystemConstants } from "../../shared/utilities/gameConstants.js";
 
 /**

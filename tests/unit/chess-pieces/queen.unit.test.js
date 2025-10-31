@@ -1,8 +1,8 @@
-import Board from "../../../core/gameLogic/board.js";
-import Queen from "../../../core/chessPieces/queen.js";
-import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
-import Position from "../../../core/gameLogic/position.js";
-import Pawn from "../../../core/chessPieces/pawn.js";
+﻿import Board from "../../../chessCore/gameLogic/board.js";
+import Queen from "../../../chessCore/chessPieces/queen.js";
+import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
+import Position from "../../../chessCore/gameLogic/position.js";
+import Pawn from "../../../chessCore/chessPieces/pawn.js";
 
 describe("queen tests", () => {
   let gameStateManager;
@@ -74,3 +74,4 @@ describe("queen tests", () => {
     expect(gameStateManager.capturedPieces["black"][0]).toBe(whitePawn);
   });
 });
+

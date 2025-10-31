@@ -1,8 +1,8 @@
-import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
-import Board from "../../../core/gameLogic/board.js";
-import Position from "../../../core/gameLogic/position.js";
+﻿import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
+import Board from "../../../chessCore/gameLogic/board.js";
+import Position from "../../../chessCore/gameLogic/position.js";
 import { GameStatus } from "../../../shared/utilities/constants.js";
-import King from "../../../core/chessPieces/king.js";
+import King from "../../../chessCore/chessPieces/king.js";
 
 describe("Game State Manager class tests", () => {
   let board;
@@ -105,3 +105,4 @@ describe("Game State Manager class tests", () => {
     expect(gameStateManager.winner).toBe("white");
   });
 });
+

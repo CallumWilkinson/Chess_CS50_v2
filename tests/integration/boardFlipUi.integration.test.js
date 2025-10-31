@@ -1,10 +1,10 @@
-import { jest } from "@jest/globals";
+﻿import { jest } from "@jest/globals";
 import { UIConstants } from "../../public/src/frontend/shared/utilities/constants.js";
 import { squareToCanvasCoordinates } from "../../public/src/frontend/coordinates.js";
 import { setupMovementEventListeners } from "../../public/src/frontend/setupEventListeners.js";
 
-import Board from "../../core/gameLogic/board.js";
-import GameStateManager from "../../core/gameLogic/GameStateManager.js";
+import Board from "../../chessCore/gameLogic/board.js";
+import GameStateManager from "../../chessCore/gameLogic/GameStateManager.js";
 
 //jsdom lacks real layout, so provide a predictable bounding rect
 function createTestCanvas() {
@@ -98,3 +98,4 @@ describe("Board flipping UI integration", () => {
     expect(moveData.chessPiece.colour).toBe("white");
   });
 });
+

@@ -1,4 +1,4 @@
-import { getNewGameState } from "../../core/gameLogic/getNewGameState.js";
+﻿import { getNewGameState } from "../../chessCore/gameLogic/getNewGameState.js";
 
 /**
  * Handle a chess move request from a client

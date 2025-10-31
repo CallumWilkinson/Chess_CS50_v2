@@ -1,4 +1,4 @@
-import { TurnManager } from "../../../core/gameLogic/turnManager.js";
+﻿import { TurnManager } from "../../../chessCore/gameLogic/turnManager.js";
 
 describe("Turn Manager", () => {
   let turnManager;
@@ -14,3 +14,4 @@ describe("Turn Manager", () => {
     expect(turnManager.getCurrentPlayer()).toBe("black");
   });
 });
+

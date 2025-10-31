@@ -1,10 +1,10 @@
-import Bishop from "../../../core/chessPieces/bishop.js";
-import Board from "../../../core/gameLogic/board.js";
-import King from "../../../core/chessPieces/king.js";
-import Knight from "../../../core/chessPieces/knight.js";
-import Pawn from "../../../core/chessPieces/pawn.js";
-import Queen from "../../../core/chessPieces/queen.js";
-import Rook from "../../../core/chessPieces/rook.js";
+﻿import Bishop from "../../../chessCore/chessPieces/bishop.js";
+import Board from "../../../chessCore/gameLogic/board.js";
+import King from "../../../chessCore/chessPieces/king.js";
+import Knight from "../../../chessCore/chessPieces/knight.js";
+import Pawn from "../../../chessCore/chessPieces/pawn.js";
+import Queen from "../../../chessCore/chessPieces/queen.js";
+import Rook from "../../../chessCore/chessPieces/rook.js";
 
 describe("Chess Board", () => {
   let board;
@@ -77,3 +77,4 @@ describe("Chess Board", () => {
     expect(board.squareIsEmpty("a6")).toBe(true);
   });
 });
+

@@ -1,7 +1,7 @@
-import GameSession from "../../../backend/gameSetup/gameSession.js";
+﻿import GameSession from "../../../backend/gameSetup/gameSession.js";
 import GameInstance from "../../../backend/gameSetup/GameInstance.js";
-import Board from "../../../core/gameLogic/board.js";
-import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
+import Board from "../../../chessCore/gameLogic/board.js";
+import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import { createTestPlayer, createGameSessionWithPlayers } from "../../helpers/testFactories.js";
 
 describe("tests for gameSession class", () => {
@@ -62,3 +62,4 @@ describe("tests for gameSession class", () => {
     expect(secondPlayerColor).toBe("white");
   });
 });
+

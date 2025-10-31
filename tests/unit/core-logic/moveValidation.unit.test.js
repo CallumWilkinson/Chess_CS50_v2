@@ -1,7 +1,7 @@
-import MoveValidation from "../../../core/gameLogic/moveValidation.js";
-import Board from "../../../core/gameLogic/board.js";
-import Rook from "../../../core/chessPieces/rook.js";
-import Position from "../../../core/gameLogic/position.js";
+﻿import MoveValidation from "../../../chessCore/gameLogic/moveValidation.js";
+import Board from "../../../chessCore/gameLogic/board.js";
+import Rook from "../../../chessCore/chessPieces/rook.js";
+import Position from "../../../chessCore/gameLogic/position.js";
 
 describe("MoveValidation", () => {
   let board;
@@ -133,3 +133,4 @@ describe("MoveValidation", () => {
     });
   });
 });
+

@@ -1,5 +1,5 @@
-import Board from "../../core/gameLogic/board.js";
-import GameStateManager from "../../core/gameLogic/GameStateManager.js";
+﻿import Board from "../../chessCore/gameLogic/board.js";
+import GameStateManager from "../../chessCore/gameLogic/GameStateManager.js";
 
 /**
  * Represents a single game instance within a session

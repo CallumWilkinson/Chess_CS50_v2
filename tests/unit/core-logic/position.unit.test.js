@@ -1,6 +1,6 @@
-import Board from "../../../core/gameLogic/board.js";
-import Position from "../../../core/gameLogic/position.js";
-import Rook from "../../../core/chessPieces/rook.js";
+﻿import Board from "../../../chessCore/gameLogic/board.js";
+import Position from "../../../chessCore/gameLogic/position.js";
+import Rook from "../../../chessCore/chessPieces/rook.js";
 
 describe("tests for position class", () => {
   let board;
@@ -33,3 +33,4 @@ describe("tests for position class", () => {
     expect(e4.surroundingpositionNames[0]).toBe("f4");
   });
 });
+

@@ -1,6 +1,6 @@
-import { getNewGameState } from "../../../core/gameLogic/getNewGameState.js";
+﻿import { getNewGameState } from "../../../chessCore/gameLogic/getNewGameState.js";
 import { createTestBoard } from "../../helpers/testFactories.js";
-import GameStateManager from "../../../core/gameLogic/GameStateManager.js";
+import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 
 describe("getNewGameState", () => {
   let board;
@@ -108,3 +108,4 @@ describe("getNewGameState", () => {
     });
   });
 });
+

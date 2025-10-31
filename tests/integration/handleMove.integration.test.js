@@ -1,7 +1,7 @@
-import { jest } from "@jest/globals";
+﻿import { jest } from "@jest/globals";
 import { handleMove } from "../../backend/helpers/handleMove.js";
-import Position from "../../core/gameLogic/position.js";
-import Pawn from "../../core/chessPieces/pawn.js";
+import Position from "../../chessCore/gameLogic/position.js";
+import Pawn from "../../chessCore/chessPieces/pawn.js";
 import { createTestScenario, TEST_PLAYERS } from "../helpers/testFactories.js";
 
 //integration tests for refactored handleMove function using SessionManager API
@@ -176,3 +176,4 @@ describe("HandleMove Integration with SessionManager", () => {
     expect(retrievedPlayer.username).toBe("player1");
   });
 });
+

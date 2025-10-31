@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Test factory functions for creating common test objects
  * Provides clean, reusable setup patterns for tests
  */
@@ -6,8 +6,8 @@
 import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
-import Position from "../../core/gameLogic/position.js";
-import Board from "../../core/gameLogic/board.js";
+import Position from "../../chessCore/gameLogic/position.js";
+import Board from "../../chessCore/gameLogic/board.js";
 
 /**
  * Factory for creating a test chess board with standard setup
@@ -150,3 +150,4 @@ export function createMultipleTestSessions(sessionConfigs = []) {
 
   return { sessionManager, sessions };
 }
+
