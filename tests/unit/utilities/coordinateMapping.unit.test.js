@@ -4,7 +4,7 @@ import {
   getRankLabelCoordinates,
   getFileLabelCoordinates,
 } from "../../../public/src/frontend/coordinateMapping.js";
-import { UIConstants } from "../../../public/src/frontend/shared/utilities/constants.js";
+import { UIConstants } from "../../../shared/utilities/constants.js";
 
 describe("Coordinate Mapping Utilities", () => {
   describe("squareToPixelCoordinates", () => {

@@ -1,5 +1,5 @@
 ﻿import { jest } from "@jest/globals";
-import { UIConstants } from "../../public/src/frontend/shared/utilities/constants.js";
+import { UIConstants } from "../../shared/utilities/constants.js";
 import { squareToCanvasCoordinates } from "../../public/src/frontend/coordinates.js";
 import { setupMovementEventListeners } from "../../public/src/frontend/setupEventListeners.js";
 

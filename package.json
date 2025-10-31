@@ -25,7 +25,8 @@
     ],
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
-      "^https://cdn\\.socket\\.io/4\\.7\\.2/socket\\.io\\.esm\\.min\\.js$": "<rootDir>/tests/unit/frontend/__mocks__/socketIoEsmMock.js"
+      "^https://cdn\\.socket\\.io/4\\.7\\.2/socket\\.io\\.esm\\.min\\.js$": "<rootDir>/tests/unit/frontend/__mocks__/socketIoEsmMock.js",
+      "^/static/shared/(.*)$": "<rootDir>/shared/$1"
     }
   },
   "name": "chess_cs50_v2",

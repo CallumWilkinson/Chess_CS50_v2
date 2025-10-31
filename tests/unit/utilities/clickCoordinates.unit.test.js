@@ -1,6 +1,6 @@
 import getClickedSquareName from "../../../public/src/frontend/getClickedSquareName.js";
 import { squareToCanvasCoordinates } from "../../../public/src/frontend/coordinates.js";
-import { UIConstants } from "../../../public/src/frontend/shared/utilities/constants.js";
+import { UIConstants } from "../../../shared/utilities/constants.js";
 
 // Mock canvas and mouse event for testing
 function createMockCanvas() {

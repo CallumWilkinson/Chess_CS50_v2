@@ -26,6 +26,9 @@ const HOST = "0.0.0.0"; // required in Azure
 //serve static files from public folder
 app.use(express.static(path.join(__dirname, "../public")));
 
+//expose shared files for frontend access
+app.use("/static/shared", express.static(path.join(__dirname, "../shared")));
+
 //creates new game sessions and adds all socket listeners
 launchServer(io);
 

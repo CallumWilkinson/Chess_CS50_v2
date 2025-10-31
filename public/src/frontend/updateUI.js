@@ -2,12 +2,12 @@ import {
   UIConstants,
   FilesAndRanks,
   GameStatus,
-} from "./shared/utilities/constants.js";
+} from "/static/shared/utilities/constants.js";
 import {
   getFileIndex,
   getRankIndex,
   isLightSquare,
-} from "./shared/utilities/toSquareNotation.js";
+} from "/static/shared/utilities/toSquareNotation.js";
 import {
   squareToPixelCoordinates,
   squareToPieceCenterCoordinates,

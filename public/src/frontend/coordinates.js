@@ -1,5 +1,5 @@
-import { UIConstants } from "./shared/utilities/constants.js";
-import { getFileIndex } from "./shared/utilities/toSquareNotation.js";
+import { UIConstants } from "/static/shared/utilities/constants.js";
+import { getFileIndex } from "/static/shared/utilities/toSquareNotation.js";
 import { transformCoordinatesForPlayer } from "./boardOrientation.js";
 
 /**
