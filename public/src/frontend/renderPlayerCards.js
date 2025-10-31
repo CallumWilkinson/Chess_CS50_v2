@@ -2,7 +2,7 @@ import {
   formatColourLabel,
   getOppositeColour,
   normalizeChessColour,
-} from "./shared/utilities/chessColours.js";
+} from "./chessColours.js";
 
 const OPPONENT_PLACEHOLDER = "Waiting for player";
 

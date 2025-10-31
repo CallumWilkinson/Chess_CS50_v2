@@ -1,5 +1,5 @@
 import { updateUI } from "./updateUI.js";
-import { createPlayerRoster } from "./shared/utilities/playerRoster.js";
+import { createPlayerRoster } from "./playerRoster.js";
 
 /**
  * Set up socket listener for initial player info and game state

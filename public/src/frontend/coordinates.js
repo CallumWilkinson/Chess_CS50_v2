@@ -1,6 +1,6 @@
 import { UIConstants } from "./shared/utilities/constants.js";
 import { getFileIndex } from "./shared/utilities/toSquareNotation.js";
-import { transformCoordinatesForPlayer } from "./shared/utilities/boardOrientation.js";
+import { transformCoordinatesForPlayer } from "./boardOrientation.js";
 
 /**
  * Convert chess square notation to canvas pixel coordinates

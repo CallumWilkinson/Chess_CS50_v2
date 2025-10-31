@@ -1,4 +1,4 @@
-import { UIConstants } from "./constants.js";
+import { UIConstants } from "./shared/utilities/constants.js";
 
 /**
  * Converts chess square coordinates to canvas pixel coordinates

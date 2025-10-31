@@ -1,7 +1,7 @@
 import {
   transformCoordinatesForPlayer,
   shouldFlipBoard,
-} from "../../../public/src/frontend/shared/utilities/boardOrientation.js";
+} from "../../../public/src/frontend/boardOrientation.js";
 
 describe("Board Orientation Utilities", () => {
   describe("shouldFlipBoard", () => {

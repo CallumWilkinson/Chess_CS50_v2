@@ -13,15 +13,15 @@ import {
   squareToPieceCenterCoordinates,
   getRankLabelCoordinates,
   getFileLabelCoordinates,
-} from "./shared/utilities/coordinateMapping.js";
+} from "./coordinateMapping.js";
 import {
   transformCoordinatesForPlayer,
   updateHTMLTestAttributesForFlippedBoard,
-} from "./shared/utilities/boardOrientation.js";
+} from "./boardOrientation.js";
 import {
   formatColourLabel,
   normalizeChessColour,
-} from "./shared/utilities/chessColours.js";
+} from "./chessColours.js";
 import { renderPlayerCards } from "./renderPlayerCards.js";
 
 /**

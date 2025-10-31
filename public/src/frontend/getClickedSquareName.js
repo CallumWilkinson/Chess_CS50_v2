@@ -1,6 +1,6 @@
 import { UIConstants } from "./shared/utilities/constants.js";
 import { toSquareNotation } from "./shared/utilities/toSquareNotation.js";
-import { transformCoordinatesForPlayer } from "./shared/utilities/boardOrientation.js";
+import { transformCoordinatesForPlayer } from "./boardOrientation.js";
 
 /**
  * Convert mouse click coordinates to chess square notation
