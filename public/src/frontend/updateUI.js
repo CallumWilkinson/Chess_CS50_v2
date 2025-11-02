@@ -62,7 +62,11 @@ export function updateUI(
 
     updateHTMLTestAttributesForFlippedBoard(playerColour);
 
-    ctx.fillStyle = isLightSquare(square) ? "#EEEED5" : "#7D945D";
+    if (isLightSquare(square)) {
+      ctx.fillStyle = "#EEEED5";
+    } else {
+      ctx.fillStyle = "#7D945D";
+    }
     ctx.fillRect(x, y, UIConstants.TILESIZE, UIConstants.TILESIZE);
 
     if (transformedCol === 0) {
@@ -137,10 +141,12 @@ function updateTurnDisplay(gameStateManager, playerRoster) {
 
     contentElement.textContent = `${winnerName} wins by checkmate!`;
     contentElement.setAttribute("data-testid", "winner-display");
-    contentElement.setAttribute(
-      "data-winner",
-      typeof gameStateManager.winner === "string" ? gameStateManager.winner : ""
-    );
+    let winnerAttributeValue = "";
+    if (typeof gameStateManager.winner === "string") {
+      winnerAttributeValue = gameStateManager.winner;
+    }
+
+    contentElement.setAttribute("data-winner", winnerAttributeValue);
     if (winnerColour) {
       contentElement.setAttribute("data-winner-colour", winnerColour);
     } else {
@@ -174,11 +180,13 @@ function resolvePlayerDetails(playerRoster, colour) {
   }
 
   const rosterEntry = playerRoster[colour];
-  const username =
+  let username = null;
+  if (
     typeof rosterEntry?.username === "string" &&
     rosterEntry.username.trim().length > 0
-      ? rosterEntry.username
-      : null;
+  ) {
+    username = rosterEntry.username;
+  }
   const colourLabel = formatColourLabel(colour);
 
   return { username, colourLabel };

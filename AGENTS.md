@@ -9,7 +9,7 @@ Simplicity Addendum takes precedence on any abstraction decision. If Codex and S
 - Environment: Windows 11, PowerShell, VS Code.
 - Use ES6 `class` syntax and object-oriented design when the Simplicity gates permit it.
 - Use ES modules (`import` and `export`) only, never CommonJS.
-- Avoid ternary operators, prefer explicit `if` and `else`.
+- Avoid ternary operators, prefer explicit `if` and `else`. The linting rules flag ternary expressions as violations, so rewrite conditions with `if` statements or early returns every time.
 - Use `await` with `try` and `catch`, not `.then()`.
 - Keep files and classes single responsibility.
 - Avoid magic behavior, keep flow explicit and traceable.

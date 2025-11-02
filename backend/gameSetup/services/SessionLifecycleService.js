@@ -245,10 +245,22 @@ function buildPlayersSnapshot(connectedUsers) {
 
   return connectedUsers
     .filter((player) => player && typeof player === "object")
-    .map((player) => ({
-      username: typeof player.username === "string" ? player.username : "",
-      colour: typeof player.colour === "string" ? player.colour : null,
-    }));
+    .map((player) => {
+      let username = "";
+      if (typeof player.username === "string") {
+        username = player.username;
+      }
+
+      let colour = null;
+      if (typeof player.colour === "string") {
+        colour = player.colour;
+      }
+
+      return {
+        username,
+        colour,
+      };
+    });
 }
 
 //internal: conditional logging for service messages
