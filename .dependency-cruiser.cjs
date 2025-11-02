@@ -193,6 +193,8 @@ module.exports = {
     },
   ],
   options: {
+    exclude: ["^shared"],
+
     // let dep-cruiser resolve @shared/* to ./shared/*
     webpackConfig: { fileName: "depcruise.webpack.cjs" },
 
