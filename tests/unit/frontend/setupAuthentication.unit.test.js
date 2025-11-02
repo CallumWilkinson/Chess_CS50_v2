@@ -15,7 +15,7 @@ describe("setupSocketWithAuthentication", () => {
     socketIoModule.__setSocketIoImplementation(ioMock);
 
     ({ setupSocketWithAuthentication } = await import(
-      "../../../public/src/frontend/setupAuthentication.js"
+      "../../../public/src/frontend/adapters/socket/setupAuthentication.js"
     ));
   });
 

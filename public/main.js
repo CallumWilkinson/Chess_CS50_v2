@@ -1,11 +1,11 @@
-import { setupMovementEventListeners } from "./src/frontend/setupEventListeners.js";
-import { setupSocketWithAuthentication } from "./src/frontend/setupAuthentication.js";
-import { updateUIWithNewGameState } from "./src/frontend/setupSocketListeners.js";
-import { updateUI } from "./src/frontend/updateUI.js";
-import { getPlayerColourAndInitialBoardState } from "./src/frontend/setupSocketListeners.js";
+import { setupMovementEventListeners } from "./src/frontend/interaction/board/setupEventListeners.js";
+import { setupSocketWithAuthentication } from "./src/frontend/adapters/socket/setupAuthentication.js";
+import { updateUIWithNewGameState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
+import { updateUI } from "./src/frontend/presentation/board/updateUI.js";
+import { getPlayerColourAndInitialBoardState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
 import joinExistingGameOrCreateNewChessGame, {
   joinPendingSessionFromStorage,
-} from "./src/frontend/joinExistingGameOrCreateNewChessGame.js";
+} from "./src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
 
 const PENDING_SESSION_KEY = "pendingGameSession";
 

@@ -10,7 +10,7 @@ describe("initializeWelcomePage", () => {
 
   beforeEach(async () => {
     jest.unstable_mockModule(
-      "../../../public/src/frontend/setupAuthentication.js",
+      "../../../public/src/frontend/adapters/socket/setupAuthentication.js",
       () => ({
         setupSocketWithAuthentication: jest.fn(),
       })

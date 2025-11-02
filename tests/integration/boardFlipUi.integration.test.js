@@ -1,7 +1,7 @@
 ﻿import { jest } from "@jest/globals";
 import { UIConstants } from "../../shared/utilities/constants.js";
-import { squareToCanvasCoordinates } from "../../public/src/frontend/coordinates.js";
-import { setupMovementEventListeners } from "../../public/src/frontend/setupEventListeners.js";
+import { squareToCanvasCoordinates } from "../../public/src/frontend/domain/board/coordinates.js";
+import { setupMovementEventListeners } from "../../public/src/frontend/interaction/board/setupEventListeners.js";
 
 import Board from "../../chessCore/gameLogic/board.js";
 import GameStateManager from "../../chessCore/gameLogic/GameStateManager.js";

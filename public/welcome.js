@@ -1,5 +1,5 @@
-﻿import { setupSocketWithAuthentication } from "./src/frontend/setupAuthentication.js";
-import { createLobbyListModal } from "./src/frontend/LobbyListModal.js";
+﻿import { setupSocketWithAuthentication } from "./src/frontend/adapters/socket/setupAuthentication.js";
+import { createLobbyListModal } from "./src/frontend/presentation/lobby/LobbyListModal.js";
 
 export const PENDING_SESSION_KEY = "pendingGameSession";
 const DEFAULT_LOBBY_PROMPT = "Enter a lobby name:";

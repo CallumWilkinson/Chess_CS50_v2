@@ -13,13 +13,16 @@ import {
   squareToPieceCenterCoordinates,
   getRankLabelCoordinates,
   getFileLabelCoordinates,
-} from "./coordinateMapping.js";
+} from "../../domain/board/coordinateMapping.js";
 import {
   transformCoordinatesForPlayer,
   updateHTMLTestAttributesForFlippedBoard,
-} from "./boardOrientation.js";
-import { formatColourLabel, normalizeChessColour } from "./chessColours.js";
-import { renderPlayerCards } from "./renderPlayerCards.js";
+} from "../../domain/board/boardOrientation.js";
+import {
+  formatColourLabel,
+  normalizeChessColour,
+} from "../../domain/players/chessColours.js";
+import { renderPlayerCards } from "../players/renderPlayerCards.js";
 
 /**
  * Update the visual chess board UI with current game state

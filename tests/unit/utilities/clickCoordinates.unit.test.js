@@ -1,5 +1,5 @@
-import getClickedSquareName from "../../../public/src/frontend/getClickedSquareName.js";
-import { squareToCanvasCoordinates } from "../../../public/src/frontend/coordinates.js";
+import getClickedSquareName from "../../../public/src/frontend/interaction/board/getClickedSquareName.js";
+import { squareToCanvasCoordinates } from "../../../public/src/frontend/domain/board/coordinates.js";
 import { UIConstants } from "../../../shared/utilities/constants.js";
 
 // Mock canvas and mouse event for testing

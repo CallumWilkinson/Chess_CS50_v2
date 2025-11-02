@@ -1,5 +1,7 @@
 import { jest } from "@jest/globals";
-import joinExistingGameOrCreateNewChessGame, { joinPendingSessionFromStorage } from "../../../public/src/frontend/joinExistingGameOrCreateNewChessGame.js";
+import joinExistingGameOrCreateNewChessGame, {
+  joinPendingSessionFromStorage,
+} from "../../../public/src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
 
 describe("joinExistingGameOrCreateNewChessGame", () => {
   let mockSocket;

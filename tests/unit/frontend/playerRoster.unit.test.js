@@ -1,4 +1,4 @@
-import { createPlayerRoster } from "../../../public/src/frontend/playerRoster.js";
+import { createPlayerRoster } from "../../../public/src/frontend/domain/players/playerRoster.js";
 
 describe("createPlayerRoster", () => {
   test("maps players by colour", () => {

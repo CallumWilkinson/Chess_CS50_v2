@@ -1,5 +1,5 @@
 import getClickedSquareName from "./getClickedSquareName.js";
-import { sendMoveData } from "./sendMoveData.js";
+import { sendMoveData } from "../../adapters/socket/sendMoveData.js";
 
 /**
  * Set up click event listeners for chess piece movement

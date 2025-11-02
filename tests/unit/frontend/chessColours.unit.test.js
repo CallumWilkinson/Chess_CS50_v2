@@ -2,7 +2,7 @@ import {
   normalizeChessColour,
   getOppositeColour,
   formatColourLabel,
-} from "../../../public/src/frontend/chessColours.js";
+} from "../../../public/src/frontend/domain/players/chessColours.js";
 
 describe("normalizeChessColour", () => {
   test("returns lowercase colour when valid", () => {

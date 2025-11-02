@@ -3,7 +3,7 @@ import {
   squareToPieceCenterCoordinates,
   getRankLabelCoordinates,
   getFileLabelCoordinates,
-} from "../../../public/src/frontend/coordinateMapping.js";
+} from "../../../public/src/frontend/domain/board/coordinateMapping.js";
 import { UIConstants } from "../../../shared/utilities/constants.js";
 
 describe("Coordinate Mapping Utilities", () => {
