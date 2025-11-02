@@ -1,4 +1,4 @@
-import { UIConstants } from "/static/shared/utilities/constants.js";
+import { UIConstants } from "@shared/utilities/constants.js";
 
 /**
  * Converts chess square coordinates to canvas pixel coordinates
@@ -9,7 +9,7 @@ import { UIConstants } from "/static/shared/utilities/constants.js";
 export function squareToPixelCoordinates(fileIndex, rankIndex) {
   return {
     x: fileIndex * UIConstants.TILESIZE,
-    y: rankIndex * UIConstants.TILESIZE
+    y: rankIndex * UIConstants.TILESIZE,
   };
 }
 
@@ -22,7 +22,7 @@ export function squareToPixelCoordinates(fileIndex, rankIndex) {
 export function squareToPieceCenterCoordinates(fileIndex, rankIndex) {
   return {
     x: fileIndex * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
-    y: rankIndex * UIConstants.TILESIZE + UIConstants.TILESIZE / 2
+    y: rankIndex * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
   };
 }
 
@@ -35,7 +35,7 @@ export function getRankLabelCoordinates(rankIndex) {
   const baseCoordinates = squareToPixelCoordinates(0, rankIndex);
   return {
     x: baseCoordinates.x + 5,
-    y: baseCoordinates.y + UIConstants.TILESIZE * 0.7
+    y: baseCoordinates.y + UIConstants.TILESIZE * 0.7,
   };
 }
 
@@ -48,6 +48,6 @@ export function getFileLabelCoordinates(fileIndex) {
   const baseCoordinates = squareToPixelCoordinates(fileIndex, 7);
   return {
     x: baseCoordinates.x + UIConstants.TILESIZE * 0.75,
-    y: baseCoordinates.y + UIConstants.TILESIZE - 5
+    y: baseCoordinates.y + UIConstants.TILESIZE - 5,
   };
 }

@@ -15,17 +15,17 @@ describe("Coordinate Mapping Utilities", () => {
 
     test("should convert bottom-right corner coordinates (h1)", () => {
       const result = squareToPixelCoordinates(7, 7);
-      expect(result).toEqual({ 
-        x: 7 * UIConstants.TILESIZE, 
-        y: 7 * UIConstants.TILESIZE 
+      expect(result).toEqual({
+        x: 7 * UIConstants.TILESIZE,
+        y: 7 * UIConstants.TILESIZE,
       });
     });
 
     test("should convert middle square coordinates (d4)", () => {
       const result = squareToPixelCoordinates(3, 4);
-      expect(result).toEqual({ 
-        x: 3 * UIConstants.TILESIZE, 
-        y: 4 * UIConstants.TILESIZE 
+      expect(result).toEqual({
+        x: 3 * UIConstants.TILESIZE,
+        y: 4 * UIConstants.TILESIZE,
       });
     });
 
@@ -41,39 +41,39 @@ describe("Coordinate Mapping Utilities", () => {
   describe("squareToPieceCenterCoordinates", () => {
     test("should convert coordinates to piece center for top-left corner", () => {
       const result = squareToPieceCenterCoordinates(0, 0);
-      expect(result).toEqual({ 
-        x: UIConstants.TILESIZE / 2, 
-        y: UIConstants.TILESIZE / 2 
+      expect(result).toEqual({
+        x: UIConstants.TILESIZE / 2,
+        y: UIConstants.TILESIZE / 2,
       });
     });
 
     test("should convert coordinates to piece center for bottom-right corner", () => {
       const result = squareToPieceCenterCoordinates(7, 7);
-      expect(result).toEqual({ 
-        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2 
+      expect(result).toEqual({
+        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
       });
     });
 
     test("should convert coordinates to piece center for middle square", () => {
       const result = squareToPieceCenterCoordinates(3, 4);
-      expect(result).toEqual({ 
-        x: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2, 
-        y: 4 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2 
+      expect(result).toEqual({
+        x: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
+        y: 4 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
       });
     });
 
     test("should handle edge cases for piece center", () => {
       const topRight = squareToPieceCenterCoordinates(7, 0);
-      expect(topRight).toEqual({ 
-        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2, 
-        y: UIConstants.TILESIZE / 2 
+      expect(topRight).toEqual({
+        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
+        y: UIConstants.TILESIZE / 2,
       });
 
       const bottomLeft = squareToPieceCenterCoordinates(0, 7);
-      expect(bottomLeft).toEqual({ 
-        x: UIConstants.TILESIZE / 2, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2 
+      expect(bottomLeft).toEqual({
+        x: UIConstants.TILESIZE / 2,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,
       });
     });
   });
@@ -81,25 +81,25 @@ describe("Coordinate Mapping Utilities", () => {
   describe("getRankLabelCoordinates", () => {
     test("should calculate rank label position for top rank (rank 0)", () => {
       const result = getRankLabelCoordinates(0);
-      expect(result).toEqual({ 
-        x: 5, 
-        y: UIConstants.TILESIZE * 0.7 
+      expect(result).toEqual({
+        x: 5,
+        y: UIConstants.TILESIZE * 0.7,
       });
     });
 
     test("should calculate rank label position for bottom rank (rank 7)", () => {
       const result = getRankLabelCoordinates(7);
-      expect(result).toEqual({ 
-        x: 5, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7 
+      expect(result).toEqual({
+        x: 5,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7,
       });
     });
 
     test("should calculate rank label position for middle rank", () => {
       const result = getRankLabelCoordinates(3);
-      expect(result).toEqual({ 
-        x: 5, 
-        y: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7 
+      expect(result).toEqual({
+        x: 5,
+        y: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7,
       });
     });
 
@@ -107,7 +107,9 @@ describe("Coordinate Mapping Utilities", () => {
       for (let rank = 0; rank < 8; rank++) {
         const result = getRankLabelCoordinates(rank);
         expect(result.x).toBe(5);
-        expect(result.y).toBe(rank * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7);
+        expect(result.y).toBe(
+          rank * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.7
+        );
       }
     });
   });
@@ -115,33 +117,37 @@ describe("Coordinate Mapping Utilities", () => {
   describe("getFileLabelCoordinates", () => {
     test("should calculate file label position for leftmost file (file 0)", () => {
       const result = getFileLabelCoordinates(0);
-      expect(result).toEqual({ 
-        x: UIConstants.TILESIZE * 0.75, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5 
+      expect(result).toEqual({
+        x: UIConstants.TILESIZE * 0.75,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5,
       });
     });
 
     test("should calculate file label position for rightmost file (file 7)", () => {
       const result = getFileLabelCoordinates(7);
-      expect(result).toEqual({ 
-        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5 
+      expect(result).toEqual({
+        x: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5,
       });
     });
 
     test("should calculate file label position for middle file", () => {
       const result = getFileLabelCoordinates(3);
-      expect(result).toEqual({ 
-        x: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75, 
-        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5 
+      expect(result).toEqual({
+        x: 3 * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75,
+        y: 7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5,
       });
     });
 
     test("should handle all file indices consistently", () => {
       for (let file = 0; file < 8; file++) {
         const result = getFileLabelCoordinates(file);
-        expect(result.x).toBe(file * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75);
-        expect(result.y).toBe(7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5);
+        expect(result.x).toBe(
+          file * UIConstants.TILESIZE + UIConstants.TILESIZE * 0.75
+        );
+        expect(result.y).toBe(
+          7 * UIConstants.TILESIZE + UIConstants.TILESIZE - 5
+        );
       }
     });
   });
@@ -167,7 +173,7 @@ describe("Coordinate Mapping Utilities", () => {
       // Adjacent squares should be one TILESIZE apart
       expect(square2.x - square1.x).toBe(UIConstants.TILESIZE);
       expect(square2.y - square1.y).toBe(0);
-      
+
       expect(square3.x - square1.x).toBe(0);
       expect(square3.y - square1.y).toBe(UIConstants.TILESIZE);
     });

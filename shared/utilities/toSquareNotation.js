@@ -1,6 +1,3 @@
-//NOTE THAT THERE ARE TWO COPIES OF THIS FILE AS I HAVE NOT SETUP A BUNDLER YET
-//THIS IS TEMPORARY AND I WILL FIX IT
-
 import { CoordinateConstants } from "./gameConstants.js";
 
 /**
@@ -13,9 +10,13 @@ import { CoordinateConstants } from "./gameConstants.js";
  */
 export function toSquareNotation(fileIndex, rankIndex) {
   // Convert file index back to file letter
-  const fileChar = String.fromCharCode(CoordinateConstants.ASCII_FILE_A + fileIndex);
+  const fileChar = String.fromCharCode(
+    CoordinateConstants.ASCII_FILE_A + fileIndex
+  );
   // Convert rank index back to rank number
-  const rankChar = (rankIndex + CoordinateConstants.RANK_INDEX_OFFSET).toString();
+  const rankChar = (
+    rankIndex + CoordinateConstants.RANK_INDEX_OFFSET
+  ).toString();
 
   return fileChar + rankChar;
 }
@@ -30,7 +31,7 @@ export function getFileIndex(squareName) {
 }
 
 /**
- * Converts chess rank number to array index (1=0, 2=1, etc.) 
+ * Converts chess rank number to array index (1=0, 2=1, etc.)
  * @param {string} squareName - Chess square notation (e.g., "e4", "a1")
  * @returns {number} Rank index (0-based)
  */

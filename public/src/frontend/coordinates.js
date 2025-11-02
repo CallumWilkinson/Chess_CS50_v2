@@ -1,5 +1,5 @@
-import { UIConstants } from "/static/shared/utilities/constants.js";
-import { getFileIndex } from "/static/shared/utilities/toSquareNotation.js";
+import { UIConstants } from "@shared/utilities/constants.js";
+import { getFileIndex } from "@shared/utilities/toSquareNotation.js";
 import { transformCoordinatesForPlayer } from "./boardOrientation.js";
 
 /**
@@ -16,7 +16,8 @@ export function squareToCanvasCoordinates(square, playerColour = "black") {
   const rank = parseInt(square[1]) - 1;
 
   // Transform coordinates based on player perspective
-  const { rank: transformedRank, file: transformedFile } = transformCoordinatesForPlayer(rank, file, playerColour);
+  const { rank: transformedRank, file: transformedFile } =
+    transformCoordinatesForPlayer(rank, file, playerColour);
 
   return {
     x: transformedFile * UIConstants.TILESIZE + UIConstants.TILESIZE / 2,

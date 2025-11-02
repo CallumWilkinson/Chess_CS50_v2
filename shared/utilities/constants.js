@@ -1,6 +1,3 @@
-//NOTE THAT THERE ARE TWO COPIES OF THIS FILE AS I HAVE NOT SETUP A BUNDLER YET
-//THIS IS TEMPORARY AND I WILL FIX IT
-
 /**
  * Game status constants for tracking chess game state
  * @readonly

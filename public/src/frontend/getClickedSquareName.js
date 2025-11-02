@@ -1,5 +1,5 @@
-import { UIConstants } from "/static/shared/utilities/constants.js";
-import { toSquareNotation } from "/static/shared/utilities/toSquareNotation.js";
+import { UIConstants } from "@shared/utilities/constants.js";
+import { toSquareNotation } from "@shared/utilities/toSquareNotation.js";
 import { transformCoordinatesForPlayer } from "./boardOrientation.js";
 
 /**
@@ -22,7 +22,8 @@ export default function getClickedSquareName(event, canvas, playerColour) {
   const rank = Math.abs(Math.floor(y / UIConstants.TILESIZE));
 
   // Apply player perspective transformation to the raw canvas coordinates
-  const { rank: logicalRank, file: logicalFile } = transformCoordinatesForPlayer(rank, file, playerColour);
+  const { rank: logicalRank, file: logicalFile } =
+    transformCoordinatesForPlayer(rank, file, playerColour);
 
   const firstClickedSquareName = toSquareNotation(logicalFile, logicalRank);
   return firstClickedSquareName;

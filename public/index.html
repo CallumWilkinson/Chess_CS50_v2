@@ -6,26 +6,40 @@
     <script>
       (function redirectToWelcomeIfNeeded() {
         try {
-          const key = 'pendingGameSession';
-          const hasPending = window.sessionStorage && window.sessionStorage.getItem(key);
+          const key = "pendingGameSession";
+          const hasPending =
+            window.sessionStorage && window.sessionStorage.getItem(key);
           if (!hasPending) {
-            window.location.replace('welcome.html');
+            window.location.replace("welcome.html");
           }
         } catch (error) {
-          window.location.replace('welcome.html');
+          window.location.replace("welcome.html");
         }
       })();
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@shared/": "/static/shared/"
+        }
+      }
     </script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main id="game-layout">
       <header id="current-turn-container" data-testid="game-status-container">
-        <h1 id="current-turn-heading" data-testid="turn-banner">Current Turn</h1>
+        <h1 id="current-turn-heading" data-testid="turn-banner">
+          Current Turn
+        </h1>
         <p id="current-turn-contents" data-testid="game-status"></p>
       </header>
       <section id="game-stage">
-        <aside class="player-card" id="player-card-self" data-testid="player-card-self">
+        <aside
+          class="player-card"
+          id="player-card-self"
+          data-testid="player-card-self"
+        >
           <h2 class="player-card__label">You</h2>
           <p
             class="player-card__username"

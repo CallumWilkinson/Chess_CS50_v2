@@ -2,12 +2,12 @@ import {
   UIConstants,
   FilesAndRanks,
   GameStatus,
-} from "/static/shared/utilities/constants.js";
+} from "@shared/utilities/constants.js";
 import {
   getFileIndex,
   getRankIndex,
   isLightSquare,
-} from "/static/shared/utilities/toSquareNotation.js";
+} from "@shared/utilities/toSquareNotation.js";
 import {
   squareToPixelCoordinates,
   squareToPieceCenterCoordinates,
@@ -18,10 +18,7 @@ import {
   transformCoordinatesForPlayer,
   updateHTMLTestAttributesForFlippedBoard,
 } from "./boardOrientation.js";
-import {
-  formatColourLabel,
-  normalizeChessColour,
-} from "./chessColours.js";
+import { formatColourLabel, normalizeChessColour } from "./chessColours.js";
 import { renderPlayerCards } from "./renderPlayerCards.js";
 
 /**
@@ -135,7 +132,8 @@ function updateTurnDisplay(gameStateManager, playerRoster) {
 
     const winnerColour = normalizeChessColour(gameStateManager.winner);
     const winnerDetails = resolvePlayerDetails(playerRoster, winnerColour);
-    const winnerName = winnerDetails.username || winnerDetails.colourLabel || "Unknown";
+    const winnerName =
+      winnerDetails.username || winnerDetails.colourLabel || "Unknown";
 
     contentElement.textContent = `${winnerName} wins by checkmate!`;
     contentElement.setAttribute("data-testid", "winner-display");
@@ -154,7 +152,9 @@ function updateTurnDisplay(gameStateManager, playerRoster) {
 
   headingElement.textContent = "Current Turn";
 
-  const currentColour = normalizeChessColour(gameStateManager.currentPlayerColour);
+  const currentColour = normalizeChessColour(
+    gameStateManager.currentPlayerColour
+  );
   const currentDetails = resolvePlayerDetails(playerRoster, currentColour);
   const turnMessage = buildTurnMessage(
     currentDetails.colourLabel,
@@ -175,7 +175,8 @@ function resolvePlayerDetails(playerRoster, colour) {
 
   const rosterEntry = playerRoster[colour];
   const username =
-    typeof rosterEntry?.username === "string" && rosterEntry.username.trim().length > 0
+    typeof rosterEntry?.username === "string" &&
+    rosterEntry.username.trim().length > 0
       ? rosterEntry.username
       : null;
   const colourLabel = formatColourLabel(colour);
