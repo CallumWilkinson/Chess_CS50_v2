@@ -60,19 +60,10 @@ export function initializeWelcomePage({
         return;
       }
 
-      try {
-        storePendingSession(win.sessionStorage, {
-          gameSessionID: response.gameSessionID,
-          lobbyName,
-          username: activeSocket.auth?.username || '',
-        });
-      } catch (error) {
-        console.error("Unable to persist pending session", error);
-        win.alert(GENERIC_ERROR_MESSAGE);
-        return;
-      }
-
-      win.location.assign('index.html');
+      const sessionId = response.gameSessionID;
+      const url = new URL('index.html', win.location.href);
+      url.searchParams.set('session', sessionId);
+      win.location.assign(url.toString());
     });
   });
 
@@ -167,24 +158,12 @@ export function initializeWelcomePage({
       return;
     }
 
-    const username = activeSocket?.auth?.username || '';
-    const resolvedLobbyName = lobbyName || sessionId;
-
-    try {
-      storePendingSession(winRef.sessionStorage, {
-        gameSessionID: sessionId,
-        lobbyName: resolvedLobbyName,
-        username,
-      });
-    } catch (error) {
-      console.error("Unable to persist pending session", error);
-      winRef.alert(GENERIC_ERROR_MESSAGE);
-      return;
-    }
-
+    //navigate to game board with session id as URL param
     resetLobbySubscription();
     modal.hide();
-    winRef.location.assign('index.html');
+    const url = new URL('index.html', winRef.location.href);
+    url.searchParams.set('session', sessionId);
+    winRef.location.assign(url.toString());
   }
 }
 

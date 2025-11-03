@@ -3,7 +3,7 @@ import { setupSocketWithAuthentication } from "./src/frontend/adapters/socket/se
 import { updateUIWithNewGameState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
 import { updateUI } from "./src/frontend/presentation/board/updateUI.js";
 import { getPlayerColourAndInitialBoardState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
-import { joinPendingSessionFromStorage } from "./src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
+const WELCOME_PATH = "welcome.html";
 
 /**
  * Main entry point for the chess game client
@@ -16,10 +16,26 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  socket.once("connect", async () => {
-    const result = await joinPendingSessionFromStorage({ socket });
-    if (!result.attempted || !result.ok) {
-      window.location.replace("welcome.html");
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session");
+  if (!sessionId) {
+    redirectToWelcome(window);
+    return;
+  }
+
+  socket.once("connect", () => {
+    try {
+      socket.emit("lobby:join", { gameSessionID: sessionId }, (ack) => {
+        if (ack && ack.error) {
+          alert(ack.error.message || "Unable to join session");
+          redirectToWelcome(window);
+          return;
+        }
+      });
+    } catch (error) {
+      alert("Unable to join session");
+      redirectToWelcome(window);
+      return;
     }
   });
 
@@ -78,4 +94,11 @@ function resolveViewerUsername(socket, reportedUsername) {
   }
 
   return "";
+}
+
+function redirectToWelcome(win) {
+  if (!win || !win.location || typeof win.location.replace !== "function") {
+    return;
+  }
+  win.location.replace(WELCOME_PATH);
 }

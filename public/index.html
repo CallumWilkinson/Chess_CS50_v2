@@ -6,10 +6,9 @@
     <script>
       (function redirectToWelcomeIfNeeded() {
         try {
-          const key = "pendingGameSession";
-          const hasPending =
-            window.sessionStorage && window.sessionStorage.getItem(key);
-          if (!hasPending) {
+          var params = new URLSearchParams(window.location.search);
+          var session = params.get("session");
+          if (!session) {
             window.location.replace("welcome.html");
           }
         } catch (error) {

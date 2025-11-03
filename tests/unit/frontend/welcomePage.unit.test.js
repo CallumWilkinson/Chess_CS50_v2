@@ -37,7 +37,7 @@ describe("initializeWelcomePage", () => {
       prompt: jest.fn(),
       alert: jest.fn(),
       sessionStorage: window.sessionStorage,
-      location: { assign: jest.fn() },
+      location: { assign: jest.fn(), href: "http://localhost/welcome.html" },
     };
 
     mockDocument = document;
@@ -71,7 +71,7 @@ describe("initializeWelcomePage", () => {
     );
   });
 
-  test("sends lobby:create, stores session, and redirects on success", () => {
+  test("sends lobby:create and redirects with session id in URL on success", () => {
     const createSocket = jest.fn(() => mockSocket);
     mockWindow.prompt.mockReturnValue("  Alpha Lobby  ");
 
@@ -94,18 +94,10 @@ describe("initializeWelcomePage", () => {
 
     ack({ gameSessionID: "game-123" });
 
-    const stored = window.sessionStorage.getItem("pendingGameSession");
-    expect(stored).not.toBeNull();
-    const parsed = JSON.parse(stored);
-    expect(parsed).toEqual(
-      expect.objectContaining({
-        gameSessionID: "game-123",
-        lobbyName: "Alpha Lobby",
-        username: "HostUser",
-      })
-    );
-
-    expect(mockWindow.location.assign).toHaveBeenCalledWith("index.html");
+    const call = mockWindow.location.assign.mock.calls[0][0];
+    expect(call).toContain("index.html");
+    const url = new URL(call, "http://localhost/");
+    expect(url.searchParams.get("session")).toBe("game-123");
   });
 
   test("alerts when lobby name is empty and does not emit", () => {
