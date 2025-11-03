@@ -5,8 +5,6 @@ import { updateUI } from "./src/frontend/presentation/board/updateUI.js";
 import { getPlayerColourAndInitialBoardState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
 import { joinPendingSessionFromStorage } from "./src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
 
-const PENDING_SESSION_KEY = "pendingGameSession";
-
 /**
  * Main entry point for the chess game client
  * Sets up authentication, canvas, game connection, and UI updates
@@ -18,13 +16,12 @@ window.onload = () => {
   const canvas = document.getElementById("chessBoard");
   const ctx = canvas.getContext("2d");
 
-  const hasPendingSession = Boolean(
-    window.sessionStorage.getItem(PENDING_SESSION_KEY)
-  );
-
-  if (hasPendingSession) {
-    joinPendingSessionFromStorage(socket);
-  }
+  socket.once("connect", async () => {
+    const result = await joinPendingSessionFromStorage({ socket });
+    if (!result.attempted || !result.ok) {
+      window.location.replace("welcome.html");
+    }
+  });
 
   getPlayerColourAndInitialBoardState(socket, (gameData) =>
     initializeGameUI(socket, canvas, ctx, gameData)
