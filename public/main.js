@@ -3,9 +3,7 @@ import { setupSocketWithAuthentication } from "./src/frontend/adapters/socket/se
 import { updateUIWithNewGameState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
 import { updateUI } from "./src/frontend/presentation/board/updateUI.js";
 import { getPlayerColourAndInitialBoardState } from "./src/frontend/adapters/socket/setupSocketListeners.js";
-import joinExistingGameOrCreateNewChessGame, {
-  joinPendingSessionFromStorage,
-} from "./src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
+import { joinPendingSessionFromStorage } from "./src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
 
 const PENDING_SESSION_KEY = "pendingGameSession";
 
@@ -25,19 +23,7 @@ window.onload = () => {
   );
 
   if (hasPendingSession) {
-    socket.once("connect", async () => {
-      try {
-        const result = await joinPendingSessionFromStorage({ socket });
-        if (!result.attempted || !result.ok) {
-          joinExistingGameOrCreateNewChessGame(socket);
-        }
-      } catch (error) {
-        console.error("Failed to join pending session", error);
-        joinExistingGameOrCreateNewChessGame(socket);
-      }
-    });
-  } else {
-    joinExistingGameOrCreateNewChessGame(socket);
+    joinPendingSessionFromStorage(socket);
   }
 
   getPlayerColourAndInitialBoardState(socket, (gameData) =>
@@ -82,7 +68,10 @@ function initializeGameUI(
 }
 
 function resolveViewerUsername(socket, reportedUsername) {
-  if (typeof reportedUsername === "string" && reportedUsername.trim().length > 0) {
+  if (
+    typeof reportedUsername === "string" &&
+    reportedUsername.trim().length > 0
+  ) {
     return reportedUsername;
   }
 

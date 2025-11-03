@@ -1,44 +1,11 @@
-
 //todo temporary fallback:auto-join/create matchmaking and storage handoff
 //remove when welcome.js wires explicit join/list flows from buttons
 //legacy:keep until explicit join UI fully replaces it
 const PENDING_SESSION_KEY = "pendingGameSession";
 
-
-/**
- * Automatically join an existing game or create a new one
- * Requests available games from server and joins first available, or creates new game
- * Implements simple matchmaking logic for chess games
- * @param {Object} socket - Socket.IO client instance
- */
-export default function joinExistingGameOrCreateNewChessGame(socket) {
-  if (!socket) {
-    return;
-  }
-
-  const requestAvailableGames = () => {
-    socket.emit("getAvailableGames");
-    console.log("Sent request to server to get available games list");
-  };
-
-  socket.on("availableGames", (availableGames) => {
-    console.log("client received availableGames list");
-    if (availableGames.length > 0) {
-      socket.emit("joinExistingGame", availableGames[0].gameSessionID);
-    } else {
-      socket.emit("createNewChessGame");
-    }
-  });
-
-  if (socket.connected) {
-    requestAvailableGames();
-  } else {
-    socket.once("connect", requestAvailableGames);
-  }
-}
-
 /**
  * Attempt to join a pending session stored in browser sessionStorage.
+ * This prevents the user from disconnecting upon browser refresh
  * @param {Object} config - Dependencies for the join flow.
  * @param {Object} config.socket - Connected socket.io client.
  * @param {Storage} [config.storage=window.sessionStorage] - Storage provider.
@@ -70,7 +37,11 @@ export async function joinPendingSessionFromStorage({
     return { attempted: false };
   }
 
-  if (!parsed || typeof parsed.gameSessionID !== "string" || !parsed.gameSessionID) {
+  if (
+    !parsed ||
+    typeof parsed.gameSessionID !== "string" ||
+    !parsed.gameSessionID
+  ) {
     return { attempted: false };
   }
 
@@ -96,4 +67,3 @@ export async function joinPendingSessionFromStorage({
     });
   });
 }
-

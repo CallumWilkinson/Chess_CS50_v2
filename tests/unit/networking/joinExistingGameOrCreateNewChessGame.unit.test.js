@@ -1,82 +1,5 @@
 import { jest } from "@jest/globals";
-import joinExistingGameOrCreateNewChessGame, {
-  joinPendingSessionFromStorage,
-} from "../../../public/src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
-
-describe("joinExistingGameOrCreateNewChessGame", () => {
-  let mockSocket;
-  let handlers;
-
-  beforeEach(() => {
-    handlers = {};
-    mockSocket = {
-      on: jest.fn((event, handler) => {
-        handlers[event] = handler;
-      }),
-      once: jest.fn((event, handler) => {
-        handlers[event] = handler;
-      }),
-      emit: jest.fn(),
-      connected: false,
-    };
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test("should return early if no socket is provided", () => {
-    joinExistingGameOrCreateNewChessGame(null);
-
-    expect(mockSocket.on).not.toHaveBeenCalled();
-    expect(mockSocket.once).not.toHaveBeenCalled();
-  });
-
-  test("should set up connect listener that requests available games", () => {
-    joinExistingGameOrCreateNewChessGame(mockSocket);
-
-    expect(mockSocket.once).toHaveBeenCalledWith("connect", expect.any(Function));
-
-    const connectCallback = mockSocket.once.mock.calls.find((call) => call[0] === "connect")[1];
-    connectCallback();
-
-    expect(mockSocket.emit).toHaveBeenCalledWith("getAvailableGames");
-  });
-
-  test("should set up availableGames listener", () => {
-    joinExistingGameOrCreateNewChessGame(mockSocket);
-
-    expect(mockSocket.on).toHaveBeenCalledWith("availableGames", expect.any(Function));
-  });
-
-  test("should join existing game when games are available", () => {
-    joinExistingGameOrCreateNewChessGame(mockSocket);
-
-    const availableGamesCallback = handlers.availableGames;
-
-    availableGamesCallback([{ gameSessionID: "test-game-123" }]);
-
-    expect(mockSocket.emit).toHaveBeenCalledWith("joinExistingGame", "test-game-123");
-  });
-
-  test("should create new game when no games are available", () => {
-    joinExistingGameOrCreateNewChessGame(mockSocket);
-
-    const availableGamesCallback = handlers.availableGames;
-    availableGamesCallback([]);
-
-    expect(mockSocket.emit).toHaveBeenCalledWith("createNewChessGame");
-  });
-
-  test("should request available games immediately when socket already connected", () => {
-    mockSocket.connected = true;
-
-    joinExistingGameOrCreateNewChessGame(mockSocket);
-
-    expect(mockSocket.emit).toHaveBeenCalledWith("getAvailableGames");
-    expect(mockSocket.once).not.toHaveBeenCalledWith("connect", expect.any(Function));
-  });
-});
+import { joinPendingSessionFromStorage } from "../../../public/src/frontend/adapters/socket/joinExistingGameOrCreateNewChessGame.js";
 
 describe("joinPendingSessionFromStorage", () => {
   let storage;
@@ -129,7 +52,11 @@ describe("joinPendingSessionFromStorage", () => {
       { gameSessionID: "session-1" },
       expect.any(Function)
     );
-    expect(result).toEqual({ attempted: true, ok: true, gameSessionID: "session-1" });
+    expect(result).toEqual({
+      attempted: true,
+      ok: true,
+      gameSessionID: "session-1",
+    });
     expect(storage.getItem("pendingGameSession")).toBeNull();
   });
 
@@ -153,4 +80,3 @@ describe("joinPendingSessionFromStorage", () => {
     });
   });
 });
-
