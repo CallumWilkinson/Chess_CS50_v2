@@ -80,8 +80,6 @@ Open two tabs at `http://localhost:3000` and play against yourself to see server
 
 ```powershell
 npm test
-# filter by name
-npm run test:filter "turnManager"
 ```
 
 ## Why This Architecture
