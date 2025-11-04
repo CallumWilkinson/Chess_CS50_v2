@@ -41,13 +41,13 @@ This is an online multiplayer chess application with a server‑authoritative ba
 - `public/`: static assets (HTML/CSS/JS) that speak to sockets
 - `tests/`: unit and integration tests (Jest)
 
-## Socket Events (current)
+## Socket Event Flow
 
 - Client → Server
 
   - `lobby:create` { lobbyName, colour } → { gameSessionID } or { error }
   - `lobby:list` (ack) → { lobbies }
-  - `lobby:join` { gameSessionID , lobbyNam? } → { ok: true, gameSessionID } or { error }
+  - `lobby:join` { gameSessionID , lobbyName } → { ok: true, gameSessionID } or { error }
   - `move` { chessPiece, targetSquare } → server validates turn and move rules before replying with { newGameState }
 
 - Server → Client
