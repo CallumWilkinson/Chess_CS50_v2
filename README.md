@@ -46,7 +46,11 @@ This project is organised for a server-authoritative flow: `backend` runs the Ex
 
 ## What's Next
 
-- Add match history and richer lobby tooling.
+- Add front end polish with drag to move and cleaner browser popups
+- Add turn timer to make it clearer whos turn it is
+- Reduce abstractions (throughout development some abstractions were made that later proved to be unnecessary)
+- Add full auth flow
+- Add persistent database for move and match history tied to accounts
 - Expand the rules engine to support checkers as the next proof-of-flexibility.
 
 With Fly.io live, the full experience is available without cloning. The older client-only demo remains accessible for comparison.
