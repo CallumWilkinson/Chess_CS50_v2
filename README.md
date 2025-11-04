@@ -45,17 +45,17 @@ This is an online multiplayer chess application with a server‑authoritative ba
 
 - Client → Server
 
-  - `lobby:create` ({ lobbyName, colour? }, ack) → ack({ gameSessionID }) or ack({ error })
-  - `lobby:list` (ack) → ack({ lobbies })
-  - `lobby:join` ({ gameSessionID? , lobbyName? }, ack) → ack({ ok: true, gameSessionID }) or ack({ error })
-  - `move` ({ chessPiece, targetSquare }) → server validates turn and rules
+  - `lobby:create` { lobbyName, colour } → { gameSessionID } or { error }
+  - `lobby:list` (ack) → { lobbies }
+  - `lobby:join` { gameSessionID , lobbyNam? } → { ok: true, gameSessionID } or { error }
+  - `move` { chessPiece, targetSquare } → server validates turn and move rules before replying with { newGameState }
 
 - Server → Client
   - `connected` → { username, socketId, message }
   - `playerInfoAndInitialGameState` → { username, colour, gameInstance, players }
   - `session:players` → { players: [{ username, colour }] }
   - `lobbies:updated` → { lobbies }
-  - `newGameState` → game state after a valid move
+  - `newGameState` → new game state after a valid move
   - `notYourTurn` (no payload)
   - `error` → { code, message } or message string
 
@@ -76,7 +76,7 @@ Open two tabs at `http://localhost:3000` and play against yourself to see server
 ## Testing
 
 - Jest config uses jsdom; no Babel transform is required for ESM.
-- Current count: 133 individual unit tests and 20 integration tests
+- Current count: 233 individual unit tests and 20 integration tests
 
 ```powershell
 npm test
