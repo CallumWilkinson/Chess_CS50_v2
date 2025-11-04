@@ -41,10 +41,11 @@ Open two browser tabs at `http://localhost:3000` and play against yourself to se
 npm test
 ```
 
+![architecture](architecture.png)
+
 ## What's Next
 
 - Add match history and richer lobby tooling.
 - Expand the rules engine to support checkers as the next proof-of-flexibility.
 
 With Fly.io live, the full experience is available without cloning. The older client-only demo remains accessible for comparison.
-
