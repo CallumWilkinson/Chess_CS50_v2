@@ -17,7 +17,7 @@ primary_region = 'syd'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
+  memory = '256mb'
   cpu_kind = 'shared'
   cpus = 1
 
@@ -26,4 +26,10 @@ primary_region = 'syd'
   timeout  = "5s"
   method   = "GET"
   path     = "/health"
+
+[http_service.concurrency]
+  type = "connections"   # count open WS connections
+  soft_limit = 50
+  hard_limit = 60        # new connections won’t be placed past this
+
 
