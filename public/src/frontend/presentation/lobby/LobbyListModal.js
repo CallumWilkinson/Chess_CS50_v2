@@ -36,6 +36,9 @@ export function createLobbyListModal(doc) {
   /** Conceal the modal without destroying it. */
   function hide() {
     root.hidden = true;
+    if (root.isConnected) {
+      root.remove();
+    }
   }
 
   /** Wire a handler for selecting lobby rows. */
@@ -53,6 +56,9 @@ export function createLobbyListModal(doc) {
   /** Wire a handler for the refresh button. */
   function onRefresh(handler) {
     refreshButton.addEventListener("click", () => {
+      if (typeof handler !== "function") {
+        return;
+      }
       handler();
     });
   }
@@ -60,8 +66,15 @@ export function createLobbyListModal(doc) {
   /** Wire a handler for the close button. */
   function onClose(handler) {
     closeButton.addEventListener("click", () => {
-      handler();
-      hide();
+      if (typeof handler !== "function") {
+        hide();
+        return;
+      }
+      try {
+        handler();
+      } finally {
+        hide();
+      }
     });
   }
 
