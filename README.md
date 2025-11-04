@@ -31,6 +31,7 @@ Open two browser tabs at `http://localhost:3000` and play against yourself to se
 
 ## Tech Snapshot
 
+- Test suite currently contains 230 unit tests and 20 integration tests
 - Real-time WebSocket play with server authority (`backend/gameSetup`).
 - Game engine built from small ES6 classes (`chessCore/gameLogic`, `chessCore/chessPieces`).
 - Shared utilities for coordinates and constants in `shared/utilities`.
