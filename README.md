@@ -1,6 +1,8 @@
 # Multiplayer Chess Platform (Portfolio Build)
 
-This is my personal exploration of a server-authoritative multiplayer architecture for turn-based games. Chess is the flagship experience, and the platform is designed so I can layer in additional titles without rewriting networking or game rules.
+This repo is an online multiplayer chess server.
+
+I built it to practice vanilla JavaScript and explore state management over WebSockets. The architecture is modular and server authoritative so I can later add another turn-based game like checkers and slot it alongside chess while still using the same decoupled networking layer.
 
 ## Live Deployments
 
