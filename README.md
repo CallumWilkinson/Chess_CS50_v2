@@ -41,16 +41,25 @@ This is an online multiplayer chess application with a server‑authoritative ba
 - `public/`: static assets (HTML/CSS/JS) that speak to sockets
 - `tests/`: unit and integration tests (Jest)
 
-## Socket Events (high‑level)
+## Socket Events (current)
 
-- `connected` → { username, socketId, message }
-- `createNewChessGame` → emits `playerInfoAndInitialGameState`, `session:players`
-- `getAvailableGames` → emits `availableGames` (array)
-- `joinExistingGame` (gameSessionId) → emits `playerInfoAndInitialGameState`, `session:players`
-- `move` ({ chessPiece, targetSquare }) → emits `newGameState` or `error`
-- `error` (message)
+- Client → Server
 
-See tests like `tests/unit/networking/serverEvents.unit.test.js` for examples of event flow.
+  - `lobby:create` ({ lobbyName, colour? }, ack) → ack({ gameSessionID }) or ack({ error })
+  - `lobby:list` (ack) → ack({ lobbies })
+  - `lobby:join` ({ gameSessionID? , lobbyName? }, ack) → ack({ ok: true, gameSessionID }) or ack({ error })
+  - `move` ({ chessPiece, targetSquare }) → server validates turn and rules
+
+- Server → Client
+  - `connected` → { username, socketId, message }
+  - `playerInfoAndInitialGameState` → { username, colour, gameInstance, players }
+  - `session:players` → { players: [{ username, colour }] }
+  - `lobbies:updated` → { lobbies }
+  - `newGameState` → game state after a valid move
+  - `notYourTurn` (no payload)
+  - `error` → { code, message } or message string
+
+Legacy events like `createNewChessGame`, `joinExistingGame`, and `getAvailableGames` are still handled for backwards compatibility but are not part of the current lobby flow.
 
 ## Run Locally
 
