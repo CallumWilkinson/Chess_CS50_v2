@@ -1,59 +1,94 @@
 # Multiplayer Chess Platform (Portfolio Build)
 
-This repo is an online multiplayer chess server.
-
-I built it to practice vanilla JavaScript and explore state management over WebSockets. The architecture is modular and server authoritative so I can later add another turn-based game like checkers and slot it alongside chess while still using the same decoupled networking layer.
+This is an online multiplayer chess application with a server‑authoritative backend. I built it to practice vanilla JavaScript, ES modules, and real‑time state management over WebSockets. The architecture is modular so I can slot in other turn‑based games (like checkers) while reusing the same decoupled networking layer.
 
 ## Live Deployments
 
-- Primary (server-authoritative): https://chess-cs50-v2.fly.dev/
-  The production deployment runs the full backend on Fly.io. It uses Socket.IO with server-side arbitration for moves and game state. On first hit, a cold start may take a few seconds.
+- Primary (server‑authoritative): https://chess-cs50-v2.fly.dev/
+  Runs on Fly.io. Uses Socket.IO with server‑side arbitration of moves and game state. First hit may cold‑start.
 
-- Older client-only demo: https://multiplayer-chess-qh1o.onrender.com/
-  This legacy preview shows the early client-only prototype. On free-tier Render, initial boot can take ~30 seconds. To test it, open two tabs and wait for both to connect before moving; there is no lobby in this version and moving early can desync clients.
+- Legacy client‑only demo: https://multiplayer-chess-qh1o.onrender.com/
+  Early prototype without a lobby or server authority. On free‑tier Render it can take ~30s to boot. Open two tabs, wait for both to connect, then move.
 
-## Server-Side Refactor
+## Tech Stack
 
-- Completed and deployed to Fly.io. The backend provides Socket.IO orchestration, session lifecycle management, and domain-first chess logic.
-- The refactor addresses the limitations of the client-only preview by making the server authoritative for rules and state.
+- Backend: Node.js 20, Express 5, Socket.IO 4
+- Domain: ES modules, small ES6 classes, server‑authoritative rules
+- Frontend: Vanilla JS served from `public`
+- Testing: Jest (jsdom) for unit + integration
+- Tooling: ESLint 9, JSDoc, Dependency Cruiser
+- CI/CD: GitHub Actions (Fly.io + Azure workflows)
+- Deploy: Fly.io (Dockerfile included)
 
-## Try It Locally
+## Architecture
 
-```bash
+- Server‑authoritative flow: clients emit intents; the server validates with chess rules and broadcasts the canonical state.
+- Clear boundaries:
+  - Networking/adapters in `backend` (`gameSetup`, socket handlers, session lifecycle)
+  - Pure domain logic in `chessCore` (pieces, board, position, move validation, turn management)
+  - Shared utilities/constants in `shared` (hidden from diagram below for simplicity)
+  - Static client in `public`
+- Session lifecycle: lobby discovery, game creation/join, two‑player cap, and cleanup are handled in `backend/gameSetup` (see `SessionManager`, `LobbyService`, `SessionLifecycleService`).
+- Extensibility: chess rules are isolated so another turn‑based game can reuse the same session/socket orchestration.
+
+![architecture](architecture.png)
+
+## Project Structure
+
+- `backend/`: Express + Socket.IO server, session lifecycle, socket handlers
+- `chessCore/`: chess engine (Board, Position, TurnManager, move validation, piece classes)
+- `shared/`: constants and utilities shared by server and client
+- `public/`: static assets (HTML/CSS/JS) that speak to sockets
+- `tests/`: unit and integration tests (Jest)
+
+## Socket Events (high‑level)
+
+- `connected` → { username, socketId, message }
+- `createNewChessGame` → emits `playerInfoAndInitialGameState`, `session:players`
+- `getAvailableGames` → emits `availableGames` (array)
+- `joinExistingGame` (gameSessionId) → emits `playerInfoAndInitialGameState`, `session:players`
+- `move` ({ chessPiece, targetSquare }) → emits `newGameState` or `error`
+- `error` (message)
+
+See tests like `tests/unit/networking/serverEvents.unit.test.js` for examples of event flow.
+
+## Run Locally
+
+Requirements: Node.js 20+
+
+```powershell
 npm install
+$env:PORT=3000  # optional; defaults to 3000
 npm start
 ```
 
-Open two browser tabs at `http://localhost:3000` and play against yourself to see server arbitration, move validation, and game state tracking in action.
+Open two tabs at `http://localhost:3000` and play against yourself to see server arbitration, validation, and state sync.
 
-### Environment Targets
+## Testing
 
-- Node.js 20+
-- Modern desktop browser
+- Jest config uses jsdom; no Babel transform is required for ESM.
+- Current count: 133 individual unit tests and 20 integration tests
 
-## Tech Snapshot
-
-- Test suite currently contains 230 unit tests and 20 integration tests
-- Real-time WebSocket play with server authority (`backend/gameSetup`).
-- Game engine built from small ES6 classes (`chessCore/gameLogic`, `chessCore/chessPieces`).
-- Shared utilities for coordinates and constants in `shared/utilities`.
-- Static frontend assets in `public`, wired to the Socket.IO client.
-- Tests aligned with a red-green-refactor flow using Jest for unit/integration coverage; Playwright is reserved for future end-to-end passes.
-
-```bash
+```powershell
 npm test
+# filter by name
+npm run test:filter "turnManager"
 ```
 
-This project is organised for a server-authoritative flow: `backend` runs the Express/Socket.IO server and session lifecycle (`backend/gameSetup`), `chessCore` contains pure chess domain logic (pieces, move validation, turn/state management), `shared` provides constants and utilities used by both sides, and `public` serves the browser client that speaks to sockets. Clients emit intents; the server validates against the domain rules and broadcasts the canonical state, keeping IO at the edge and rules isolated for fast tests and predictable deployments.
-![architecture](architecture.png)
+## Why This Architecture
 
-## What's Next
+- Predictable rules: chess logic lives in pure modules (`chessCore`), making tests fast and debugging easier.
+- Clear IO boundary: sockets and HTTP live at the edge; the domain stays framework‑agnostic.
+- Multi‑game ready: session/lobby orchestration is generic enough to support other turn‑based games.
 
-- Add front end polish with drag to move and cleaner browser popups
-- Add turn timer to make it clearer whos turn it is
-- Reduce abstractions (throughout development some abstractions were made that later proved to be unnecessary)
-- Add full auth flow
-- Add persistent database for move and match history tied to accounts
-- Expand the rules engine to support checkers as the next proof-of-flexibility.
+## Roadmap
 
-With Fly.io live, the full experience is available without cloning. The older client-only demo remains accessible for comparison.
+- Delete legacy functions from old event flow
+- Frontend polish: drag‑to‑move and cleaner UI prompts
+- Turn timer to make it clear whose turn it is
+- Prune abstractions added early that no longer pay for themselves
+- Full auth flow
+- Persistence: database for move and match history tied to accounts
+- Add checkers to demonstrate engine/lobby reuse
+
+With Fly.io live, the full experience is available without cloning. The older client‑only demo remains for comparison.
