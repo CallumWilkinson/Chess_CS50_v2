@@ -41,6 +41,7 @@ Open two browser tabs at `http://localhost:3000` and play against yourself to se
 npm test
 ```
 
+This project is organised for a server-authoritative flow: `backend` runs the Express/Socket.IO server and session lifecycle (`backend/gameSetup`), `chessCore` contains pure chess domain logic (pieces, move validation, turn/state management), `shared` provides constants and utilities used by both sides, and `public` serves the browser client that speaks to sockets. Clients emit intents; the server validates against the domain rules and broadcasts the canonical state, keeping IO at the edge and rules isolated for fast tests and predictable deployments.
 ![architecture](architecture.png)
 
 ## What's Next
