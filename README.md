@@ -92,6 +92,7 @@ npm test
 ## Roadmap
 
 - Delete legacy functions from old event flow
+- Add better checkmate detection, current chess version has a simplified way of winning
 - Frontend polish: drag‑to‑move and cleaner UI prompts
 - Turn timer to make it clear whose turn it is
 - Prune abstractions added early that no longer pay for themselves
