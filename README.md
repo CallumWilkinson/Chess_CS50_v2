@@ -43,21 +43,22 @@ This is an online multiplayer chess application with a server‑authoritative ba
 
 ## Socket Event Flow
 
-- Client → Server
+- Client to Server (request then ack)
 
-  - `lobby:create` { lobbyName, colour } → { gameSessionID } or { error }
-  - `lobby:list` (ack) → { lobbies }
-  - `lobby:join` { gameSessionID , lobbyName } → { ok: true, gameSessionID } or { error }
-  - `move` { chessPiece, targetSquare } → server validates turn and move rules before replying with { newGameState }
+  - `lobby:create` — client sends `{ lobbyName, colour }`. Server creates a new session, reserves the colour, and acknowledges with `{ gameSessionID }` or `{ error }`.
+  - `lobby:list` — client requests the available lobbies. Server acknowledges with `{ lobbies }`.
+  - `lobby:join` — client sends `{ gameSessionID, lobbyName }`. Server validates if session is full, joins the session, and acknowledges with `{ ok: true, gameSessionID }` or `{ error }`.
+  - `move` — client sends `{ chessPiece, targetSquare }`. Server verifies turn and move legality, applies the move, updates game state, and emits `newGameState` to both players. On invalid attempts, server emits `notYourTurn` or `error`.
 
-- Server → Client
-  - `connected` → { username, socketId, message }
-  - `playerInfoAndInitialGameState` → { username, colour, gameInstance, players }
-  - `session:players` → { players: [{ username, colour }] }
-  - `lobbies:updated` → { lobbies }
-  - `newGameState` → new game state after a valid move
-  - `notYourTurn` (no payload)
-  - `error` → { code, message } or message string
+- Server to Client (push)
+
+  - `connected` — sent after connect with `{ username, socketId, message }`.
+  - `playerInfoAndInitialGameState` — sent after create/join with `{ username, colour, gameInstance, players }`.
+  - `session:players` — sent when the player roster changes with `{ players: [{ username, colour }] }`.
+  - `lobbies:updated` — sent when lobby list changes with `{ lobbies }`.
+  - `newGameState` — sent after a valid move containing the updated game state.
+  - `notYourTurn` — sent when a player attempts to move out of turn.
+  - `error` — sent for errors with `{ code, message }` or a message string.
 
 Legacy events like `createNewChessGame`, `joinExistingGame`, and `getAvailableGames` are still handled for backwards compatibility but are not part of the current lobby flow.
 
