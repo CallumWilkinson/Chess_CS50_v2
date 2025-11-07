@@ -35,26 +35,32 @@ This is an online multiplayer chess application with a server‑authoritative ba
 
 ## Class Overview
 
-- GameInstance — Manages a single game instance, creating the board and game state for a match.
-- GameSession — Container for a match; tracks connected players and delegates game logic to its GameInstance while assigning player colours.
-- Player — Represents a connected player with username, socket ID, and assigned chess colour.
-- LobbyService — Coordinates lobby creation, listing, and joining with validation, acknowledgements, and broadcast updates.
-- SessionLifecycleService — Orchestrates session creation/join, emits initial player/game state, and handles disconnect cleanup.
-- SessionManager — In-memory registry for sessions, players, socket–session mappings, and lobby names with lookup and indexing helpers.
+Backend Classes:
 
-- Board — Represents the chessboard grid, initializes pieces, and answers square existence/emptiness queries.
-- GameStateManager — Applies moves, switches turns, tracks captured pieces, and sets win state.
-- MoveValidation — Provides shared movement and capture validation helpers including line-of-sight checks.
-- Position — Encapsulates board coordinates, neighbor squares, and path traversal checks.
-- TurnManager — Switches the current player and exposes whose turn it is.
+- GameInstance - Manages a single game instance, creating the board and game state for a match.
+- GameSession - Container for a match; tracks connected players and delegates game logic to its GameInstance while assigning player colours.
+- Player - Represents a connected player with username, socket ID, and assigned chess colour.
+- LobbyService - Coordinates lobby creation, listing, and joining with validation, acknowledgements, and broadcast updates.
+- SessionLifecycleService - Orchestrates session creation/join, emits initial player/game state, and handles disconnect cleanup.
+- SessionManager - In-memory registry for sessions, players, socket–session mappings, and lobby names with lookup and indexing helpers.
 
-- ChessPiece — Base piece entity holding name, colour, position, and move state.
-- King — Moves one square in any direction and is the loss condition when captured.
-- Queen — Moves any number of squares horizontally, vertically, or diagonally.
-- Rook — Moves any number of squares along ranks and files; cannot jump pieces.
-- Bishop — Moves any number of squares diagonally; cannot jump pieces.
-- Knight — Moves in an L-shape and can jump over pieces.
-- Pawn — Moves forward (with first-move double step) and captures diagonally.
+GameLogic Classes:
+
+- Board - Represents the chessboard grid, initializes pieces, and answers square existence/emptiness queries.
+- GameStateManager - Applies moves, switches turns, tracks captured pieces, and sets win state.
+- MoveValidation - Provides shared movement and capture validation helpers including line-of-sight checks.
+- Position - Encapsulates board coordinates, neighbor squares, and path traversal checks.
+- TurnManager - Switches the current player and exposes whose turn it is.
+
+ChessPiece Classes:
+
+- ChessPiece - Base piece entity holding name, colour, position, and move state.
+- King - Moves one square in any direction and is the loss condition when captured.
+- Queen - Moves any number of squares horizontally, vertically, or diagonally.
+- Rook - Moves any number of squares along ranks and files; cannot jump pieces.
+- Bishop - Moves any number of squares diagonally; cannot jump pieces.
+- Knight - Moves in an L-shape and can jump over pieces.
+- Pawn - Moves forward (with first-move double step) and captures diagonally.
 
 ## Project Structure
 
