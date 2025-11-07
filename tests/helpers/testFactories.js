@@ -110,15 +110,13 @@ export function createTestScenario(playerConfigs = []) {
   //add session to manager
   sessionManager.addSession(session.gameSessionID, session);
 
-  //map players to session
-  playerConfigs.forEach((config) => {
-    const player = createTestPlayer(
-      config.username,
-      config.socketId,
-      config.colour
-    );
-    sessionManager.addPlayer(config.socketId, player);
-    sessionManager.mapSocketToSession(config.socketId, session.gameSessionID);
+  //register existing session players in manager for networking lookups
+  session.connectedUsers.forEach((player) => {
+    if (!player || !player.socketID) {
+      return;
+    }
+    sessionManager.addPlayer(player.socketID, player);
+    sessionManager.mapSocketToSession(player.socketID, session.gameSessionID);
   });
 
   return {
