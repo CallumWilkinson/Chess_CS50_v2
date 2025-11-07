@@ -26,6 +26,17 @@
       "webRoot": "${workspaceFolder}/public",
       "userDataDir": "${workspaceFolder}/.vscode/chromeUserData/playerB",
       "runtimeArgs": ["--new-window", "--window-name=PlayerB"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Jest (direct)",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "args": ["--runInBand"],
+      "runtimeArgs": ["--experimental-vm-modules"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"]
     }
   ],
   "compounds": [
