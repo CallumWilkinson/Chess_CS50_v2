@@ -7,16 +7,53 @@ import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
 import Board from "../../chessCore/gameLogic/board.js";
+import GameStateManager from "../../chessCore/gameLogic/GameStateManager.js";
 
 /**
- * Factory for creating a test chess board with standard setup
- * @returns {Board} Board with empty grid and initialized pieces
+ * @typedef {Object} BoardConfig
+ * @property {boolean} [withPieces=true] whether to place pieces after creating an empty board
+ *
+ * @typedef {Object} CreateGameStateOptions
+ * @property {'white'|'black'} [startingColour='black']
+ * @property {Board} [board]
+ * @property {BoardConfig} [boardConfig]
  */
-export function createTestBoard() {
+
+/**
+ * Creates a test chess board.
+ * Defaults: withPieces=true
+ * @param {BoardConfig} [boardConfig]
+ * @returns {Board}
+ */
+export function createTestBoard(boardConfig = {}) {
+  const { withPieces = true } = boardConfig;
   const board = new Board();
   board.createEmptyBoard();
-  board.initialisePieces();
+  if (withPieces) {
+    board.initialisePieces();
+  }
   return board;
+}
+
+/**
+ * Creates a game state manager and its board.
+ * Defaults: startingColour="black", board created if not provided, boardConfig={}
+ * @param {CreateGameStateOptions} [options]
+ * @returns {{ board: Board, gameStateManager: GameStateManager }}
+ */
+export function createTestGameState(options = {}) {
+  const {
+    startingColour = "black",
+    board: providedBoard = null,
+    boardConfig = {},
+  } = options;
+
+  let board = providedBoard;
+  if (!board) {
+    board = createTestBoard(boardConfig);
+  }
+  const gameStateManager = new GameStateManager(board, startingColour);
+  return { board, gameStateManager };
 }
 
 /**

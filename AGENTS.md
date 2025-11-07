@@ -15,6 +15,17 @@ Simplicity Addendum takes precedence on any abstraction decision. If Codex and S
 - Avoid magic behavior, keep flow explicit and traceable.
 - Prioritize readability over performance unless performance is a proven bottleneck.
 
+### Target style for JS utilities and test factories
+
+- When a function takes an options object, declare a `@typedef` with `@property` entries. Mark optional fields with brackets `[prop]` and include defaults in the JSDoc text. Do not use inline record types or `prop?: T` syntax in JSDoc.
+- Mirror documented defaults with parameter destructuring defaults in code.
+- Prefer explicit names that reflect domain meaning. Use `providedX` for optional inputs and reuse a single local name for the final value.
+- Keep functions single responsibility. If an option changes behavior in a meaningful way, extract a small helper and let the option select that path. Example: `createTestBoard({ withPieces })`.
+- Use straightforward control flow with `if` statements and early returns when helpful. Avoid ternaries.
+- Constrain allowed string inputs with union-style annotations like `'white'|'black'` in JSDoc.
+- Add a one-line "Defaults: …" summary at the top of each function’s JSDoc.
+- Maintain the call-site API unless there is a clear defect. Improve readability without breaking shape.
+
 ## Clean Code Principles
 
 - Naming: descriptive and consistent. Prefer `calculateScore` or `isValidMove`. Avoid `temp`, `foo`, or `x` except in tiny scopes.
