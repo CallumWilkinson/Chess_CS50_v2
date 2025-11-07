@@ -1,8 +1,7 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Bishop from "../../../chessCore/chessPieces/bishop.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
+import { createTestGameState } from "../../helpers/testFactories.js";
 
 describe("Bishop tests", () => {
   let board;
@@ -10,10 +9,11 @@ describe("Bishop tests", () => {
   let gameStateManager;
   const currentPlayerColour = "white";
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
-    gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const { board: testBoard, gameStateManager: manager } = createTestGameState(
+      { startingColour: currentPlayerColour }
+    );
+    board = testBoard;
+    gameStateManager = manager;
   });
 
   test("white bishop assesses moves from e5", () => {

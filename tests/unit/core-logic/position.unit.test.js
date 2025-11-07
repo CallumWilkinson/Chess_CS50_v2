@@ -1,15 +1,7 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import Rook from "../../../chessCore/chessPieces/rook.js";
 
 describe("tests for position class", () => {
-  let board;
-  beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
-  });
-
   test("create a position object", () => {
     const e5 = new Position("e5");
 

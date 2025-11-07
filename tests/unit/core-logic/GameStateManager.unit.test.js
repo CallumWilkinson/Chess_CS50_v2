@@ -1,18 +1,17 @@
-﻿import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
-import Board from "../../../chessCore/gameLogic/board.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import { GameStatus } from "../../../shared/utilities/constants.js";
 import King from "../../../chessCore/chessPieces/king.js";
+import { createTestGameState } from "../../helpers/testFactories.js";
 
 describe("Game State Manager class tests", () => {
   let board;
   let gameStateManager;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
-    //black moves first
-    gameStateManager = new GameStateManager(board, "black");
+    const { board: testBoard, gameStateManager: manager } = createTestGameState(
+      { startingColour: "black" }
+    );
+    board = testBoard;
+    gameStateManager = manager;
   });
 
   test("change from turn 1 to turn 2", () => {

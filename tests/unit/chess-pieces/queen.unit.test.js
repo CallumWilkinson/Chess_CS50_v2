@@ -1,8 +1,7 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Queen from "../../../chessCore/chessPieces/queen.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
+import { createTestGameState } from "../../helpers/testFactories.js";
 
 describe("queen tests", () => {
   let gameStateManager;
@@ -10,10 +9,11 @@ describe("queen tests", () => {
   let possibleMovesArray;
   let board;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
-    gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const { board: testBoard, gameStateManager: manager } = createTestGameState(
+      { startingColour: currentPlayerColour }
+    );
+    board = testBoard;
+    gameStateManager = manager;
   });
 
   test("white queen moves from e5 to g3", () => {

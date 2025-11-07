@@ -1,16 +1,16 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Rook from "../../../chessCore/chessPieces/rook.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
+import {
+  createTestBoard,
+  createTestGameState,
+} from "../../helpers/testFactories.js";
 
 describe("Rook tests", () => {
   let board;
   let whiteRook;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
+    board = createTestBoard();
     const e5 = new Position("e5");
     whiteRook = new Rook("white", e5);
   });
@@ -74,7 +74,10 @@ describe("Rook tests", () => {
   });
 
   test("black Rook captures a white pawn at g4", () => {
-    const gameStateManager = new GameStateManager(board, "black");
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: "black",
+    });
 
     const g6 = new Position("g6");
     const blackRook = new Rook("black", g6);

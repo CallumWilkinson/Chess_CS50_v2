@@ -1,14 +1,14 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import Position from "../../../chessCore/gameLogic/position.js";
+import {
+  createTestBoard,
+  createTestGameState,
+} from "../../helpers/testFactories.js";
 
 describe("Pawn movement tests", () => {
   let board;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
+    board = createTestBoard();
   });
 
   test("pawn moves from a2 to a3", () => {
@@ -17,7 +17,10 @@ describe("Pawn movement tests", () => {
     const a3 = new Position("a3");
     const whitePawn = new Pawn(currentPlayerColour, a2);
 
-    const gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: currentPlayerColour,
+    });
 
     const possibleMovesArray = whitePawn.getPossibleMoves(
       board,
@@ -36,7 +39,10 @@ describe("Pawn movement tests", () => {
     const a2 = new Position("a2");
     const whitePawn = new Pawn(currentPlayerColour, a2);
 
-    const gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: currentPlayerColour,
+    });
 
     const possibleMovesArray = whitePawn.getPossibleMoves(
       board,
@@ -56,7 +62,10 @@ describe("Pawn movement tests", () => {
     const c7 = new Position("c7");
     const blackPawn = new Pawn(enemyPlayerColour, c7);
 
-    const gameStateManager = new GameStateManager(board, startingPlayerColour);
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: startingPlayerColour,
+    });
 
     let whitePossibleMovesArray = whitePawn.getPossibleMoves(board);
     expect(whitePossibleMovesArray).toContain("a4");
@@ -77,7 +86,10 @@ describe("Pawn movement tests", () => {
   });
 
   test("white and black pawns move towards eachother", () => {
-    const gameStateManager = new GameStateManager(board, "black");
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: "black",
+    });
     const e6 = new Position("e6");
     const e5 = new Position("e5");
     const e4 = new Position("e4");

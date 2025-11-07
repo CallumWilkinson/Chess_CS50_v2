@@ -1,11 +1,11 @@
 import { createTestScenario } from "../../helpers/testFactories.js";
 import { TEST_PLAYERS } from "../../helpers/testFactories.js";
 
-describe("gameClock tests", () => {
-  beforeEach(() => {
-    createTestScenario(TEST_PLAYERS.CHESS_FULL_GAME);
-  });
-});
+// describe("gameClock tests", () => {
+//   beforeEach(() => {
+//     createTestScenario(TEST_PLAYERS.CHESS_FULL_GAME);
+//   });
+// });
 //given a new game
 //when two players are connected and game starts
 //both players have 300000 milliseconds on their timer

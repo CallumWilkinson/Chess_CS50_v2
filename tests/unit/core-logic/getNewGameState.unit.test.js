@@ -1,6 +1,5 @@
-﻿import { getNewGameState } from "../../../chessCore/gameLogic/getNewGameState.js";
-import { createTestBoard } from "../../helpers/testFactories.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
+import { getNewGameState } from "../../../chessCore/gameLogic/getNewGameState.js";
+import { createTestGameState } from "../../helpers/testFactories.js";
 
 describe("getNewGameState", () => {
   let board;
@@ -8,8 +7,11 @@ describe("getNewGameState", () => {
   let validMoveData;
 
   beforeEach(() => {
-    board = createTestBoard();
-    gameStateManager = new GameStateManager(board, "black");
+    const { board: testBoard, gameStateManager: manager } = createTestGameState(
+      { startingColour: "black" }
+    );
+    board = testBoard;
+    gameStateManager = manager;
     
     validMoveData = {
       chessPiece: {

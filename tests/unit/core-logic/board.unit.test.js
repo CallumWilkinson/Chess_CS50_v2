@@ -1,10 +1,11 @@
-﻿import Bishop from "../../../chessCore/chessPieces/bishop.js";
+import Bishop from "../../../chessCore/chessPieces/bishop.js";
 import Board from "../../../chessCore/gameLogic/board.js";
 import King from "../../../chessCore/chessPieces/king.js";
 import Knight from "../../../chessCore/chessPieces/knight.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
 import Queen from "../../../chessCore/chessPieces/queen.js";
 import Rook from "../../../chessCore/chessPieces/rook.js";
+import { createTestBoard } from "../../helpers/testFactories.js";
 
 describe("Chess Board", () => {
   let board;
@@ -23,8 +24,7 @@ describe("Chess Board", () => {
   });
 
   test("setup white peices on board", () => {
-    board.createEmptyBoard();
-    board.initialisePieces();
+    const boardWithPieces = createTestBoard();
     const expectedWhitePieces = {
       a2: Pawn,
       d2: Pawn,
@@ -37,16 +37,15 @@ describe("Chess Board", () => {
     };
 
     for (const position in expectedWhitePieces) {
-      expect(board.grid[position]).toBeInstanceOf(
+      expect(boardWithPieces.grid[position]).toBeInstanceOf(
         expectedWhitePieces[position]
       );
-      expect(board.grid[position].colour).toBe("white");
+      expect(boardWithPieces.grid[position].colour).toBe("white");
     }
   });
 
   test("setup black peices on board", () => {
-    board.createEmptyBoard();
-    board.initialisePieces();
+    const boardWithPieces = createTestBoard();
     const expectedPieces = {
       a7: Pawn,
       d7: Pawn,
@@ -59,22 +58,22 @@ describe("Chess Board", () => {
     };
 
     for (const position in expectedPieces) {
-      expect(board.grid[position]).toBeInstanceOf(expectedPieces[position]);
-      expect(board.grid[position].colour).toBe("black");
+      expect(boardWithPieces.grid[position]).toBeInstanceOf(
+        expectedPieces[position]
+      );
+      expect(boardWithPieces.grid[position].colour).toBe("black");
     }
   });
 
   test("square exists on board", () => {
-    board.createEmptyBoard();
-    board.initialisePieces();
-    expect(board.squareExistsOnBoard("a9")).toBe(false);
-    expect(board.squareExistsOnBoard("a4")).toBe(true);
+    const boardWithPieces = createTestBoard();
+    expect(boardWithPieces.squareExistsOnBoard("a9")).toBe(false);
+    expect(boardWithPieces.squareExistsOnBoard("a4")).toBe(true);
   });
 
   test("square is empty", () => {
-    board.createEmptyBoard();
-    board.initialisePieces();
-    expect(board.squareIsEmpty("a6")).toBe(true);
+    const boardWithPieces = createTestBoard();
+    expect(boardWithPieces.squareIsEmpty("a6")).toBe(true);
   });
 });
 

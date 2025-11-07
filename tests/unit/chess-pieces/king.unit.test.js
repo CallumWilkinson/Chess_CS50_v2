@@ -1,8 +1,7 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import King from "../../../chessCore/chessPieces/king.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import Position from "../../../chessCore/gameLogic/position.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
+import { createTestGameState } from "../../helpers/testFactories.js";
 
 describe("king tests", () => {
   let gameStateManager;
@@ -10,10 +9,11 @@ describe("king tests", () => {
   let possibleMovesArray;
   let board;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
-    gameStateManager = new GameStateManager(board, currentPlayerColour);
+    const { board: testBoard, gameStateManager: manager } = createTestGameState(
+      { startingColour: currentPlayerColour }
+    );
+    board = testBoard;
+    gameStateManager = manager;
   });
 
   test("black king assesess moves from e5", () => {

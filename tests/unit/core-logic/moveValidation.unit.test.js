@@ -1,7 +1,7 @@
-﻿import MoveValidation from "../../../chessCore/gameLogic/moveValidation.js";
-import Board from "../../../chessCore/gameLogic/board.js";
+import MoveValidation from "../../../chessCore/gameLogic/moveValidation.js";
 import Rook from "../../../chessCore/chessPieces/rook.js";
 import Position from "../../../chessCore/gameLogic/position.js";
+import { createTestBoard } from "../../helpers/testFactories.js";
 
 describe("MoveValidation", () => {
   let board;
@@ -9,8 +9,7 @@ describe("MoveValidation", () => {
   let validator;
 
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
+    board = createTestBoard({ withPieces: false });
     rook = new Rook("white", new Position("e4"));
     validator = new MoveValidation(board, rook);
   });

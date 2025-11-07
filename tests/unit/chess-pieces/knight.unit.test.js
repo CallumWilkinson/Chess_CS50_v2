@@ -1,16 +1,16 @@
-﻿import Board from "../../../chessCore/gameLogic/board.js";
 import Knight from "../../../chessCore/chessPieces/knight.js";
 import Position from "../../../chessCore/gameLogic/position.js";
-import GameStateManager from "../../../chessCore/gameLogic/GameStateManager.js";
 import Pawn from "../../../chessCore/chessPieces/pawn.js";
+import {
+  createTestBoard,
+  createTestGameState,
+} from "../../helpers/testFactories.js";
 
 describe("knight tests", () => {
   let possibleMovesArray;
   let board;
   beforeEach(() => {
-    board = new Board();
-    board.createEmptyBoard();
-    board.initialisePieces();
+    board = createTestBoard();
   });
 
   test("knight assesess moves from e4", () => {
@@ -34,7 +34,10 @@ describe("knight tests", () => {
   });
 
   test("black knight captures a white pawn at g4", () => {
-    const gameStateManager = new GameStateManager(board, "black");
+    const { gameStateManager } = createTestGameState({
+      board,
+      startingColour: "black",
+    });
 
     const f6 = new Position("f6");
     const blackKnight = new Knight("black", f6);
