@@ -6,7 +6,6 @@
 import Player from "../../backend/gameSetup/Player.js";
 import GameSession from "../../backend/gameSetup/gameSession.js";
 import SessionManager from "../../backend/gameSetup/SessionManager.js";
-import Position from "../../chessCore/gameLogic/position.js";
 import Board from "../../chessCore/gameLogic/board.js";
 
 /**
@@ -64,7 +63,7 @@ export function createGameSessionWithPlayers(players = []) {
 
 /**
  * Factory for setting up a complete test scenario with session manager, session, and players
- * @param {Object[]} playerConfigs - Array of player configuration objects
+ * @param {Object[]} playerConfigs - Array of player configuration objects (use TEST_PLAYERS constants)
  * @returns {{sessionManager: SessionManager, session: GameSession, sessionId: string}} Complete test scenario
  */
 export function createTestScenario(playerConfigs = []) {
@@ -150,4 +149,3 @@ export function createMultipleTestSessions(sessionConfigs = []) {
 
   return { sessionManager, sessions };
 }
-
