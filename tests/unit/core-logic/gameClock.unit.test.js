@@ -1,20 +1,40 @@
 import { createTestScenario } from "../../helpers/testFactories.js";
 import { TEST_PLAYERS } from "../../helpers/testFactories.js";
+import GameClock from "../../../chessCore/gameLogic/gameClock.js";
 
-// describe("gameClock tests", () => {
-//   beforeEach(() => {
-//     createTestScenario(TEST_PLAYERS.CHESS_FULL_GAME);
-//   });
-// });
-//given a new game
-//when two players are connected and game starts
-//both players have 300000 milliseconds on their timer
+describe("GameClock tests", () => {
+  beforeEach(() => {
+    createTestScenario(TEST_PLAYERS.CHESS_FULL_GAME);
+  });
 
-//given 10 sec into the game when black is first
-//timer for black is now 290000 milliseconds
-//timer for white is 300000
+  test("both players start with 3 mins each", () => {
+    expect(GameClock.blackTimeRemaining).toBe(300000);
+    expect(GameClock.whiteTimeRemaining).toBe(300000);
+  });
 
-//given black moves after 10 seconds
-//black has 290000
-//its whites turn
-//white's timer starts moving down while blacks stays the same
+  test("after 10 seconds black timer goes down but whites stays the same", () => {
+    expect(currentturn).toBe("black");
+    GameClock.advanceTimeBy(10000);
+    expect(GameClock.blackTimeRemaining).toBe(290000);
+    expect(GameClock.whiteTimeRemaining).toBe(300000);
+  });
+
+  test("black moves after 20 seconds, then white waits 10 seconds", () =>{
+    expect(currentturn).toBe("black");
+    GameClock.advanceTimeBy(20000);
+    expect(GameClock.blackTimeRemaining).toBe(280000);
+
+    black.move(any peice up 1)
+    expect(currentturn).toBe("white")
+    GameClock.advanceTimeBy(10000);
+    expect(GameCloock.whiteTimeRemaining).toBe(290000);
+    expect(GameClock.blackTimeRemaining).toBe(280000);
+  });
+
+  test("white wins when blacks time runs out", () => {
+    expect(currentturn).toBe("black");
+    GameClock.advanceTimeBy(300000);
+    expect(winner).toBe("white")
+  })
+});
+
