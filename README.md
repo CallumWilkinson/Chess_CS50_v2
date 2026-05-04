@@ -1,4 +1,4 @@
-# Online Multiplayer Chess Platform
+# Online Multiplayer Chess
 
 This is an online multiplayer chess application with a server‑authoritative backend. It is build in vanilla JavaScript with real‑time state management over WebSockets. The architecture is modular so I can slot in other turn‑based games (like checkers) while reusing the same decoupled networking layer.
 
