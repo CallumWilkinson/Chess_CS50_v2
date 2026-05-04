@@ -2,6 +2,10 @@
 
 This is an online multiplayer chess application with a server‑authoritative backend. I built it to practice vanilla JavaScript, ES modules, and real‑time state management over WebSockets. The architecture is modular so I can slot in other turn‑based games (like checkers) while reusing the same decoupled networking layer.
 
+## App Screenshot
+
+![Chess Demo](app-demo-screenshot.png)
+
 ## Live Deployments
 
 - Primary (server‑authoritative): https://chess-cs50-v2.fly.dev/
@@ -73,14 +77,12 @@ ChessPiece Classes:
 ## Socket Event Flow
 
 - Client to Server (request then ack)
-
   - `lobby:create` — client sends `{ lobbyName, colour }`. Server creates a new session, reserves the colour, and acknowledges with `{ gameSessionID }` or `{ error }`.
   - `lobby:list` — client requests the available lobbies. Server acknowledges with `{ lobbies }`.
   - `lobby:join` — client sends `{ gameSessionID, lobbyName }`. Server validates if session is full, joins the session, and acknowledges with `{ ok: true, gameSessionID }` or `{ error }`.
   - `move` — client sends `{ chessPiece, targetSquare }`. Server verifies turn and move legality, applies the move, updates game state, and emits `newGameState` to both players. On invalid attempts, server emits `notYourTurn` or `error`.
 
 - Server to Client (push)
-
   - `connected` — sent after connect with `{ username, socketId, message }`.
   - `playerInfoAndInitialGameState` — sent after create/join with `{ username, colour, gameInstance, players }`.
   - `session:players` — sent when the player roster changes with `{ players: [{ username, colour }] }`.
