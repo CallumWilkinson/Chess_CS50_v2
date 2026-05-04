@@ -10,6 +10,7 @@ This is an online multiplayer chess application with a server‑authoritative ba
 
 - Primary (server‑authoritative): https://chess-cs50-v2.fly.dev/
   Runs on Fly.io. Uses Socket.IO with server‑side arbitration of moves and game state. First hit may cold‑start.
+  **Note that hosting is currently paused to avoid costs**
 
 - Legacy client‑only demo: https://multiplayer-chess-qh1o.onrender.com/
   Early prototype without a lobby or server authority. On free‑tier Render it can take ~30s to boot. Open two tabs, wait for both to connect, then move.
