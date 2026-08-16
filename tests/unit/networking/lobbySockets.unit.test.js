@@ -36,43 +36,67 @@ describe("Lobby socket events", () => {
     connectionHandler = undefined;
   });
 
-  test("lobby:create acknowledges and broadcasts lobbies:updated", () => {
+  test("lobby:create reserves a session without exposing it as an available lobby", () => {
     const ack = jest.fn();
-    const payload = { lobbyName: "Alpha Room", colour: "white" };
+
+    const payload = {
+      lobbyName: "Alpha Room",
+      colour: "white",
+    };
 
     socketA.simulateIncoming("lobby:create", payload, ack);
 
     expect(ack).toHaveBeenCalledTimes(1);
+
     const ackArg = ack.mock.calls[0][0];
+
     expect(ackArg).toEqual(
-      expect.objectContaining({ gameSessionID: expect.any(String) })
+      expect.objectContaining({
+        gameSessionID: expect.any(String),
+      }),
     );
 
-    expect(io.emit).toHaveBeenCalledWith(
-      "lobbies:updated",
-      expect.objectContaining({
-        lobbies: expect.arrayContaining([
-          expect.objectContaining({
-            lobbyName: "Alpha Room",
-            playersConnected: 1,
-          }),
-        ]),
-      })
-    );
+    expect(io.emit).toHaveBeenCalledWith("lobbies:updated", {
+      lobbies: [],
+    });
   });
 
-  test("lobby:list returns current open lobbies including lobbyName", () => {
+  test("lobby:list returns a lobby after its first player joins", () => {
+    // Given
     const ackCreate = jest.fn();
+
     socketA.simulateIncoming(
       "lobby:create",
-      { lobbyName: "Bravo Room", colour: "black" },
-      ackCreate
+      {
+        lobbyName: "Bravo Room",
+        colour: "black",
+      },
+      ackCreate,
     );
-    const ackList = jest.fn();
-    socketB.simulateIncoming("lobby:list", {}, ackList);
 
+    const sessionId = ackCreate.mock.calls[0][0].gameSessionID;
+
+    // Creator reaches game page and becomes player 1.
+    const ackJoin = jest.fn();
+
+    socketB.simulateIncoming(
+      "lobby:join",
+      {
+        gameSessionID: sessionId,
+      },
+      ackJoin,
+    );
+
+    // When
+    const ackList = jest.fn();
+
+    socketA.simulateIncoming("lobby:list", {}, ackList);
+
+    // Then
     expect(ackList).toHaveBeenCalledTimes(1);
+
     const listPayload = ackList.mock.calls[0][0];
+
     expect(listPayload).toEqual(
       expect.objectContaining({
         lobbies: expect.arrayContaining([
@@ -81,16 +105,16 @@ describe("Lobby socket events", () => {
             playersConnected: 1,
           }),
         ]),
-      })
+      }),
     );
   });
 
-  test("lobby:join acknowledges, starts game for joiner, and updates lobby list", () => {
+  test("first lobby:join adds the first player and keeps the lobby available", () => {
     const ackCreate = jest.fn();
     socketA.simulateIncoming(
       "lobby:create",
       { lobbyName: "Charlie Room", colour: "white" },
-      ackCreate
+      ackCreate,
     );
     const sessionId = ackCreate.mock.calls[0][0].gameSessionID;
 
@@ -98,7 +122,7 @@ describe("Lobby socket events", () => {
     socketB.simulateIncoming(
       "lobby:join",
       { gameSessionID: sessionId },
-      ackJoin
+      ackJoin,
     );
 
     expect(ackJoin).toHaveBeenCalledWith(expect.objectContaining({ ok: true }));
@@ -113,10 +137,12 @@ describe("Lobby socket events", () => {
             colour: expect.any(String),
           }),
         ]),
-      })
+      }),
     );
 
-    const rosterBroadcast = io.__toEmitMock.mock.calls.find(call => call[0] === "session:players");
+    const rosterBroadcast = io.__toEmitMock.mock.calls.find(
+      (call) => call[0] === "session:players",
+    );
     expect(rosterBroadcast).toBeDefined();
     expect(rosterBroadcast[1]).toEqual(
       expect.objectContaining({
@@ -126,18 +152,83 @@ describe("Lobby socket events", () => {
             colour: expect.any(String),
           }),
         ]),
-      })
+      }),
     );
 
     expect(io.emit).toHaveBeenCalledWith(
       "lobbies:updated",
-      expect.objectContaining({ lobbies: expect.any(Array) })
+      expect.objectContaining({ lobbies: expect.any(Array) }),
     );
     const lastUpdate = io.emit.mock.calls
       .filter(([event]) => event === "lobbies:updated")
       .pop()[1];
+    const updatedLobby = lastUpdate.lobbies.find(
+      (lobby) => lobby.lobbyName === "Charlie Room",
+    );
+
+    expect(updatedLobby).toEqual(
+      expect.objectContaining({
+        lobbyName: "Charlie Room",
+        playersConnected: 1,
+      }),
+    );
+  });
+
+  test("second lobby:join fills the session and removes it from available lobbies", () => {
+    // Given
+    const ackCreate = jest.fn();
+
+    socketA.simulateIncoming(
+      "lobby:create",
+      {
+        lobbyName: "Charlie Room",
+      },
+      ackCreate,
+    );
+
+    const sessionId = ackCreate.mock.calls[0][0].gameSessionID;
+
+    // First actual player joins.
+    const firstJoinAck = jest.fn();
+
+    socketB.simulateIncoming(
+      "lobby:join",
+      {
+        gameSessionID: sessionId,
+      },
+      firstJoinAck,
+    );
+
+    // Second actual player joins.
+    const secondJoinAck = jest.fn();
+
+    socketA.simulateIncoming(
+      "lobby:join",
+      {
+        gameSessionID: sessionId,
+      },
+      secondJoinAck,
+    );
+
+    // Then
+    expect(firstJoinAck).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ok: true,
+      }),
+    );
+
+    expect(secondJoinAck).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ok: true,
+      }),
+    );
+
+    const lastUpdate = io.emit.mock.calls
+      .filter(([event]) => event === "lobbies:updated")
+      .pop()[1];
+
     expect(
-      lastUpdate.lobbies.find((l) => l.lobbyName === "Charlie Room")
+      lastUpdate.lobbies.find((lobby) => lobby.lobbyName === "Charlie Room"),
     ).toBeUndefined();
   });
 
@@ -148,19 +239,19 @@ describe("Lobby socket events", () => {
     socketA.simulateIncoming(
       "lobby:create",
       { lobbyName: "Delta Room", colour: "white" },
-      ack1
+      ack1,
     );
     socketB.simulateIncoming(
       "lobby:create",
       { lobbyName: "delta  room" },
-      ack2
+      ack2,
     );
 
     expect(ack2).toHaveBeenCalledTimes(1);
     expect(ack2.mock.calls[0][0]).toEqual(
       expect.objectContaining({
         error: expect.objectContaining({ code: "NAME_TAKEN" }),
-      })
+      }),
     );
   });
 
@@ -169,12 +260,12 @@ describe("Lobby socket events", () => {
     socketB.simulateIncoming(
       "lobby:join",
       { gameSessionID: "nonexistent" },
-      ack
+      ack,
     );
     expect(ack).toHaveBeenCalledWith(
       expect.objectContaining({
         error: expect.objectContaining({ code: "SESSION_NOT_FOUND" }),
-      })
+      }),
     );
   });
 

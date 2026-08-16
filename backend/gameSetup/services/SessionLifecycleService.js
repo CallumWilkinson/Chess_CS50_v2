@@ -44,6 +44,42 @@ export default class SessionLifecycleService {
    * @param {string|undefined} params.lobbyName - Optional lobby display name.
    * @returns {Object} Creation payload containing identifiers and assigned colour.
    */
+
+  /**
+   * Creates and stores a game session without adding a player.
+   * Used by the lobby flow before the creator navigates to the game page.
+   *
+   * @param {Object} params
+   * @param {string|undefined} params.preferredColour
+   * @param {string|undefined} params.lobbyName
+   * @returns {Object} Creation payload containing the session and game instance.
+   */
+  createReservedSession({ preferredColour, lobbyName }) {
+    const newGameSession = new GameSession();
+
+    if (preferredColour) {
+      newGameSession.hostPreferredColour = preferredColour;
+    }
+
+    if (lobbyName) {
+      newGameSession.lobbyName = lobbyName;
+    }
+
+    const newGameInstance = newGameSession.createGameInstance();
+    newGameInstance.createNewChessGame();
+
+    const gameSessionID = newGameSession.gameSessionID;
+
+    this.gameSessions[gameSessionID] = newGameSession;
+    this.sessionManager.addSession(gameSessionID, newGameSession);
+
+    return {
+      gameSessionID,
+      session: newGameSession,
+      gameInstance: newGameInstance,
+    };
+  }
+
   createSessionForHost({ socket, username, preferredColour, lobbyName }) {
     const newGameSession = new GameSession();
 
@@ -186,7 +222,7 @@ export default class SessionLifecycleService {
       this.gameSessions,
       this.socketIDtoGameSessionID,
       socket,
-      this.connectedPlayers
+      this.connectedPlayers,
     );
   }
 
@@ -210,13 +246,13 @@ export default class SessionLifecycleService {
     gameSessions,
     socketIDtoGameSessionID,
     socket,
-    connectedPlayers
+    connectedPlayers,
   ) {
     disconnectCleanupService(
       gameSessions,
       socketIDtoGameSessionID,
       socket,
-      connectedPlayers
+      connectedPlayers,
     );
   }
 
@@ -227,13 +263,13 @@ export function handleDisconnect(
   gameSessions,
   socketIDtoGameSessionID,
   socket,
-  connectedPlayers
+  connectedPlayers,
 ) {
   disconnectCleanupService(
     gameSessions,
     socketIDtoGameSessionID,
     socket,
-    connectedPlayers
+    connectedPlayers,
   );
 }
 

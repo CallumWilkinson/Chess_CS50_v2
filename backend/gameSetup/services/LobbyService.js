@@ -72,16 +72,14 @@ export default class LobbyService {
 
     const preferredColour = parsePreferredColour(payload?.colour);
 
-    const creationResult = this.sessionLifecycle.createSessionForHost({
-      socket,
-      username,
+    const creationResult = this.sessionLifecycle.createReservedSession({
       preferredColour,
       lobbyName: displayName,
     });
 
     this.sessionManager.registerLobbyName(
       displayName,
-      creationResult.gameSessionID
+      creationResult.gameSessionID,
     );
 
     ackFn({ gameSessionID: creationResult.gameSessionID });
@@ -197,4 +195,3 @@ function createErrorPayload(code) {
   const message = LobbyErrorMessages[code] || "Lobby error";
   return { code, message };
 }
-
